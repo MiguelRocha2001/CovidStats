@@ -53,10 +53,10 @@ class Model() {
         Fuel.get(WORLD_CASES_URI)
             .response { request, response, result ->
                 // to show body response
-                //Log.v("response", result.get().decodeToString())
+                // Log.v("response", result.get().decodeToString())
                 results = Json.decodeFromString<WorldData>(result.get().decodeToString())
                 // to show json object with response
-                //Log.v("response", obj.toString())
+                // Log.v("response", obj.toString())
             }
     }
 }
