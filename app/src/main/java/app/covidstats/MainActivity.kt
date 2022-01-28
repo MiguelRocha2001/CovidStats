@@ -13,7 +13,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import app.covidstats.Ui.AMBAR
 import app.covidstats.Ui.ShowWorldCovidStats
 import app.covidstats.uris.Model
 
@@ -25,28 +27,29 @@ class MainActivity : ComponentActivity() {
             val covidStats = remember { Model() }
             var showWorldCovidStats by remember { mutableStateOf(false)}
             var showMenu by remember { mutableStateOf(false)}
-
-            Button(
-                onClick = { showMenu = !showMenu },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(Dp(70f))
-            ) {
-                if (!showMenu)
-                    Text(text = "Open Menu")
-                else
-                    Text(text = "Close Menu")
-            }
-            DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
-                DropdownMenuItem(onClick = { showWorldCovidStats = !showWorldCovidStats }) {
-                    Text(text = "Show World Covid Stats")
-                }
-                DropdownMenuItem(onClick = { showWorldCovidStats = !showWorldCovidStats }) {
-                    Text(text = "Show World Covid Stats")
-                }
-            }
             Column() {
+                Button(
+                    onClick = { showMenu = !showMenu },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = AMBAR),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(Dp(70f))
+                ) {
+                    if (!showMenu)
+                        Text(text = "Open Menu", color = Color.White, fontSize = 30.sp)
+                    else
+                        Text(text = "Close Menu", color = Color.White, fontSize = 30.sp)
+                }
+                DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+                    DropdownMenuItem(onClick = {
+                        // executes action
+                        showWorldCovidStats = true
+                        // closes menu
+                        showMenu = false
+                    }) {
+                        Text(text = "Show World Covid Stats")
+                    }
+                }
                 if (showWorldCovidStats) {
                     covidStats.getCovidCases()
                     ShowWorldCovidStats(covidStats.results)
