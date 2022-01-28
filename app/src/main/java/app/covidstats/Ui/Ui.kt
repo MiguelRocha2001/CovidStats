@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.covidstats.uris.WorldData
+import app.covidstats.model.WorldData
 
 val AMBAR_LIGHT = Color(225, 172, 27)
 val AMBAR_DARK = Color(160, 122, 19)
@@ -39,34 +39,34 @@ fun ShowWorldCovidStats(covidStats: WorldData?) {
                 color = AMBAR_DARK
             )
             Spacer(modifier = Modifier.height(20.dp))
-            printText("Updated", covidStats.updated)
-            printText("Cases", covidStats.cases)
-            printText("Deaths", covidStats.deaths)
-            printText("Today Cases", covidStats.todayCases)
-            printText("Today Deaths", covidStats.todayDeaths)
-            printText("Recovered", covidStats.recovered)
-            printText("Today Recovered", covidStats.todayRecovered)
-            printText("Active", covidStats.active)
-            printText("Critical", covidStats.critical)
-            printText("Cases Per Million", covidStats.casesPerOneMillion)
-            printText("Deaths Per Million", covidStats.deathsPerOneMillion)
-            printText("Tests", covidStats.tests)
-            printText("Population", covidStats.population)
-            printText("One Case Per People", covidStats.oneCasePerPeople)
-            printText("One Death Per People", covidStats.oneDeathPerPeople)
-            printText("One Test Per People", covidStats.oneTestPerPeople)
-            printText("Active Per Million", covidStats.activePerOneMillion)
-            printText("Recover Per One Million", covidStats.recoveredPerOneMillion)
-            printText("Critical Per One Million", covidStats.criticalPerOneMillion)
-            printText("Affected Countries", covidStats.affectedCountries)
+            PrintText("Updated", covidStats.updated)
+            PrintText("Cases", covidStats.cases)
+            PrintText("Deaths", covidStats.deaths)
+            PrintText("Today Cases", covidStats.todayCases!!)
+            PrintText("Today Deaths", covidStats.todayDeaths)
+            PrintText("Recovered", covidStats.recovered)
+            PrintText("Today Recovered", covidStats.todayRecovered)
+            PrintText("Active", covidStats.active)
+            PrintText("Critical", covidStats.critical)
+            PrintText("Cases Per Million", covidStats.casesPerOneMillion)
+            PrintText("Deaths Per Million", covidStats.deathsPerOneMillion)
+            PrintText("Tests", covidStats.tests)
+            PrintText("Population", covidStats.population)
+            PrintText("One Case Per People", covidStats.oneCasePerPeople)
+            PrintText("One Death Per People", covidStats.oneDeathPerPeople)
+            PrintText("One Test Per People", covidStats.oneTestPerPeople)
+            PrintText("Active Per Million", covidStats.activePerOneMillion)
+            PrintText("Recover Per One Million", covidStats.recoveredPerOneMillion)
+            PrintText("Critical Per One Million", covidStats.criticalPerOneMillion)
+            PrintText("Affected Countries", covidStats.affectedCountries)
         }
     }
 }
 
 @Composable
-fun printText(str: String, value: Any) {
+fun PrintText(str: String, value: Any?) {
     Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
         Text(text = "$str ", fontSize = 20.sp, color = AMBAR_LIGHT)
-        Text(text = "$value", fontSize = 20.sp, color = BLUE_LIGHT)
+        Text(text = if (value != null) "$value" else "in fault", fontSize = 20.sp, color = BLUE_LIGHT)
     }
 }
