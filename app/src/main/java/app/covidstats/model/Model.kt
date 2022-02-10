@@ -51,6 +51,7 @@ data class WorldData(val updated: Long? = null,
 
 class Model() {
     var results by mutableStateOf<WorldData?>(null)
+    var location by mutableStateOf<String?>(null)
 
     fun getWorldCovidStats() {
         Fuel.get(WORLD_CASES_URI)
@@ -69,6 +70,7 @@ class Model() {
         Fuel.get(String().getContinentUri(continent))
             .response { request, response, result ->
                 results = json.decodeFromString<WorldData>(result.get().decodeToString())
+                location = continent
             }
     }
 

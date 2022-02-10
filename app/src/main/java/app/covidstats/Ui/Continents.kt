@@ -57,7 +57,7 @@ fun ShowContinents(continentHeight: Dp, onClick: (String) -> Unit) {
                             .fillMaxHeight()
                             .padding(10.dp),
                         painter = image,
-                        contentDescription = "$continent Union Flag",
+                        contentDescription = "$continent Flag",
                     )
                 }
             }
