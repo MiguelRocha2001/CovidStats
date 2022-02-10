@@ -59,6 +59,7 @@ class Model() {
                 // to show body response
                 // Log.v("response", result.get().decodeToString())
                 results = json.decodeFromString<WorldData>(result.get().decodeToString())
+                location = "World"
                 // to show json object with response
                 // Log.v("response", obj.toString())
             }
