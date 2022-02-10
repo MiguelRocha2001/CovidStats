@@ -8,25 +8,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ParentDataModifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.R
 import app.covidstats.model.Model
 
 @Composable
 fun MainWindow() {
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val menuHeight = screenHeight / 10
+    val continentHeight = screenHeight - menuHeight
+
     val covidStats = remember { Model() }
     var showMenu by remember { mutableStateOf(false) }
     var showContinentFlags by remember { mutableStateOf(false) }
-    var option by remember { mutableStateOf<(() -> Unit)?>(null) }
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
         Button(
             onClick = { showMenu = !showMenu },
             colors = ButtonDefaults.buttonColors(backgroundColor = AMBAR_LIGHT),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(Dp(70f))
+                .height(menuHeight)
         ) {
             if (!showMenu)
                 Text(text = "Open Menu", color = Color.White, fontSize = 30.sp)
@@ -38,6 +48,7 @@ fun MainWindow() {
                 covidStats.getWorldCovidStats()
                 // closes menu
                 showMenu = false
+                showContinentFlags = false
             }
             OptionView("Show Continent Covid Stats") {
                 covidStats.emptyResults()
@@ -50,22 +61,10 @@ fun MainWindow() {
             }
         }
         if (showContinentFlags) {
-            Button(onClick = {
+            ShowContinents(continentHeight, onClick = { continent ->
                 showContinentFlags = false
-                covidStats.getContinentCovidStats("Europe")
-            }) {
-                val image: Painter = painterResource(id = R.drawable.european_union_flag)
-                Row(Modifier.fillMaxWidth()) {
-                    Image(
-                        modifier = Modifier.weight(1f, fill = false)
-                            .aspectRatio(image.intrinsicSize.width / image.intrinsicSize.height)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Fit,
-                        painter = image,
-                        contentDescription = "European Union Flag",
-                    )
-                }
-            }
+                covidStats.getContinentCovidStats(continent)
+            })
         }
         ShowWorldCovidStats(covidStats.results)
     }
