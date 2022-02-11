@@ -53,7 +53,7 @@ class Model() {
     var results by mutableStateOf<WorldData?>(null)
     var location by mutableStateOf<String?>(null)
 
-    fun getWorldCovidStats() {
+    fun loadWorldCovidStats() {
         Fuel.get(WORLD_CASES_URI)
             .response { request, response, result ->
                 // to show body response
@@ -67,7 +67,7 @@ class Model() {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    fun getContinentCovidStats(continent: String) {
+    fun loadContinentCovidStats(continent: String) {
         Fuel.get(String().getContinentUri(continent))
             .response { request, response, result ->
                 results = json.decodeFromString<WorldData>(result.get().decodeToString())
@@ -75,7 +75,8 @@ class Model() {
             }
     }
 
-    fun emptyResults() {
+    fun dumpResults() {
         results = null
+        location = null
     }
 }

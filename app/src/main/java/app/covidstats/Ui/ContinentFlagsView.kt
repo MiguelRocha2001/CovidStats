@@ -1,8 +1,6 @@
 package app.covidstats.Ui
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
@@ -17,20 +15,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.covidstats.R
+import app.covidstats.model.Continent
 import app.covidstats.model.Model
-
-enum class Continents(val str: String) {
-    EUROPE("europe"), AFRICA("africa"), ASIA("asia"), OCEANIA("oceania"), NORTH_AMERICA("north america"), SOUTH_AMERICA("south america")
-}
 
 @Composable
 fun ShowContinents(continentHeight: Dp, onClick: (String) -> Unit) {
-    Column(Modifier.fillMaxHeight()) {
-        Continents.values().forEach { continent ->
+    Column(
+        Modifier
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
+    ) {
+        Continent.values().forEach { continent ->
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .height(continentHeight / 6)
+                    .height(continentHeight / 4)
             ) {
                 Button(
                     contentPadding = PaddingValues(0.dp),
@@ -43,12 +42,12 @@ fun ShowContinents(continentHeight: Dp, onClick: (String) -> Unit) {
                     onClick = { onClick(continent.str) }
                 ) {
                     val image = when (continent) {
-                        Continents.EUROPE -> painterResource(id = R.drawable.europe)
-                        Continents.AFRICA -> painterResource(id = R.drawable.africa)
-                        Continents.ASIA -> painterResource(id = R.drawable.asia)
-                        Continents.OCEANIA -> painterResource(id = R.drawable.oceania)
-                        Continents.NORTH_AMERICA -> painterResource(id = R.drawable.north_america)
-                        Continents.SOUTH_AMERICA -> painterResource(id = R.drawable.south_america)
+                        Continent.EUROPE -> painterResource(id = R.drawable.europe)
+                        Continent.AFRICA -> painterResource(id = R.drawable.africa)
+                        Continent.ASIA -> painterResource(id = R.drawable.asia)
+                        Continent.OCEANIA -> painterResource(id = R.drawable.oceania)
+                        Continent.NORTH_AMERICA -> painterResource(id = R.drawable.north_america)
+                        Continent.SOUTH_AMERICA -> painterResource(id = R.drawable.south_america)
                     }
                     Image(
                         contentScale = ContentScale.FillWidth,

@@ -8,18 +8,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.covidstats.MainActivity
 import app.covidstats.model.Model
 
 @Composable
-fun MainWindow() {
+fun MainWindow(mainActivity: MainActivity) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val menuHeight = screenHeight / 10
     val continentHeight = screenHeight - menuHeight
 
-    val model = remember { Model() }
+    val model = remember { initModel() }
     var showMenu by remember { mutableStateOf(false) }
     var showContinentFlags by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,27 +40,35 @@ fun MainWindow() {
         }
         DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }, modifier = Modifier.fillMaxWidth()) {
             OptionView("Show World Covid Stats") {
-                model.getWorldCovidStats()
+                model.loadWorldCovidStats()
                 // closes menu
                 showMenu = false
                 showContinentFlags = false
             }
             OptionView("Show Continent Covid Stats") {
-                model.emptyResults()
+                model.dumpResults()
                 showContinentFlags = true
                 showMenu = false
             }
             OptionView("Exit") {
-                model.emptyResults()
+                model.dumpResults()
+                showContinentFlags = false
                 showMenu = false
+                mainActivity.finish()
             }
         }
         if (showContinentFlags) {
             ShowContinents(continentHeight, onClick = { continent ->
                 showContinentFlags = false
-                model.getContinentCovidStats(continent)
+                model.loadContinentCovidStats(continent)
             })
         }
         ShowWorldCovidStats(model)
     }
+}
+
+private fun initModel(): Model {
+    val model = Model()
+    model.loadWorldCovidStats()
+    return model
 }

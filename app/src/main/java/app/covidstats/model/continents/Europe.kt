@@ -1,0 +1,11 @@
+package app.covidstats.model.continents
+
+import app.covidstats.model.Continent
+
+enum class Europe {
+    PORTUGAL, SPAIN, FRANCE, GERMANY, ENGLAND, ITALY, GREECE, BELGIUM, IRELAND, NETHERLANDS,
+    SWITZERLAND, AUSTRIA, CROATIA, SERBIA, HUNGARY, CHEQUE, SLOVAKIA, ROMANIA, BULGARIA,
+    POLAND, MOLDAVIA, UKRAINE, BELARUS, LITHUANIA, LATVIA, ESTONIA, TURKEY, MONTENEGRO,
+    NORWAY, SWEDEN, FINLAND, ICELAND;
+    val continent: Continent = Continent.EUROPE
+}

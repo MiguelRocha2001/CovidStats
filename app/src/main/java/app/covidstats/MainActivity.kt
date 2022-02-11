@@ -9,8 +9,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainWindow()
+            MainWindow(this)
         }
     }
 }
 
+/* TODO ->
+    add support for multiple countries;
+    Format stat numbers like covid cases so the number is easier to read.
+ */
