@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-// TODO use this API: https://disease.sh/docs/?urls.primaryName=version%203.0.0
+// API: https://disease.sh/docs/?urls.primaryName=version%203.0.0
 
 private const val WORLD_CASES_URI = "https://disease.sh/v3/covid-19/all"
 

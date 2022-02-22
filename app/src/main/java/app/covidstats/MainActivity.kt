@@ -15,6 +15,6 @@ class MainActivity : ComponentActivity() {
 }
 
 /* TODO ->
-    add support for multiple countries;
-    Format stat numbers like covid cases so the number is easier to read.
+    Add support for multiple countries;
+    Organize model data;
  */
