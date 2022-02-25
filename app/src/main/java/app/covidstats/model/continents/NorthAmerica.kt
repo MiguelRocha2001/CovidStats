@@ -1,8 +1,10 @@
 package app.covidstats.model.continents
 
-import app.covidstats.model.Continent
+class NorthAmerica(): Continent() {
+    val values = listOf(Canada, Usa, Mexico)
 
-enum class NorthAmerica {
-    CANADA, USA, MEXICO;
-    val continent: Continent = Continent.NORTH_AMERICA
+    object Canada: Country("canada")
+    object Usa: Country("usa")
+    object Mexico: Country("mexico")
+
 }

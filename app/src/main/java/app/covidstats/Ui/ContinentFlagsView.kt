@@ -3,20 +3,15 @@ package app.covidstats.Ui
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ButtonElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Color
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.covidstats.R
-import app.covidstats.model.Continent
-import app.covidstats.model.Model
+import app.covidstats.model.continents.Continent
 
 @Composable
 fun ShowContinents(continentHeight: Dp, onClick: (String) -> Unit) {
