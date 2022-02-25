@@ -12,48 +12,48 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.covidstats.R
 import app.covidstats.model.continents.Continent
+import app.covidstats.model.continents.Europe
+import app.covidstats.model.continents.NorthAmerica
 
 @Composable
-fun ShowContinents(continentHeight: Dp, onClick: (String) -> Unit) {
+fun ShowContinents(continentHeight: Dp, onClick: (Continent) -> Unit) {
     Column(
         Modifier
             .fillMaxHeight()
             .verticalScroll(rememberScrollState())
     ) {
-        Continent.values().forEach { continent ->
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(continentHeight / 4)
-            ) {
-                Button(
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = androidx.compose.ui.graphics.Color.Transparent),
+        drawContinent(Europe() ,continentHeight, onClick)
+        drawContinent(NorthAmerica() ,continentHeight, onClick)
+    }
+}
+
+@Composable
+private fun drawContinent(continent: Continent, continentHeight: Dp, onClick: (Continent) -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(continentHeight / 4)
+    ) {
+        Button(
+            contentPadding = PaddingValues(0.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = androidx.compose.ui.graphics.Color.Transparent),
+            modifier = Modifier
+                .padding(Dp(0f))
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(Dp(0f)),
+            onClick = { onClick(continent) }
+        ) {
+            painterResource(id = continent.imageRes).apply {
+                Image(
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
-                        .padding(Dp(0f))
                         .fillMaxWidth()
                         .fillMaxHeight()
-                        .padding(Dp(0f)),
-                    onClick = { onClick(continent.str) }
-                ) {
-                    val image = when (continent) {
-                        Continent.EUROPE -> painterResource(id = R.drawable.europe)
-                        Continent.AFRICA -> painterResource(id = R.drawable.africa)
-                        Continent.ASIA -> painterResource(id = R.drawable.asia)
-                        Continent.OCEANIA -> painterResource(id = R.drawable.oceania)
-                        Continent.NORTH_AMERICA -> painterResource(id = R.drawable.north_america)
-                        Continent.SOUTH_AMERICA -> painterResource(id = R.drawable.south_america)
-                    }
-                    Image(
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .padding(10.dp),
-                        painter = image,
-                        contentDescription = "$continent Flag",
-                    )
-                }
+                        .padding(10.dp),
+                    painter = this,
+                    contentDescription = "$continent Flag",
+                )
             }
         }
     }

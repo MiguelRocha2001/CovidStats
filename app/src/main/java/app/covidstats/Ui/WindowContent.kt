@@ -23,6 +23,7 @@ fun MainWindow(mainActivity: MainActivity) {
     val model = remember { initModel() }
     var showMenu by remember { mutableStateOf(false) }
     var showContinentFlags by remember { mutableStateOf(false) }
+    var showCountryFlags by remember { mutableStateOf<Continent?>(null) }
 
     Column(
         modifier = Modifier
@@ -62,18 +63,19 @@ fun MainWindow(mainActivity: MainActivity) {
         if (showContinentFlags) {
             ShowContinents(continentHeight, onClick = { continent ->
                 showContinentFlags = false
-                displayCountries(continent)
+                showCountryFlags = continent
                 // TODO -> Show option for display all stats or a specific country
-                model.loadContinentCovidStats(continent)
+                //model.loadContinentCovidStats(continent)
+            })
+        }
+        // displays country flags
+        showCountryFlags?.apply {
+            displayCountries(this, onClick = { country ->
+                showCountryFlags = null
+                model.loadContinentCovidStats(this.string)
             })
         }
         ShowWorldCovidStats(model)
-    }
-}
-
-fun displayCountries(continent: Continent) {
-    LazyColumn(Modifier.fillMaxWidth()) {
-        continent.Country.values()
     }
 }
 
