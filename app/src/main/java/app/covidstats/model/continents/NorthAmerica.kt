@@ -1,15 +1,14 @@
 package app.covidstats.model.continents
 
-import androidx.compose.ui.res.painterResource
 import app.covidstats.R
 
 class NorthAmerica(): Continent("north_america") {
     override val imageRes = R.drawable.north_america
 
-    override val countries = listOf(Canada, Usa, Mexico)
+    override val countries = listOf(Canada(), Usa(), Mexico())
 
-    object Canada: Country("canada")
-    object Usa: Country("usa")
-    object Mexico: Country("mexico")
+    class Canada(override val imageRes: Int = R.drawable.canada): Country("canada")
+    class Usa(override val imageRes: Int = R.drawable.united_states_of_america): Country("usa")
+    class Mexico(override val imageRes: Int = R.drawable.mexico): Country("mexico")
 
 }

@@ -70,7 +70,7 @@ fun MainWindow(mainActivity: MainActivity) {
         }
         // displays country flags
         showCountryFlags?.apply {
-            displayCountries(this, onClick = { country ->
+            DisplayCountries(this, onClick = { country ->
                 showCountryFlags = null
                 model.loadContinentCovidStats(this.string)
             })
