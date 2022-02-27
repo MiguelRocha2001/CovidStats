@@ -12,7 +12,7 @@ import kotlinx.serialization.json.Json
 // API for covid-19 stats: https://disease.sh/docs/?urls.primaryName=version%203.0.0
 // API for news: https://developer.nytimes.com/docs/articlesearch-product/1/overview
 
-private const val WORLD_CASES_URI = "https://disease.sh/v3/covid-19/all"
+    private const val WORLD_CASES_URI = "https://disease.sh/v3/covid-19/all"
 
 /** @return String URI for covid-19 stats for [continent] */
 private fun String.getContinentUri(continent: String) = "https://disease.sh/v3/covid-19/continents/${continent}?strict=true"
