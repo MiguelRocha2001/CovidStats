@@ -9,7 +9,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-// API: https://disease.sh/docs/?urls.primaryName=version%203.0.0
+// API for covid-19 stats: https://disease.sh/docs/?urls.primaryName=version%203.0.0
+// API for news: https://developer.nytimes.com/docs/articlesearch-product/1/overview
 
 private const val WORLD_CASES_URI = "https://disease.sh/v3/covid-19/all"
 
@@ -18,39 +19,6 @@ private fun String.getContinentUri(continent: String) = "https://disease.sh/v3/c
 
 /** @return String URI for covid-19 stats for [country] */
 private fun String.getCountryUri(country: String) = "https://disease.sh/v3/covid-19/countries/${country}?strict=true"
-
-/**
- * Represents a JSON object that holds data for Portugal covid stats
- */
-@Serializable
-data class Data(val date_stamp: String, val cnt_confirmed: Int, val cnt_death: Int, val cnt_recovered: Int)
-
-/**
- * Represents a JSON object that holds data for world covid stats
- */
-@Serializable
-data class WorldData(val updated: Long? = null,
-                     val cases: Long? = null,
-                     val todayCases: Long? = null,
-                     val deaths: Long? = null,
-                     val todayDeaths: Long? = null,
-                     val recovered: Long? = null,
-                     val todayRecovered: Long? = null,
-                     val active: Long? = null,
-                     val critical: Long? = null,
-                     val casesPerOneMillion: Double? = null,
-                     val deathsPerOneMillion: Double? = null,
-                     val tests: Long? = null,
-                     val testsPerOneMillion: Double? = null,
-                     val population: Long? = null,
-                     val oneCasePerPeople: Long? = null,
-                     val oneDeathPerPeople: Long? = null,
-                     val oneTestPerPeople: Long? = null,
-                     val activePerOneMillion: Double? = null,
-                     val recoveredPerOneMillion: Double? = null,
-                     val criticalPerOneMillion: Double? = null,
-                     val affectedCountries: Long? = null
-)
 
 class Model() {
     var results by mutableStateOf<WorldData?>(null)
