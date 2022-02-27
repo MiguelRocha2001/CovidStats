@@ -2,6 +2,7 @@ package app.covidstats.model.continents
 
 import app.covidstats.R
 
+// TODO -> fix strings for usa
 class NorthAmerica(): Continent("north_america") {
     override val imageRes = R.drawable.north_america
 

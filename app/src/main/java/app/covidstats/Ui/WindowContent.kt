@@ -1,7 +1,6 @@
 package app.covidstats.Ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -23,7 +22,7 @@ fun MainWindow(mainActivity: MainActivity) {
     val model = remember { initModel() }
     var showMenu by remember { mutableStateOf(false) }
     var showContinentFlags by remember { mutableStateOf(false) }
-    var showCountryFlags by remember { mutableStateOf<Continent?>(null) }
+    var showCountries by remember { mutableStateOf<Continent?>(null) }
 
     Column(
         modifier = Modifier
@@ -63,17 +62,22 @@ fun MainWindow(mainActivity: MainActivity) {
         if (showContinentFlags) {
             ShowContinents(continentHeight, onClick = { continent ->
                 showContinentFlags = false
-                showCountryFlags = continent
-                // TODO -> Show option for display all stats or a specific country
-                //model.loadContinentCovidStats(continent)
+                showCountries = continent
             })
         }
         // displays country flags
-        showCountryFlags?.apply {
-            DisplayCountries(this, onClick = { country ->
-                showCountryFlags = null
-                model.loadContinentCovidStats(this.string)
-            })
+        showCountries?.apply {
+            DisplayContinentOptions(
+                this,
+                onCountryClick = { country ->
+                    showCountries = null
+                    model.loadCountryCovidStats(country)
+                },
+                onContinentClick = { continent ->
+                    showCountries = null
+                    model.loadContinentCovidStats(continent)
+                }
+            )
         }
         ShowWorldCovidStats(model)
     }

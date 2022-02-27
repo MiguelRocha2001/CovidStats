@@ -88,7 +88,7 @@ class Model() {
      * Fetches COVID-19 stats for a specific country.
      */
     fun loadCountryCovidStats(country: String) {
-        Fuel.get(String().getContinentUri(country))
+        Fuel.get(String().getCountryUri(country))
             .response { request, response, result ->
                 results = json.decodeFromString<WorldData>(result.get().decodeToString())
                 location = country

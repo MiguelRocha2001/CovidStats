@@ -51,7 +51,7 @@ fun ShowWorldCovidStats(model: Model?) {
                 color = AMBAR_DARK
             )
             Spacer(modifier = Modifier.height(20.dp))
-            PrintText("Updated", covidStats.updated)
+            //PrintText("Updated", covidStats.updated)
             PrintText("Cases", covidStats.cases)
             PrintText("Deaths", covidStats.deaths)
             PrintText("Today Cases", covidStats.todayCases!!)
