@@ -1,5 +1,7 @@
 package app.covidstats.db
 
+import app.covidstats.model.data.Continent
+import app.covidstats.model.data.Country
 import app.covidstats.model.data.World
 
 val service = RetrofitInstance.api
@@ -17,8 +19,8 @@ internal suspend fun getWorldStats(): World? {
 /**
  * Fetches Covid-19 stats for [continent].
  */
-internal suspend fun getContinentStats(continent: String): World? {
-    val call = service.getContinentStats(continent)
+internal suspend fun getContinentStats(continent: String): Continent? {
+    val call = service.getContinentStats(continent, strict = true)
     if (call.isSuccessful)
         return call.body()
     throw InternalError()
@@ -27,8 +29,8 @@ internal suspend fun getContinentStats(continent: String): World? {
 /**
  * Fetches Covid-19 stats for [country].
  */
-internal suspend fun getCountryStats(country: String): World? {
-    val call = service.getCountryStats(country)
+internal suspend fun getCountryStats(country: String): Country? {
+    val call = service.getCountryStats(country, strict = true)
     if (call.isSuccessful)
         return call.body()
     throw InternalError()

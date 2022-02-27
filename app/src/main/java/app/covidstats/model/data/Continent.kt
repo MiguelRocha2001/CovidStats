@@ -1,22 +1,18 @@
 package app.covidstats.model.data
 
-/**
- * Represents a JSON object that holds data for world covid stats
- */
-data class World(
+data class Continent(
     val active: Int,
     val activePerOneMillion: Double,
-    val affectedCountries: Int,
     val cases: Int,
-    val casesPerOneMillion: Int,
+    val casesPerOneMillion: Double,
+    val continent: String,
+    val continentInfo: ContinentInfo,
+    val countries: List<String>,
     val critical: Int,
     val criticalPerOneMillion: Double,
     val deaths: Int,
     val deathsPerOneMillion: Double,
-    val oneCasePerPeople: Int,
-    val oneDeathPerPeople: Int,
-    val oneTestPerPeople: Int,
-    val population: Long,
+    val population: Int,
     val recovered: Int,
     val recoveredPerOneMillion: Double,
     val tests: Long,

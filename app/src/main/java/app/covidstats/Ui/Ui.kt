@@ -14,7 +14,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.model.Model
+import app.covidstats.model.data.Continent
+import app.covidstats.model.data.Country
+import app.covidstats.model.data.Stats
+import app.covidstats.model.data.World
 import java.util.*
+import kotlin.reflect.full.memberProperties
 
 val AMBAR_LIGHT = Color(225, 172, 27)
 val AMBAR_DARK = Color(160, 122, 19)
@@ -30,7 +35,7 @@ val STRONG_GREEN = Color(0,153, 0)
 @Composable
 fun ShowWorldCovidStats(model: Model?) {
     if (model != null) {
-        val covidStats = model.results
+        val covidStats = model.stats
         val location = model.location
         covidStats?:return
         location?:return
@@ -45,34 +50,38 @@ fun ShowWorldCovidStats(model: Model?) {
                 text = "${location.capitalizeText()} Covid-19 Stats",
                 fontSize = 31.sp,
                 fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.Bold,
+                fontWeight = Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
                 color = AMBAR_DARK
             )
             Spacer(modifier = Modifier.height(20.dp))
-            //PrintText("Updated", covidStats.updated)
-            PrintText("Cases", covidStats.cases)
-            PrintText("Deaths", covidStats.deaths)
-            PrintText("Today Cases", covidStats.todayCases!!)
-            PrintText("Today Deaths", covidStats.todayDeaths)
-            PrintText("Recovered", covidStats.recovered)
-            PrintText("Today Recovered", covidStats.todayRecovered)
-            PrintText("Active", covidStats.active)
-            PrintText("Critical", covidStats.critical)
-            PrintText("Cases Per Million", covidStats.casesPerOneMillion)
-            PrintText("Deaths Per Million", covidStats.deathsPerOneMillion)
-            PrintText("Tests", covidStats.tests)
-            PrintText("Population", covidStats.population)
-            PrintText("One Case Per People", covidStats.oneCasePerPeople)
-            PrintText("One Death Per People", covidStats.oneDeathPerPeople)
-            PrintText("One Test Per People", covidStats.oneTestPerPeople)
-            PrintText("Active Per Million", covidStats.activePerOneMillion)
-            PrintText("Recover Per One Million", covidStats.recoveredPerOneMillion)
-            PrintText("Critical Per One Million", covidStats.criticalPerOneMillion)
-            PrintText("Affected Countries", covidStats.affectedCountries)
+            // depending on what type of data is to be displayed
+            when (val data = model.stats) {
+                is World -> displayWorldData(data)
+                is Continent -> displayContinentData(data)
+                is Country -> displayCountryData(data)
+            }
         }
     }
+}
+
+@Composable
+private fun displayWorldData(data: World) {
+    for (prop in World::class.memberProperties)
+        PrintText(prop.name, prop.get(data))
+}
+
+@Composable
+private fun displayContinentData(data: Continent) {
+    for (prop in Continent::class.memberProperties)
+        PrintText(prop.name, prop.get(data))
+}
+
+@Composable
+private fun displayCountryData(data: Country) {
+    for (prop in Country::class.memberProperties)
+        PrintText(prop.name, prop.get(data))
 }
 
 @Composable

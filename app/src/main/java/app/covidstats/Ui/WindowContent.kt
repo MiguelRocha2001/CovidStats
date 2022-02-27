@@ -11,6 +11,9 @@ import androidx.compose.ui.unit.sp
 import app.covidstats.MainActivity
 import app.covidstats.model.continents.Continent
 import app.covidstats.model.Model
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainWindow(mainActivity: MainActivity) {
@@ -19,10 +22,13 @@ fun MainWindow(mainActivity: MainActivity) {
     val menuHeight = screenHeight / 10
     val continentHeight = screenHeight - menuHeight
 
-    val model = remember { initModel() }
+    val scope = rememberCoroutineScope()
+
+    val model = remember { initModel(scope) }
     var showMenu by remember { mutableStateOf(false) }
     var showContinentFlags by remember { mutableStateOf(false) }
     var showCountries by remember { mutableStateOf<Continent?>(null) }
+
 
     Column(
         modifier = Modifier
@@ -42,7 +48,7 @@ fun MainWindow(mainActivity: MainActivity) {
         }
         DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }, modifier = Modifier.fillMaxWidth()) {
             OptionView("Show World Covid Stats") {
-                model.loadWorldCovidStats()
+                scope.launch(Dispatchers.IO) { model.loadWorldCovidStats() }
                 // closes menu
                 showMenu = false
                 showContinentFlags = false
@@ -71,11 +77,11 @@ fun MainWindow(mainActivity: MainActivity) {
                 this,
                 onCountryClick = { country ->
                     showCountries = null
-                    model.loadCountryCovidStats(country)
+                    scope.launch(Dispatchers.IO) { model.loadCountryCovidStats(country) }
                 },
                 onContinentClick = { continent ->
                     showCountries = null
-                    model.loadContinentCovidStats(continent)
+                    scope.launch(Dispatchers.IO) { model.loadContinentCovidStats(continent) }
                 }
             )
         }
@@ -83,8 +89,8 @@ fun MainWindow(mainActivity: MainActivity) {
     }
 }
 
-private fun initModel(): Model {
+private fun initModel(scope: CoroutineScope): Model {
     val model = Model()
-    model.loadWorldCovidStats()
+    scope.launch(Dispatchers.IO) { model.loadWorldCovidStats() }
     return model
 }
