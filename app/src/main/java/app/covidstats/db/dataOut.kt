@@ -1,6 +1,7 @@
 package app.covidstats.db
 
 import app.covidstats.model.data.Continent
+import app.covidstats.model.data.Continents
 import app.covidstats.model.data.Country
 import app.covidstats.model.data.World
 
@@ -15,6 +16,24 @@ internal suspend fun getWorldStats(): World? {
         return call.body()
     throw InternalError()
 }
+
+/**
+ * @return a List with all available continents to fetch stats.
+ */
+internal suspend fun getAllContinents(): List<String> {
+    val call = service.getAllContinents(strict = true)
+    if (call.isSuccessful) {
+        val continentsRsp = call.body() ?: return emptyList()
+        return continentsRsp.map { continent -> continent.continent }
+    }
+    throw InternalError()
+}
+
+/**
+ * @return a List with all available continents to fetch stats.
+ */
+internal suspend fun getAllCountries(continent: String): List<String> =
+    getContinentStats(continent)?.countries ?: emptyList()
 
 /**
  * Fetches Covid-19 stats for [continent].

@@ -12,15 +12,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.covidstats.model.continents.Continent
 
 @Composable
-fun DisplayContinentOptions(continent: Continent, onCountryClick: (String) -> Unit, onContinentClick: (String) -> Unit) {
-    DisplayOption("All Continent") { onContinentClick(continent.string) }
+fun DisplayContinentOptions(continent: String, countries: List<String>, onContinentClick: (String) -> Unit, onCountryClick: (String) -> Unit) {
+    DisplayOption("All Continent") { onContinentClick(continent) }
     LazyColumn(Modifier.fillMaxWidth()) {
-        continent.countries.forEach { country ->
+        countries.forEach { country ->
             item {
-                DisplayOption(text = country.string.uppercase()) { onCountryClick(country.string) }
+                DisplayOption(text = country.uppercase()) { onCountryClick(country) }
             }
         }
     }

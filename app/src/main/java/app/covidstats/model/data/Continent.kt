@@ -12,7 +12,7 @@ data class Continent(
     val criticalPerOneMillion: Double,
     val deaths: Int,
     val deathsPerOneMillion: Double,
-    val population: Int,
+    val population: Long,
     val recovered: Int,
     val recoveredPerOneMillion: Double,
     val tests: Long,

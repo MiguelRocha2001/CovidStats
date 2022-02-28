@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.MainActivity
-import app.covidstats.model.continents.Continent
 import app.covidstats.model.Model
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,18 +16,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainWindow(mainActivity: MainActivity) {
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
-    val menuHeight = screenHeight / 10
-    val continentHeight = screenHeight - menuHeight
-
     val scope = rememberCoroutineScope()
 
     val model = remember { initModel(scope) }
     var showMenu by remember { mutableStateOf(false) }
-    var showContinentFlags by remember { mutableStateOf(false) }
-    var showCountries by remember { mutableStateOf<Continent?>(null) }
-
+    var showContinents by remember { mutableStateOf<List<String>?>(null) }
+    var showCountries by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
 
     Column(
         modifier = Modifier
@@ -39,7 +32,6 @@ fun MainWindow(mainActivity: MainActivity) {
             colors = ButtonDefaults.buttonColors(backgroundColor = AMBAR_LIGHT),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(menuHeight)
         ) {
             if (!showMenu)
                 Text(text = "Open Menu", color = Color.White, fontSize = 30.sp)
@@ -51,37 +43,46 @@ fun MainWindow(mainActivity: MainActivity) {
                 scope.launch(Dispatchers.IO) { model.loadWorldCovidStats() }
                 // closes menu
                 showMenu = false
-                showContinentFlags = false
+                showContinents = null
             }
             OptionView("Show Continent Covid Stats") {
+                scope.launch(Dispatchers.IO) {
+                    showContinents = model.loadAllContinents()
+                    showMenu = false
+                }
                 model.dumpResults()
-                showContinentFlags = true
-                showMenu = false
             }
             OptionView("Exit") {
                 model.dumpResults()
-                showContinentFlags = false
+                showContinents = null
                 showMenu = false
                 mainActivity.finish()
             }
         }
-        if (showContinentFlags) {
-            ShowContinents(continentHeight, onClick = { continent ->
-                showContinentFlags = false
-                showCountries = continent
-            })
-        }
-        // displays country flags
+
+        val continents = showContinents
+        continents?.apply {
+            ShowContinents( continents, onClick = { continent ->
+                scope.launch(Dispatchers.IO) {
+                    showContinents = null
+                    showCountries = continent to model.loadAllCountries(continent)
+                }}
+            )}
+
+        // TODO -> displays country flags
         showCountries?.apply {
             DisplayContinentOptions(
-                this,
-                onCountryClick = { country ->
-                    showCountries = null
-                    scope.launch(Dispatchers.IO) { model.loadCountryCovidStats(country) }
-                },
+                this.first,
+                this.second,
                 onContinentClick = { continent ->
                     showCountries = null
                     scope.launch(Dispatchers.IO) { model.loadContinentCovidStats(continent) }
+                },
+                onCountryClick = { country ->
+                    scope.launch(Dispatchers.IO) {
+                        showCountries = null
+                        model.loadCountryCovidStats(country)
+                    }
                 }
             )
         }

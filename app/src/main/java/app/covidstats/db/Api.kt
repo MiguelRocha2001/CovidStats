@@ -1,6 +1,7 @@
 package app.covidstats.db
 
 import app.covidstats.model.data.Continent
+import app.covidstats.model.data.Continents
 import app.covidstats.model.data.Country
 import app.covidstats.model.data.World
 import retrofit2.Response
@@ -21,13 +22,11 @@ private fun String.getCountryUri(country: String) = "https://disease.sh/v3/covid
 
 interface Api {
 
-    /* Uses API key
-    @GET("/v3/covid-19/all")
-    suspend fun getWorldStats(@Query("key") key: String): Response<World>
-     */
-
     @GET("all")
     suspend fun getWorldStats(): Response<World>
+
+    @GET("continents")
+    suspend fun getAllContinents(@Query("strict") strict: Boolean): Response<Continents>
 
     @GET("continents/{continent}")
     suspend fun getContinentStats(@Path("continent") continent: String, @Query("strict") strict: Boolean): Response<Continent>
