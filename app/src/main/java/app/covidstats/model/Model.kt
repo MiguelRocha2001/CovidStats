@@ -8,13 +8,15 @@ import app.covidstats.db.getAllContinents
 import app.covidstats.db.getContinentStats
 import app.covidstats.db.getCountryStats
 import app.covidstats.db.getWorldStats
-import app.covidstats.model.data.Stats
-
-import kotlinx.serialization.json.Json
+import app.covidstats.model.data.covid_stats.Stats
+import app.covidstats.model.data.news.Collection
+import app.covidstats.model.data.news.Item
+import app.covidstats.model.data.news.News
 
 class Model() {
     var stats by mutableStateOf<Stats?>(null)
     var location by mutableStateOf<String?>(null)
+    var news by mutableStateOf<List<Item>?>(null)
     // TODO -> fetch all continents at start
 
     /**
@@ -49,6 +51,13 @@ class Model() {
     suspend fun loadCountryCovidStats(country: String) {
         stats = getCountryStats(country)
         location = country
+    }
+
+    /**
+     * Fetches COVID-19 stats for a specific country.
+     */
+    suspend fun loadCovidNews() {
+        news = getCovidNews()
     }
 
     fun dumpResults() {

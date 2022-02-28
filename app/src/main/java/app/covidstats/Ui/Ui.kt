@@ -8,16 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.model.Model
-import app.covidstats.model.data.Continent
-import app.covidstats.model.data.Country
-import app.covidstats.model.data.Stats
-import app.covidstats.model.data.World
+import app.covidstats.model.data.covid_stats.Continent
+import app.covidstats.model.data.covid_stats.Country
+import app.covidstats.model.data.covid_stats.World
 import java.util.*
 import kotlin.reflect.full.memberProperties
 

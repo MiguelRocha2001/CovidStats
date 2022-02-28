@@ -22,6 +22,7 @@ fun MainWindow(mainActivity: MainActivity) {
     var showMenu by remember { mutableStateOf(false) }
     var showContinents by remember { mutableStateOf<List<String>?>(null) }
     var showCountries by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
+    var showNews by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -39,15 +40,22 @@ fun MainWindow(mainActivity: MainActivity) {
                 Text(text = "Close Menu", color = Color.White, fontSize = 30.sp)
         }
         DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }, modifier = Modifier.fillMaxWidth()) {
-            OptionView("Show World Covid Stats") {
-                scope.launch(Dispatchers.IO) { model.loadWorldCovidStats() }
+            OptionView("World Covid Stats") {
+                scope.launch(Dispatchers.IO) { model.loadCovidNews() }
                 // closes menu
                 showMenu = false
-                showContinents = null
             }
-            OptionView("Show Continent Covid Stats") {
+            OptionView("Continent Covid Stats") {
                 scope.launch(Dispatchers.IO) {
                     showContinents = model.loadAllContinents()
+                    showMenu = false
+                }
+                model.dumpResults()
+            }
+            OptionView("Covid News") {
+                scope.launch(Dispatchers.IO) {
+                    model.loadCovidNews()
+                    showNews = true
                     showMenu = false
                 }
                 model.dumpResults()
@@ -85,6 +93,9 @@ fun MainWindow(mainActivity: MainActivity) {
                     }
                 }
             )
+        }
+        if (showNews) {
+            CovidNews(model.news)
         }
         ShowWorldCovidStats(model)
     }
