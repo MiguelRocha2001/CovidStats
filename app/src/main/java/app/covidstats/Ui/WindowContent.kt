@@ -8,6 +8,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import app.covidstats.MainActivity
 import app.covidstats.model.Model
 import kotlinx.coroutines.CoroutineScope
@@ -16,13 +19,21 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainWindow(mainActivity: MainActivity) {
+    val navController = rememberNavController()
+
     val scope = rememberCoroutineScope()
 
     val model = remember { initModel(scope) }
     var showMenu by remember { mutableStateOf(false) }
-    var showContinents by remember { mutableStateOf<List<String>?>(null) }
-    var showCountries by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
-    var showNews by remember { mutableStateOf(false) }
+
+    NavHost(
+        navController = navController,
+        startDestination = Screen.ShowWorldCovidStats.route
+    ) {
+        composable("world_stats") { ShowWorldCovidStats(model) }
+        composable("news") { CovidNews(model.news) }
+        composable("continent_options") { DisplayContinentOptions() }
+    }
 
     Column(
         modifier = Modifier
@@ -55,14 +66,19 @@ fun MainWindow(mainActivity: MainActivity) {
             OptionView("Covid News") {
                 scope.launch(Dispatchers.IO) {
                     model.loadCovidNews()
-                    showNews = true
+                    navController.navigate("news")
+                    showMenu = false
+                }
+                model.dumpResults()
+            }
+            OptionView("More Info About Covid-19") {
+                scope.launch(Dispatchers.IO) {
                     showMenu = false
                 }
                 model.dumpResults()
             }
             OptionView("Exit") {
                 model.dumpResults()
-                showContinents = null
                 showMenu = false
                 mainActivity.finish()
             }

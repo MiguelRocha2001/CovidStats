@@ -15,6 +15,5 @@ class MainActivity : ComponentActivity() {
 }
 
 /* TODO ->
-    Add support for multiple countries;
-    Organize model data;
+    Add static information about Covid-19
  */

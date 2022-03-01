@@ -17,6 +17,7 @@ class Model() {
     var stats by mutableStateOf<Stats?>(null)
     var location by mutableStateOf<String?>(null)
     var news by mutableStateOf<List<Item>?>(null)
+    val moreCovidInfo = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019"
     // TODO -> fetch all continents at start
 
     /**
