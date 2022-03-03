@@ -24,7 +24,7 @@ internal suspend fun getWorldStats(): World? {
 /**
  * @return a List with all available continents to fetch stats.
  */
-internal suspend fun getAllContinents(): List<String> {
+internal suspend fun loadAllContinents(): List<String> {
     val call = statsService.getAllContinents(strict = true)
     if (call.isSuccessful) {
         val continentsRsp = call.body() ?: return emptyList()
@@ -36,7 +36,7 @@ internal suspend fun getAllContinents(): List<String> {
 /**
  * @return a List with all available continents to fetch stats.
  */
-internal suspend fun getAllCountries(continent: String): List<String> =
+internal suspend fun loadAllCountries(continent: String): List<String> =
     getContinentStats(continent)?.countries ?: emptyList()
 
 /**

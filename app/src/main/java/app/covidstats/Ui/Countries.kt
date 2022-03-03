@@ -14,19 +14,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DisplayContinentOptions(continent: String, countries: List<String>, onContinentClick: (String) -> Unit, onCountryClick: (String) -> Unit) {
-    DisplayOption("All Continent") { onContinentClick(continent) }
-    LazyColumn(Modifier.fillMaxWidth()) {
-        countries.forEach { country ->
-            item {
-                DisplayOption(text = country.uppercase()) { onCountryClick(country) }
+fun ContinentOptions(continent: String?, countries: List<String>, onContinentClick: (String) -> Unit, onCountryClick: (String) -> Unit) {
+    continent?.apply {
+        Option("All Continent") { onContinentClick(this) }
+        LazyColumn(Modifier.fillMaxWidth()) {
+            countries.forEach { country ->
+                item {
+                    Option(text = country.uppercase()) { onCountryClick(country) }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun DisplayOption(text: String, onClick: () -> Unit) {
+private fun Option(text: String, onClick: () -> Unit) {
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
         onClick = onClick

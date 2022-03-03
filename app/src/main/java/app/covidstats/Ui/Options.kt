@@ -1,6 +1,5 @@
 package app.covidstats.Ui
 
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
@@ -11,7 +10,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun ColumnScope.OptionView(msg: String, onClick: () -> Unit) {
+fun OptionView(msg: String, onClick: () -> Unit) {
     DropdownMenuItem( onClick = onClick ) {
         Text(
             text = msg,

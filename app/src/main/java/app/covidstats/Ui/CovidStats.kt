@@ -31,12 +31,10 @@ val AQUA_BLUE = Color(0,255, 255)
 val STRONG_GREEN = Color(0,153, 0)
 
 @Composable
-fun ShowWorldCovidStats(model: Model?) {
+fun CovidStats(model: Model?) {
     if (model != null) {
         val covidStats = model.stats
-        val location = model.location
         covidStats?:return
-        location?:return
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
@@ -44,8 +42,9 @@ fun ShowWorldCovidStats(model: Model?) {
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth(),
         ) {
+            // draws location that stats represents
             Text(
-                text = "${location.capitalizeText()} Covid-19 Stats",
+                text = "${covidStats.first.capitalizeText()} Covid-19 Stats",
                 fontSize = 31.sp,
                 fontFamily = FontFamily.Serif,
                 fontWeight = Bold,
@@ -55,35 +54,40 @@ fun ShowWorldCovidStats(model: Model?) {
             )
             Spacer(modifier = Modifier.height(20.dp))
             // depending on what type of data is to be displayed
-            when (val data = model.stats) {
-                is World -> displayWorldData(data)
-                is Continent -> displayContinentData(data)
-                is Country -> displayCountryData(data)
+            model.stats?.second?.apply {
+                when (val data = this) {
+                    is World -> WorldData(data)
+                    is Continent -> ContinentData(data)
+                    is Country -> CountryData(data)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun displayWorldData(data: World) {
+private fun WorldData(data: World) {
     for (prop in World::class.memberProperties)
-        PrintText(prop.name, prop.get(data))
+        StatLine(prop.name, prop.get(data))
 }
 
 @Composable
-private fun displayContinentData(data: Continent) {
+private fun ContinentData(data: Continent) {
     for (prop in Continent::class.memberProperties)
-        PrintText(prop.name, prop.get(data))
+        StatLine(prop.name, prop.get(data))
 }
 
 @Composable
-private fun displayCountryData(data: Country) {
+private fun CountryData(data: Country) {
     for (prop in Country::class.memberProperties)
-        PrintText(prop.name, prop.get(data))
+        StatLine(prop.name, prop.get(data))
 }
 
+/**
+ * Displays a single stat line.
+ */
 @Composable
-fun PrintText(str: String, value: Any?) {
+fun StatLine(str: String, value: Any?) {
     Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
         Text(text = "$str ", fontSize = 20.sp, color = STRONG_GREEN, fontWeight = Bold)
         Text(text = if (value != null) format(value) else "in fault", fontSize = 20.sp, color = GREY)

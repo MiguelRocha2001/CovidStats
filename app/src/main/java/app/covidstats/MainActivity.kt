@@ -13,7 +13,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-/* TODO ->
-    Add static information about Covid-19
- */

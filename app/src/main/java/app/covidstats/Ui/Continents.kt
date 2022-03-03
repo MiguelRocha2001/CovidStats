@@ -13,20 +13,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ShowContinents(continents: List<String>, onClick: (String) -> Unit) {
-    Column(
-        Modifier
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState())
-    ) {
-        continents.forEach{continent ->
-            DrawContinent(continent, onClick)
+fun Continents(continents: List<String>?, onClick: (String) -> Unit) {
+    continents?.apply {
+        val continents = this
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
+        ) {
+            continents.forEach { continent ->
+                Continent(continent, onClick)
+            }
         }
     }
 }
 
 @Composable
-private fun DrawContinent(continent: String, onClick: (String) -> Unit) {
+private fun Continent(continent: String, onClick: (String) -> Unit) {
     Row(
         Modifier.fillMaxWidth()
     ) {
@@ -41,8 +44,8 @@ private fun DrawContinent(continent: String, onClick: (String) -> Unit) {
             onClick = { onClick(continent) }
         ) {
             Text(
-            text = continent,
-            fontSize = 40.sp,
+                text = continent,
+                fontSize = 40.sp,
                 modifier = Modifier.padding(vertical = 20.dp)
             )
         }
