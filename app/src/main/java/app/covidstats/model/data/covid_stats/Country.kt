@@ -24,4 +24,4 @@ data class Country(
     val todayDeaths: Int,
     val todayRecovered: Int,
     val updated: Long
-): Stats
+)

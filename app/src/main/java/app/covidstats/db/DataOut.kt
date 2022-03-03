@@ -1,12 +1,7 @@
 package app.covidstats.db
 
-import app.covidstats.model.data.covid_stats.Continent
-import app.covidstats.model.data.covid_stats.Country
-import app.covidstats.model.data.covid_stats.World
-import app.covidstats.model.data.news.Collection
+import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
-import app.covidstats.model.data.news.News
-import app.covidstats.model.data.news.NewsItem
 
 val statsService = CovidRetrofitInstance.api
 val newsService = NewsRetrofitInstance.api
@@ -14,8 +9,28 @@ val newsService = NewsRetrofitInstance.api
 /**
  * Fetches Covid-19 stats worldwide.
  */
-internal suspend fun getWorldStats(): World? {
+internal suspend fun getWorldStats(): CovidStats? {
     val call = statsService.getWorldStats()
+    if (call.isSuccessful)
+        return call.body()
+    throw InternalError()
+}
+
+/**
+ * Fetches Covid-19 stats for [continent].
+ */
+internal suspend fun getContinentStats(continent: String): CovidStats? {
+    val call = statsService.getContinentStats(continent, strict = true)
+    if (call.isSuccessful)
+        return call.body()
+    throw InternalError()
+}
+
+/**
+ * Fetches Covid-19 stats for [country].
+ */
+internal suspend fun getCountryStats(country: String): CovidStats? {
+    val call = statsService.getCountryStats(country, strict = true)
     if (call.isSuccessful)
         return call.body()
     throw InternalError()
@@ -24,7 +39,7 @@ internal suspend fun getWorldStats(): World? {
 /**
  * @return a List with all available continents to fetch stats.
  */
-internal suspend fun loadAllContinents(): List<String> {
+internal suspend fun fetchAllContinents(): List<String> {
     val call = statsService.getAllContinents(strict = true)
     if (call.isSuccessful) {
         val continentsRsp = call.body() ?: return emptyList()
@@ -36,26 +51,11 @@ internal suspend fun loadAllContinents(): List<String> {
 /**
  * @return a List with all available continents to fetch stats.
  */
-internal suspend fun loadAllCountries(continent: String): List<String> =
-    getContinentStats(continent)?.countries ?: emptyList()
-
-/**
- * Fetches Covid-19 stats for [continent].
- */
-internal suspend fun getContinentStats(continent: String): Continent? {
-    val call = statsService.getContinentStats(continent, strict = true)
-    if (call.isSuccessful)
-        return call.body()
-    throw InternalError()
-}
-
-/**
- * Fetches Covid-19 stats for [country].
- */
-internal suspend fun getCountryStats(country: String): Country? {
-    val call = statsService.getCountryStats(country, strict = true)
-    if (call.isSuccessful)
-        return call.body()
+internal suspend fun fetchAllCountries(continent: String): List<String> {
+    val call = statsService.getContinentInfo(continent, strict = true)
+    if (call.isSuccessful) {
+        return call.body()?.countries ?: emptyList()
+    }
     throw InternalError()
 }
 

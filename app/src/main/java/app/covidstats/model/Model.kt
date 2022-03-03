@@ -4,13 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.covidstats.db.*
-import app.covidstats.db.getContinentStats
-import app.covidstats.db.getCountryStats
-import app.covidstats.db.getWorldStats
-import app.covidstats.model.data.covid_stats.Stats
+import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
+
 class Model() {
-    var stats by mutableStateOf<Pair<String, Stats>?>(null)
+    var stats by mutableStateOf<Pair<String, CovidStats>?>(null)
 
     var news by mutableStateOf<List<Item>?>(null)
 
@@ -36,14 +34,14 @@ class Model() {
      * Fetches worldwide COVID-19 stats.
      */
     suspend fun loadAllContinents() {
-        continents = app.covidstats.db.loadAllContinents()
+        continents = fetchAllContinents()
     }
 
     /**
      * Fetches worldwide COVID-19 stats.
      */
     suspend fun loadAllCountries(continent: String) {
-        countries = Pair(continent, app.covidstats.db.loadAllCountries(continent))
+        countries = Pair(continent, fetchAllCountries(continent))
     }
 
     /**

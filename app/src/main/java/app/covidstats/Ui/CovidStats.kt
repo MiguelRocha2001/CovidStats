@@ -13,9 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.model.Model
-import app.covidstats.model.data.covid_stats.Continent
-import app.covidstats.model.data.covid_stats.Country
-import app.covidstats.model.data.covid_stats.World
+import app.covidstats.model.data.covid_stats.CovidStats
 import java.util.*
 import kotlin.reflect.full.memberProperties
 
@@ -29,6 +27,13 @@ val DARK_GREY = Color(89,80, 89)
 val SEA_BLUE = Color(0,153, 255)
 val AQUA_BLUE = Color(0,255, 255)
 val STRONG_GREEN = Color(0,153, 0)
+// ------------------------------------------------
+val GREEN = Color(101,221, 155)
+val ORANGE = Color(255,157, 0)
+val RED = Color(246,81, 100)
+val YELLOW = Color(248,245, 64)
+val STRONG_BLUE = Color(68,155, 226)
+val LIGHT_BLUE = Color(62,206, 229)
 
 @Composable
 fun CovidStats(model: Model?) {
@@ -55,32 +60,31 @@ fun CovidStats(model: Model?) {
             Spacer(modifier = Modifier.height(20.dp))
             // depending on what type of data is to be displayed
             model.stats?.second?.apply {
-                when (val data = this) {
-                    is World -> WorldData(data)
-                    is Continent -> ContinentData(data)
-                    is Country -> CountryData(data)
-                }
+                Data(data = this)
             }
         }
     }
 }
 
 @Composable
-private fun WorldData(data: World) {
-    for (prop in World::class.memberProperties)
-        StatLine(prop.name, prop.get(data))
-}
-
-@Composable
-private fun ContinentData(data: Continent) {
-    for (prop in Continent::class.memberProperties)
-        StatLine(prop.name, prop.get(data))
-}
-
-@Composable
-private fun CountryData(data: Country) {
-    for (prop in Country::class.memberProperties)
-        StatLine(prop.name, prop.get(data))
+private fun Data(data: CovidStats) {
+    val (mainSats, otherStats) = separateStats(data)
+    Column() {
+        Box(Modifier.padding(10.dp)) {
+            Column() {
+                mainSats.forEach { (name, value) ->
+                    StatLine(name, value)
+                }
+            }
+        }
+        Box(Modifier.padding(10.dp)) {
+            Column() {
+                otherStats.forEach { (name, value) ->
+                    StatLine(name, value)
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -88,8 +92,16 @@ private fun CountryData(data: Country) {
  */
 @Composable
 fun StatLine(str: String, value: Any?) {
-    Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
-        Text(text = "$str ", fontSize = 20.sp, color = STRONG_GREEN, fontWeight = Bold)
+    Row(Modifier.padding(start = 10.dp)) {
+        val color =
+            if (str == "cases" || str == "casesPerOneMillion") GREEN
+            else if (str == "deaths" || str == "deathsPerOneMillion") RED
+            else if (str == "tests" || str == "testsPerOneMillion") ORANGE
+            else if (str == "active" || str == "activePerOneMillion") YELLOW
+            else if (str == "recovered" || str == "recoveredPerOneMillion") STRONG_BLUE
+            else if (str == "population") LIGHT_BLUE
+            else Color.Black
+        Text(text = "${str.capitalizeText()} ", fontSize = 20.sp, color = color, fontWeight = Bold)
         Text(text = if (value != null) format(value) else "in fault", fontSize = 20.sp, color = GREY)
     }
 }
@@ -126,5 +138,24 @@ private fun format(number: Any): String {
     for (i in decimal.indices.reversed())
         decimalRes += if ((decimal.length - i) % 3 == 0) "${decimal[i]} " else decimal[i]
     return "$integerRes.${decimalRes.reversed()}"
+}
 
+/**
+ * @return a Pair type separating the main stats from the secondary ones.
+ */
+private fun separateStats(data: CovidStats): Pair<List<Pair<String, Any?>>, List<Pair<String, Any?>>> {
+    val list1 = mutableListOf<Pair<String, Any?>>()
+    val list2 = mutableListOf<Pair<String, Any?>>()
+    for (prop in CovidStats::class.memberProperties) {
+        val str = prop.name
+        if (
+            str == "cases" || str == "casesPerOneMillion" || str == "deaths" || str == "deathsPerOneMillion" ||
+            str == "tests" || str == "testsPerOneMillion" || str == "active" || str == "activePerOneMillion" ||
+            str == "recovered" || str == "recoveredPerOneMillion" || str == "population"
+        )
+            list1.add(str to prop.get(data))
+        else
+            list2.add(str to prop.get(data))
+    }
+    return list1 to list2
 }

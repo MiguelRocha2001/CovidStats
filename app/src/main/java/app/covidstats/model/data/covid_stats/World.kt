@@ -3,7 +3,7 @@ package app.covidstats.model.data.covid_stats
 /**
  * Represents a JSON object that holds data for world covid stats
  */
-data class World(
+data class CovidStats(
     val active: Int,
     val activePerOneMillion: Double,
     val affectedCountries: Int,
@@ -25,4 +25,4 @@ data class World(
     val todayDeaths: Int,
     val todayRecovered: Int,
     val updated: Long
-): Stats
+)
