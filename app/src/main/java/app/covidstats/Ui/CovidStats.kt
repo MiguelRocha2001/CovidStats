@@ -48,16 +48,7 @@ fun CovidStats(model: Model?) {
                 .fillMaxWidth(),
         ) {
             // draws location that stats represents
-            Text(
-                text = "${covidStats.first.capitalizeText()} Covid-19 Stats",
-                fontSize = 31.sp,
-                fontFamily = FontFamily.Serif,
-                fontWeight = Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                color = AMBAR_DARK
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+            Title(title = "${covidStats.first.capitalizeText()} Covid-19 Stats")
             // depending on what type of data is to be displayed
             model.stats?.second?.apply {
                 Data(data = this)

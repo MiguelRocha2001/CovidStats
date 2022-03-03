@@ -1,9 +1,13 @@
 package app.covidstats.Ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 
 @Composable
 fun MoreCovidInformation(externalLink: String) {
-    Text(text = externalLink)
+    Column() {
+        Title(title = "More Info")
+        Text(text = externalLink)
+    }
 }

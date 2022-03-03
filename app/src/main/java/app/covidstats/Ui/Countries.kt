@@ -16,8 +16,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ContinentOptions(continent: String?, countries: List<String>, onContinentClick: (String) -> Unit, onCountryClick: (String) -> Unit) {
     continent?.apply {
-        Option("All Continent") { onContinentClick(this) }
+        val continent = this
         LazyColumn(Modifier.fillMaxWidth()) {
+            item { Option("All Continent") { onContinentClick(continent) } }
             countries.forEach { country ->
                 item {
                     Option(text = country.uppercase()) { onCountryClick(country) }
