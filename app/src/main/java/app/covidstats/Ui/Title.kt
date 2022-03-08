@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.covidstats.R
 
 
 /**
@@ -22,8 +24,8 @@ import androidx.compose.ui.unit.sp
 internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null) {
     Text(
         text = title,
-        fontSize = 31.sp,
-        fontFamily = FontFamily.Serif,
+        fontSize = 35.sp,
+        fontFamily = FontFamily(Font(R.font.my_type, weight = FontWeight.Normal)),
         fontWeight = FontWeight.Bold,
         textAlign = textAlign,
         modifier = modifier

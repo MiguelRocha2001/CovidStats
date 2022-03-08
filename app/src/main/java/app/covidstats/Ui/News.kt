@@ -20,14 +20,7 @@ import app.covidstats.model.data.news.Item
 fun CovidNews(news: List<Item>?) {
     news?.apply {
         Column() {
-            Text(
-                text = "News",
-                fontSize = 31.sp,
-                fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(top = 15.dp),
-            )
+            Title(title = "News")
             Spacer(modifier = Modifier.height(20.dp))
             news.forEach { item ->
                 Column(modifier = Modifier

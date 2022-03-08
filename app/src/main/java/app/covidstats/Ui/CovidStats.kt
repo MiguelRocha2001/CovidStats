@@ -7,11 +7,16 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.covidstats.R
 import app.covidstats.model.Model
 import app.covidstats.model.data.covid_stats.CovidStats
 import java.util.*
@@ -28,12 +33,12 @@ val SEA_BLUE = Color(0,153, 255)
 val AQUA_BLUE = Color(0,255, 255)
 val STRONG_GREEN = Color(0,153, 0)
 // ------------------------------------------------
-val GREEN = Color(101,221, 155)
-val ORANGE = Color(255,157, 0)
-val RED = Color(246,81, 100)
-val YELLOW = Color(248,245, 64)
-val STRONG_BLUE = Color(68,155, 226)
-val LIGHT_BLUE = Color(62,206, 229)
+val GREEN = Color(115,153, 0)
+val ORANGE = Color(204,102, 0)
+val RED = Color(179,0, 0)
+val YELLOW = Color(204,204, 0)
+val STRONG_BLUE = Color(0,89, 179)
+val LIGHT_BLUE = Color(0,153, 153)
 
 @Composable
 fun CovidStats(model: Model?) {
@@ -65,6 +70,7 @@ private fun Data(data: CovidStats) {
             Column() {
                 mainSats.forEach { (name, value) ->
                     StatLine(name, value)
+                    Spacer(Modifier.height(15.dp))
                 }
             }
         }
@@ -92,8 +98,23 @@ fun StatLine(str: String, value: Any?) {
             else if (str == "recovered" || str == "recoveredPerOneMillion") STRONG_BLUE
             else if (str == "population") LIGHT_BLUE
             else Color.Black
-        Text(text = "${str.capitalizeText()} ", fontSize = 20.sp, color = color, fontWeight = Bold)
-        Text(text = if (value != null) format(value) else "in fault", fontSize = 20.sp, color = GREY)
+        val font = FontFamily(Font(R.font.my_type, weight = FontWeight.Normal))
+        val fontSize = 20.sp
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "${str.capitalizeText()} ",
+                fontSize = fontSize,
+                color = color,
+                fontFamily = font,
+                style = TextStyle(textDecoration = TextDecoration.Underline)
+            )
+            Text(
+                text = if (value != null) format(value) else "in fault",
+                fontSize = fontSize,
+                color = color,
+                fontFamily = font
+            )
+        }
     }
 }
 
