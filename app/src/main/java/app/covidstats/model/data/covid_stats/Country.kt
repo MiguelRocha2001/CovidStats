@@ -1,5 +1,8 @@
 package app.covidstats.model.data.covid_stats
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Country(
     val active: Int,
     val activePerOneMillion: Double,

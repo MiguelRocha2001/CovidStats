@@ -1,8 +1,11 @@
 package app.covidstats.model.data.covid_stats
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a JSON object that holds data for world covid stats
  */
+@Serializable
 data class CovidStats(
     val active: Int,
     val activePerOneMillion: Double,

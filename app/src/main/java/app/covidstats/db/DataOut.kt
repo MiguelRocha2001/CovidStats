@@ -1,81 +1,85 @@
 package app.covidstats.db
 
-import app.covidstats.model.data.covid_stats.CovidStats
+import app.covidstats.model.data.covid_stats.*
 import app.covidstats.model.data.news.Item
-
-val statsService = CovidRetrofitInstance.api
-val newsService = NewsRetrofitInstance.api
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import org.http4k.client.ApacheClient
+import org.http4k.core.Method
 
 /**
  * Fetches Covid-19 stats worldwide.
  */
-internal suspend fun getWorldStats(): CovidStats? {
-    val call = statsService.getWorldStats()
-    if (call.isSuccessful)
-        return call.body()
-    throw InternalError()
+internal fun getWorldStats(): CovidStats? {
+    val client = ApacheClient()
+    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/all")
+    val response = client(request)
+    val covidStats = Json.decodeFromString<CovidStats>(response.bodyString())
+    return covidStats
 }
 
 /**
  * Fetches Covid-19 stats for [continent].
  */
-internal suspend fun getContinentStats(continent: String): CovidStats? {
-    val call = statsService.getContinentStats(continent, strict = true)
-    if (call.isSuccessful)
-        return call.body()
-    throw InternalError()
+internal fun getContinentStats(continent: String): CovidStats? {
+    val client = ApacheClient()
+    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/continents/$continent?strict=true")
+    val response = client(request)
+    val covidStats = Json.decodeFromString<CovidStats>(response.bodyString())
+    return covidStats
 }
 
 /**
  * Fetches Covid-19 stats for [country].
  */
-internal suspend fun getCountryStats(country: String): CovidStats? {
-    val call = statsService.getCountryStats(country, strict = true)
-    if (call.isSuccessful)
-        return call.body()
-    throw InternalError()
+internal fun getCountryStats(country: String): CovidStats? {
+    val client = ApacheClient()
+    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/countries/$country?strict=true")
+    val response = client(request)
+    val covidStats = Json.decodeFromString<CovidStats>(response.bodyString())
+    return covidStats
 }
 
 /**
  * @return a List with all available continents to fetch stats.
  */
-internal suspend fun fetchAllContinents(): List<String> {
-    val call = statsService.getAllContinents(strict = true)
-    if (call.isSuccessful) {
-        val continentsRsp = call.body() ?: return emptyList()
-        return continentsRsp.map { continent -> continent.continent }
-    }
-    throw InternalError()
+internal fun fetchAllContinents(): List<String> {
+    val client = ApacheClient()
+    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/continents")
+    val response = client(request)
+    val continents = Json.decodeFromString<List<Continent>>(response.bodyString())
+    return continents.map { it.continent }
 }
 
 /**
  * @return a List with all available continents to fetch stats.
  */
-internal suspend fun fetchAllCountries(continent: String): List<String> {
-    val call = statsService.getContinentInfo(continent, strict = true)
-    if (call.isSuccessful) {
-        return call.body()?.countries ?: emptyList()
-    }
-    throw InternalError()
+internal fun fetchAllCountries(continent: String): List<String> {
+    val client = ApacheClient()
+    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/countries")
+    val response = client(request) // TODO -> fails here!!!
+    val countries = Json.decodeFromString<List<Country>>(response.bodyString())
+    return countries.filter { it.continent == continent }.map { it.country }
 }
 
 /**
  * Fetches portuguese news related to covid-19
  */
 internal suspend fun getCovidNews(): List<Item>? {
-    val call = newsService.fetchNews()
-    if (call.isSuccessful) {
-        val body = call.body() ?: return null
-        val items = mutableListOf<Item>()
-        body.forEach { newsItem ->
-            newsItem.collection.forEach { collection ->
-                val slug = collection.item.slug
-                val title = collection.item.title.short
-                if ("covid" in slug || "covid" in title)
-                    items.add(collection.item)
-            }
+    val client = ApacheClient()
+    val request = org.http4k.core.Request(Method.GET, "https://eco.sapo.pt/wp-json/eco/v1/")
+    val response = client(request)
+    val items = mutableListOf<Item>()
+    /*
+    response.body.forEach { newsItem ->
+        newsItem.collection.forEach { collection ->
+            val slug = collection.item.slug
+            val title = collection.item.title.short
+            if ("covid" in slug || "covid" in title)
+                items.add(collection.item)
         }
-        return items
     }
+     */
+    return items
     throw InternalError()
 }

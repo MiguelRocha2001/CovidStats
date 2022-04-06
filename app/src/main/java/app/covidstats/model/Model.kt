@@ -23,7 +23,7 @@ class Model() {
     /**
      * Fetches worldwide COVID-19 stats.
      */
-    suspend fun loadWorldCovidStats() {
+    fun loadWorldCovidStats() {
         val statsResp = getWorldStats()
         stats = if (statsResp != null)
             "World" to statsResp
@@ -33,21 +33,21 @@ class Model() {
     /**
      * Fetches worldwide COVID-19 stats.
      */
-    suspend fun loadAllContinents() {
+    fun loadAllContinents() {
         continents = fetchAllContinents()
     }
 
     /**
      * Fetches worldwide COVID-19 stats.
      */
-    suspend fun loadAllCountries(continent: String) {
+    fun loadAllCountries(continent: String) {
         countries = Pair(continent, fetchAllCountries(continent))
     }
 
     /**
      * Fetches COVID-19 stats for a specific continent.
      */
-    suspend fun loadContinentCovidStats(continent: String) {
+    fun loadContinentCovidStats(continent: String) {
         val statsResp = getContinentStats(continent)
         stats = if (statsResp != null)
             continent to statsResp
@@ -57,7 +57,7 @@ class Model() {
     /**
      * Fetches COVID-19 stats for a specific country.
      */
-    suspend fun loadCountryCovidStats(country: String) {
+    fun loadCountryCovidStats(country: String) {
         val statsResp = getCountryStats(country)
         stats = if (statsResp != null)
             country to statsResp
