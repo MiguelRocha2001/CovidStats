@@ -73,7 +73,7 @@ internal fun fetchAllCountries(continent: String): List<String> {
 /**
  * Fetches portuguese news related to covid-19
  */
-internal fun getCovidNews(): List<Item>? {
+internal fun getCovidNews(): List<Item> {
     val client = ApacheClient()
     val request = Request(Method.GET, "https://eco.sapo.pt/wp-json/eco/v1/")
     val response = client(request)
@@ -89,5 +89,4 @@ internal fun getCovidNews(): List<Item>? {
     }
      */
     return items
-    throw InternalError()
 }

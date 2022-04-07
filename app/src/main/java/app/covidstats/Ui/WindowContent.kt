@@ -27,8 +27,20 @@ fun MainWindow(mainActivity: MainActivity) {
         navController = navController,
         startDestination = Screen.Menu.route
     ) {
-        composable("menu") { Menu(model = model, scope = scope, navController = navController, mainActivity) }
-        composable("stats") { CovidStats(model) }
+        composable("main_page") {
+            MainPage(
+                model = model,
+                scope = scope,
+                navController = navController,
+                mainActivity
+            ) { location ->
+                scope.launch(Dispatchers.IO) {
+                    model.loadCountryCovidStats(location)
+                }
+                navController.navigate("stats")
+            }
+        }
+        composable("stats") { CovidStats(model) { model.addFavoriteCountry(it) } }
         composable("news") { CovidNews(model.news) }
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
         composable("continents") { Continents(model.continents) { continent ->
@@ -40,8 +52,8 @@ fun MainWindow(mainActivity: MainActivity) {
             ContinentOptions(
                 continent,
                 model.countries?.second ?: emptyList(),
-                onContinentClick = { continent ->
-                    scope.launch(Dispatchers.IO) { model.loadContinentCovidStats(continent) }
+                onContinentClick = { continentOption ->
+                    scope.launch(Dispatchers.IO) { model.loadContinentCovidStats(continentOption) }
                     navController.navigate("stats")
                 },
                 onCountryClick = { country ->
@@ -62,4 +74,8 @@ private fun initModel(scope: CoroutineScope): Model {
         model.loadAllContinents()
     }
     return model
+}
+
+private fun onFavorite(country: String, model: Model) {
+    model.addFavoriteCountry(country)
 }

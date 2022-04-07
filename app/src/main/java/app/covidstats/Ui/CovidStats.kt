@@ -3,6 +3,7 @@ package app.covidstats.Ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,8 +12,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +40,7 @@ val STRONG_BLUE = Color(0,89, 179)
 val LIGHT_BLUE = Color(0,153, 153)
 
 @Composable
-fun CovidStats(model: Model?) {
+fun CovidStats(model: Model?, onFavorite: (String) -> Unit) {
     if (model != null) {
         val covidStats = model.stats
         covidStats?:return
@@ -58,7 +57,17 @@ fun CovidStats(model: Model?) {
             model.stats?.second?.apply {
                 Data(data = this)
             }
+            Spacer(modifier = Modifier.height(15.dp))
+            Favorite(onFavorite, model)
         }
+    }
+}
+
+@Composable
+fun Favorite(onFavorite: (String) -> Unit, model: Model) {
+    val location = model.stats?.first ?: return
+    Button(onClick = {onFavorite(location)}) {
+        Text(text = "Add To Favorites")
     }
 }
 

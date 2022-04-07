@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.covidstats.db.*
+import app.covidstats.model.data.covid_stats.Country
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
 
@@ -18,8 +19,16 @@ class Model() {
     /** List of all countries for a given continent */
     var countries by mutableStateOf<Pair<String, List<String>>?>(null)
 
+    var favoriteCountries by mutableStateOf<List<String>>(mutableListOf())
+
     val moreCovidInfo = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019"
     // TODO -> fetch all continents at start
+
+    fun addFavoriteCountry(country: String) {
+        val favorites = favoriteCountries.toMutableList()
+        favorites.add(country)
+        favoriteCountries = favorites
+    }
 
     /**
      * Fetches worldwide COVID-19 stats.
@@ -68,7 +77,7 @@ class Model() {
     /**
      * Fetches COVID-19 stats for a specific country.
      */
-    suspend fun loadCovidNews() {
+    fun loadCovidNews() {
         news = getCovidNews()
     }
 
