@@ -7,37 +7,44 @@ import kotlinx.serialization.json.Json
 import org.http4k.client.ApacheClient
 import org.http4k.core.Method
 
+private val json = Json { ignoreUnknownKeys = true }
+
 /**
  * Fetches Covid-19 stats worldwide.
  */
-internal fun getWorldStats(): CovidStats? {
+internal fun getWorldStats(): CovidStats {
     val client = ApacheClient()
-    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/all")
+    val request = Request(
+        Method.GET,
+        "https://disease.sh/v3/covid-19/all")
     val response = client(request)
-    val covidStats = Json.decodeFromString<CovidStats>(response.bodyString())
-    return covidStats
+    return json.decodeFromString(response.bodyString())
 }
 
 /**
  * Fetches Covid-19 stats for [continent].
  */
-internal fun getContinentStats(continent: String): CovidStats? {
+internal fun getContinentStats(continent: String): CovidStats {
     val client = ApacheClient()
-    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/continents/$continent?strict=true")
+    val request = Request(
+        Method.GET,
+        "https://disease.sh/v3/covid-19/continents/$continent?strict=true"
+    )
     val response = client(request)
-    val covidStats = Json.decodeFromString<CovidStats>(response.bodyString())
-    return covidStats
+    return json.decodeFromString(response.bodyString())
 }
 
 /**
  * Fetches Covid-19 stats for [country].
  */
-internal fun getCountryStats(country: String): CovidStats? {
+internal fun getCountryStats(country: String): CovidStats {
     val client = ApacheClient()
-    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/countries/$country?strict=true")
+    val request = Request(
+        Method.GET,
+        "https://disease.sh/v3/covid-19/countries/$country?strict=true"
+    )
     val response = client(request)
-    val covidStats = Json.decodeFromString<CovidStats>(response.bodyString())
-    return covidStats
+    return json.decodeFromString(response.bodyString())
 }
 
 /**
@@ -45,9 +52,9 @@ internal fun getCountryStats(country: String): CovidStats? {
  */
 internal fun fetchAllContinents(): List<String> {
     val client = ApacheClient()
-    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/continents")
+    val request = Request(Method.GET, "https://disease.sh/v3/covid-19/continents")
     val response = client(request)
-    val continents = Json.decodeFromString<List<Continent>>(response.bodyString())
+    val continents = json.decodeFromString<List<Continent>>(response.bodyString())
     return continents.map { it.continent }
 }
 
@@ -67,7 +74,7 @@ internal fun fetchAllCountries(continent: String): List<String> {
  */
 internal suspend fun getCovidNews(): List<Item>? {
     val client = ApacheClient()
-    val request = org.http4k.core.Request(Method.GET, "https://eco.sapo.pt/wp-json/eco/v1/")
+    val request = Request(Method.GET, "https://eco.sapo.pt/wp-json/eco/v1/")
     val response = client(request)
     val items = mutableListOf<Item>()
     /*

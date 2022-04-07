@@ -32,7 +32,7 @@ fun MainWindow(mainActivity: MainActivity) {
         composable("news") { CovidNews(model.news) }
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
         composable("continents") { Continents(model.continents) { continent ->
-            scope.launch { model.loadAllCountries(continent) }
+            scope.launch(Dispatchers.IO) { model.loadAllCountries(continent) }
             navController.navigate("continent_options/${continent}")
         }}
         composable("continent_options/{continent}") { backStackEntry ->

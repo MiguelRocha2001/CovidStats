@@ -3,6 +3,7 @@ package app.covidstats.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import app.covidstats.db.*
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
