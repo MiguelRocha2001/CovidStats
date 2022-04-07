@@ -6,6 +6,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.http4k.client.ApacheClient
 import org.http4k.core.Method
+import org.http4k.core.Request
 
 private val json = Json { ignoreUnknownKeys = true }
 
@@ -63,16 +64,16 @@ internal fun fetchAllContinents(): List<String> {
  */
 internal fun fetchAllCountries(continent: String): List<String> {
     val client = ApacheClient()
-    val request = org.http4k.core.Request(Method.GET, "https://disease.sh/v3/covid-19/countries")
-    val response = client(request) // TODO -> fails here!!!
-    val countries = Json.decodeFromString<List<Country>>(response.bodyString())
+    val request = Request(Method.GET, "https://disease.sh/v3/covid-19/countries")
+    val response = client(request)
+    val countries = json.decodeFromString<List<Country>>(response.bodyString())
     return countries.filter { it.continent == continent }.map { it.country }
 }
 
 /**
  * Fetches portuguese news related to covid-19
  */
-internal suspend fun getCovidNews(): List<Item>? {
+internal fun getCovidNews(): List<Item>? {
     val client = ApacheClient()
     val request = Request(Method.GET, "https://eco.sapo.pt/wp-json/eco/v1/")
     val response = client(request)
