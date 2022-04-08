@@ -1,5 +1,6 @@
 package app.covidstats.model
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class Model(scope: CoroutineScope) {
+class Model(context: Context, scope: CoroutineScope) {
     var stats by mutableStateOf<Pair<String, CovidStats>?>(null)
 
     var news by mutableStateOf<List<Item>?>(null)
@@ -24,15 +25,13 @@ class Model(scope: CoroutineScope) {
 
     val moreCovidInfo = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019"
 
-    private val storage: Storage = Storage()
+    private val storage: Storage = Storage(context)
 
     var favoriteCountries by mutableStateOf<List<String>>(emptyList())
 
     init {
-        scope.launch(Dispatchers.IO) {
-            storage.init()
-            favoriteCountries = storage.getFavoriteCountries() ?: emptyList()
-        }
+        storage.init()
+        favoriteCountries = storage.getFavoriteCountries() ?: emptyList()
     }
 
     fun addFavoriteCountry(country: String) {

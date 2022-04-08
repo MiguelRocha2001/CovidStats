@@ -1,5 +1,6 @@
 package app.covidstats.Ui
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 fun MainWindow(mainActivity: MainActivity) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
-    val model = remember { initModel(scope) }
+    val model = remember { initModel(mainActivity, scope) }
 
     NavHost(
         navController = navController,
@@ -67,10 +68,9 @@ fun MainWindow(mainActivity: MainActivity) {
     }
 }
 
-private fun initModel(scope: CoroutineScope): Model {
-    val model = Model(scope)
+private fun initModel(context: Context, scope: CoroutineScope): Model {
+    val model = Model(context, scope)
     scope.launch(Dispatchers.IO) {
-        model.loadWorldCovidStats()
         model.loadAllContinents()
     }
     return model

@@ -1,19 +1,16 @@
 package app.covidstats.model
 
 import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import java.io.File
-import java.security.AccessController.getContext
 
-class Storage {
-    private val context = LocalContext
-    private val file = File(context, "covid.json")
+class Storage(private val context: Context) {
+    private val FILE_NAME = "covid_stats.txt"
+    private val file = File(context.filesDir, FILE_NAME)
 
     /**
      * Should be called when the app is started and in a coroutine.
      */
     fun init() {
-
         if (!file.exists())
             file.createNewFile()
     }
