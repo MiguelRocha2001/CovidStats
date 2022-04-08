@@ -19,15 +19,14 @@ class Storage(private val context: Context) {
      * Stores [favoriteCountries] locally.
      */
     fun saveFavoriteCountries(favoriteCountries: List<String>) {
-        file.writeText(favoriteCountries.toString())
+        file.writeText(favoriteCountries.toString().trim('[', ']'))
     }
 
     /**
      * Returns the favorite countries stored locally.
      */
     fun getFavoriteCountries(): List<String>? {
-        val countries = file.readText().split(",").toList()
-        return if (countries.isNullOrEmpty()) null
-        else countries
+        val t =file.readText()
+        return if (t.isEmpty()) null else t.split(",")
     }
 }

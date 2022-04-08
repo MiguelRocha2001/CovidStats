@@ -75,7 +75,3 @@ private fun initModel(context: Context, scope: CoroutineScope): Model {
     }
     return model
 }
-
-private fun onFavorite(country: String, model: Model) {
-    model.addFavoriteCountry(country)
-}
