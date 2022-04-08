@@ -8,8 +8,11 @@ import app.covidstats.db.*
 import app.covidstats.model.data.covid_stats.Country
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class Model() {
+class Model(scope: CoroutineScope) {
     var stats by mutableStateOf<Pair<String, CovidStats>?>(null)
 
     var news by mutableStateOf<List<Item>?>(null)
@@ -19,15 +22,25 @@ class Model() {
     /** List of all countries for a given continent */
     var countries by mutableStateOf<Pair<String, List<String>>?>(null)
 
-    var favoriteCountries by mutableStateOf<List<String>>(mutableListOf())
-
     val moreCovidInfo = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019"
-    // TODO -> fetch all continents at start
+
+    private val storage: Storage = Storage()
+
+    var favoriteCountries by mutableStateOf<List<String>>(emptyList())
+
+    init {
+        scope.launch(Dispatchers.IO) {
+            storage.init()
+            favoriteCountries = storage.getFavoriteCountries() ?: emptyList()
+        }
+    }
 
     fun addFavoriteCountry(country: String) {
         val favorites = favoriteCountries.toMutableList()
         favorites.add(country)
         favoriteCountries = favorites
+        // stores favorites
+        storage.saveFavoriteCountries(favoriteCountries)
     }
 
     /**
@@ -35,9 +48,7 @@ class Model() {
      */
     fun loadWorldCovidStats() {
         val statsResp = getWorldStats()
-        stats = if (statsResp != null)
-            "World" to statsResp
-        else null
+        stats = "World" to statsResp
     }
 
     /**
@@ -59,9 +70,7 @@ class Model() {
      */
     fun loadContinentCovidStats(continent: String) {
         val statsResp = getContinentStats(continent)
-        stats = if (statsResp != null)
-            continent to statsResp
-        else null
+        stats = continent to statsResp
     }
 
     /**
@@ -69,9 +78,7 @@ class Model() {
      */
     fun loadCountryCovidStats(country: String) {
         val statsResp = getCountryStats(country)
-        stats = if (statsResp != null)
-            country to statsResp
-        else null
+        stats = country to statsResp
     }
 
     /**

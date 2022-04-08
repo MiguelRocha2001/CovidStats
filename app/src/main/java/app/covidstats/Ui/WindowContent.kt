@@ -68,7 +68,7 @@ fun MainWindow(mainActivity: MainActivity) {
 }
 
 private fun initModel(scope: CoroutineScope): Model {
-    val model = Model()
+    val model = Model(scope)
     scope.launch(Dispatchers.IO) {
         model.loadWorldCovidStats()
         model.loadAllContinents()
