@@ -1,12 +1,9 @@
-package app.covidstats.Ui
+package app.covidstats.ui
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.DropdownMenu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.covidstats.MainActivity
 import app.covidstats.model.Model

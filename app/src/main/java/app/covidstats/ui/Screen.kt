@@ -1,4 +1,4 @@
-package app.covidstats.Ui
+package app.covidstats.ui
 
 sealed class Screen(val route: String) {
     object MainPage: Screen(route = "main_page")

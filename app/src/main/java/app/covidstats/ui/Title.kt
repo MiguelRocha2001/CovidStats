@@ -1,4 +1,4 @@
-package app.covidstats.Ui
+package app.covidstats.ui
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -10,11 +10,12 @@ import org.http4k.core.Request
 
 private val json = Json { ignoreUnknownKeys = true }
 
+val client = ApacheClient()
+
 /**
  * Fetches Covid-19 stats worldwide.
  */
 internal fun getWorldStats(): CovidStats {
-    val client = ApacheClient()
     val request = Request(
         Method.GET,
         "https://disease.sh/v3/covid-19/all")
@@ -26,7 +27,6 @@ internal fun getWorldStats(): CovidStats {
  * Fetches Covid-19 stats for [continent].
  */
 internal fun getContinentStats(continent: String): CovidStats {
-    val client = ApacheClient()
     val request = Request(
         Method.GET,
         "https://disease.sh/v3/covid-19/continents/$continent?strict=true"
@@ -39,11 +39,9 @@ internal fun getContinentStats(continent: String): CovidStats {
  * Fetches Covid-19 stats for [country].
  */
 internal fun getCountryStats(country: String): CovidStats {
-    val client = ApacheClient()
-    // replace spaces with %20
-
     val request = Request(
         Method.GET,
+        // replace spaces with %20
         "https://disease.sh/v3/covid-19/countries/${country.replace(" ", "%20")}?strict=true"
     )
     val response = client(request)
@@ -54,7 +52,6 @@ internal fun getCountryStats(country: String): CovidStats {
  * @return a List with all available continents to fetch stats.
  */
 internal fun fetchAllContinents(): List<String> {
-    val client = ApacheClient()
     val request = Request(Method.GET, "https://disease.sh/v3/covid-19/continents")
     val response = client(request)
     val continents = json.decodeFromString<List<Continent>>(response.bodyString())
@@ -65,7 +62,6 @@ internal fun fetchAllContinents(): List<String> {
  * @return a List with all available continents to fetch stats.
  */
 internal fun fetchAllCountries(continent: String): List<String> {
-    val client = ApacheClient()
     val request = Request(Method.GET, "https://disease.sh/v3/covid-19/countries")
     val response = client(request)
     val countries = json.decodeFromString<List<Country>>(response.bodyString())
@@ -76,7 +72,6 @@ internal fun fetchAllCountries(continent: String): List<String> {
  * Fetches portuguese news related to covid-19
  */
 internal fun getCovidNews(): List<Item> {
-    val client = ApacheClient()
     val request = Request(Method.GET, "https://eco.sapo.pt/wp-json/eco/v1/")
     val response = client(request)
     val items = mutableListOf<Item>()

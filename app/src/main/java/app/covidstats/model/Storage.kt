@@ -27,6 +27,6 @@ class Storage(private val context: Context) {
      */
     fun getFavoriteCountries(): List<String>? {
         val t =file.readText()
-        return if (t.isEmpty()) null else t.split(",")
+        return if (t.isEmpty()) null else t.split(",").map { it.trim() }
     }
 }

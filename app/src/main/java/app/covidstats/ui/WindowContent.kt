@@ -1,4 +1,4 @@
-package app.covidstats.Ui
+package app.covidstats.ui
 
 import android.content.Context
 import androidx.compose.runtime.*

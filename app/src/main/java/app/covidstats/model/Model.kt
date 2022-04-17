@@ -88,7 +88,7 @@ class Model(context: Context, scope: CoroutineScope) {
      * Fetches COVID-19 stats for a specific country.
      */
     fun loadLocationCovidStats(location: String) {
-        if (location.lowercase() == "world") {
+        if (location.trim().lowercase() == "world") {
             loadWorldCovidStats()
         } else {
             val statsResp = getCountryStats(location)
