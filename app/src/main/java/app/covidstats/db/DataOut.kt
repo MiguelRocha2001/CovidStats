@@ -29,7 +29,8 @@ internal fun getWorldStats(): CovidStats {
 internal fun getContinentStats(continent: String): CovidStats {
     val request = Request(
         Method.GET,
-        "https://disease.sh/v3/covid-19/continents/$continent?strict=true"
+        // replace spaces with %20
+        "https://disease.sh/v3/covid-19/continents/${continent.replace(" ", "%20")}?strict=true"
     )
     val response = client(request)
     return json.decodeFromString(response.bodyString())

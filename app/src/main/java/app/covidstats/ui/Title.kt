@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.R
 
-
 /**
  * Draws a title with predefined attributes.
  * @param textAlign can be used to aline the title.

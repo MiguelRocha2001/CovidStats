@@ -12,16 +12,16 @@ import kotlinx.coroutines.CoroutineScope
 class Model(context: Context, scope: CoroutineScope) {
     var stats by mutableStateOf<Pair<String, CovidStats>?>(null)
 
-    var news by mutableStateOf<List<Item>?>(null)
+    private val storage: Storage = Storage(context)
 
+    var news by mutableStateOf<List<Item>?>(null)
     /** List of all continents */
     var continents by mutableStateOf<List<String>?>(null)
+
     /** List of all countries for a given continent */
     var countries by mutableStateOf<Pair<String, List<String>>?>(null)
 
     val moreCovidInfo = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019"
-
-    private val storage: Storage = Storage(context)
 
     var favoriteLocations by mutableStateOf<List<String>>(emptyList())
 
@@ -58,8 +58,11 @@ class Model(context: Context, scope: CoroutineScope) {
      * Fetches worldwide COVID-19 stats.
      */
     fun loadWorldCovidStats() {
-        val statsResp = getWorldStats()
-        stats = "World" to statsResp
+        stats = "world" to getWorldStats()
+    }
+
+    private fun saveLocationStat(locationStats: Pair<String, CovidStats>) {
+        storage.saveLocationStats(locationStats)
     }
 
     /**
@@ -88,11 +91,17 @@ class Model(context: Context, scope: CoroutineScope) {
      * Fetches COVID-19 stats for a specific country.
      */
     fun loadLocationCovidStats(location: String) {
-        if (location.trim().lowercase() == "world") {
-            loadWorldCovidStats()
-        } else {
-            val statsResp = getCountryStats(location)
-            stats = location to statsResp
+        val stats = storage.getLocationStats(location)
+        if (stats != null) {
+            this.stats = stats
+        }
+        else {
+            val statsResp =
+                if (location == "world") getWorldStats()
+                else getCountryStats(location)
+            val locStat = location to statsResp
+            saveLocationStat(locStat)
+            this.stats = locStat
         }
     }
 

@@ -7,7 +7,7 @@ data class CovidStats(
     val active: Int,
     val activePerOneMillion: Double,
     val cases: Int,
-    val casesPerOneMillion: Int,
+    val casesPerOneMillion: Double,
     val critical: Int,
     val criticalPerOneMillion: Double,
     val deaths: Int,
