@@ -13,14 +13,17 @@ import app.covidstats.model.Model
 
 @Composable
 fun Favorites(model: Model, onClick: (String) -> Unit) {
-    Title(title = "Favorites", textAlign = TextAlign.Center)
     val textModifier = Modifier.padding(16.dp)
     Column(modifier = textModifier) {
-        if (model.favoriteCountries.isEmpty()) {
+        Title(title = "Favorites", textAlign = TextAlign.Center)
+        if (model.favoriteLocations.isEmpty()) {
             Text("No favorites yet", fontSize = 24.sp, textAlign = TextAlign.Center)
         } else {
-            model.favoriteCountries.forEach {
-                Button(onClick = { onClick(it) }) {
+            model.favoriteLocations.forEach {
+                Button(
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    onClick = { onClick(it) }
+                ) {
                     Text(it, fontSize = 24.sp)
                 }
             }

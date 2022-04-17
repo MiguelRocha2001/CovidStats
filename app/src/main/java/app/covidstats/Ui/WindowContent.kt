@@ -1,17 +1,10 @@
 package app.covidstats.Ui
 
 import android.content.Context
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import app.covidstats.MainActivity
 import app.covidstats.model.Model
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +19,7 @@ fun MainWindow(mainActivity: MainActivity) {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Menu.route
+        startDestination = Screen.MainPage.route
     ) {
         composable("main_page") {
             MainPage(
@@ -34,14 +27,21 @@ fun MainWindow(mainActivity: MainActivity) {
                 scope = scope,
                 navController = navController,
                 mainActivity
-            ) { location ->
-                scope.launch(Dispatchers.IO) {
-                    model.loadCountryCovidStats(location)
-                }
-                navController.navigate("stats")
-            }
+            )
         }
-        composable("stats") { CovidStats(model) { model.addFavoriteCountry(it) } }
+        composable("stats") {
+            CovidStats(
+                model,
+                onFavoriteAdd = {model.addFavoriteLocation(it) },
+                onFavoriteRemove = {model.removeFavoriteLocation(it) }
+            )
+        }
+        composable("favorites") { Favorites(model) { location ->
+            scope.launch(Dispatchers.IO) {
+                model.loadLocationCovidStats(location)
+            }
+            navController.navigate("stats")
+        }}
         composable("news") { CovidNews(model.news) }
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
         composable("continents") { Continents(model.continents) { continent ->
@@ -59,7 +59,7 @@ fun MainWindow(mainActivity: MainActivity) {
                 },
                 onCountryClick = { country ->
                     scope.launch(Dispatchers.IO) {
-                        model.loadCountryCovidStats(country)
+                        model.loadLocationCovidStats(country)
                     }
                     navController.navigate("stats")
                 }

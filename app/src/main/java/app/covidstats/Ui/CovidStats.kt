@@ -40,7 +40,7 @@ val STRONG_BLUE = Color(0,89, 179)
 val LIGHT_BLUE = Color(0,153, 153)
 
 @Composable
-fun CovidStats(model: Model?, onFavorite: (String) -> Unit) {
+fun CovidStats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
     if (model != null) {
         val covidStats = model.stats
         covidStats?:return
@@ -58,16 +58,29 @@ fun CovidStats(model: Model?, onFavorite: (String) -> Unit) {
                 Data(data = this)
             }
             Spacer(modifier = Modifier.height(15.dp))
-            Favorite(onFavorite, model)
+            Favorite(model, onFavoriteAdd, onFavoriteRemove)
         }
     }
 }
 
+/**
+ * Adds a favorite button to the bottom of the screen.
+ * @param onFavoriteAdd: function that is called when the favorite button is pressed and location
+ * isn't on favorites.
+ * @param onFavoriteRemove: function that is called when the favorite button is pressed and location
+ * is already in favorites
+ */
 @Composable
-fun Favorite(onFavorite: (String) -> Unit, model: Model) {
+fun Favorite(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
     val location = model.stats?.first ?: return
-    Button(onClick = {onFavorite(location)}) {
-        Text(text = "Add To Favorites")
+    if (model.isCountryOnFavorites(location)) {
+        Button(onClick = {onFavoriteRemove(location)}) {
+            Text(text = "Remove from Favorites")
+        }
+    } else {
+        Button(onClick = {onFavoriteAdd(location)}) {
+            Text(text = "Add to Favorites")
+        }
     }
 }
 

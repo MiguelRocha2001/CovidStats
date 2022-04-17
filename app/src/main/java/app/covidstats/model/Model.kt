@@ -4,14 +4,10 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import app.covidstats.db.*
-import app.covidstats.model.data.covid_stats.Country
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class Model(context: Context, scope: CoroutineScope) {
     var stats by mutableStateOf<Pair<String, CovidStats>?>(null)
@@ -27,19 +23,35 @@ class Model(context: Context, scope: CoroutineScope) {
 
     private val storage: Storage = Storage(context)
 
-    var favoriteCountries by mutableStateOf<List<String>>(emptyList())
+    var favoriteLocations by mutableStateOf<List<String>>(emptyList())
 
     init {
         storage.init()
-        favoriteCountries = storage.getFavoriteCountries() ?: emptyList()
+        favoriteLocations = storage.getFavoriteCountries() ?: emptyList()
     }
 
-    fun addFavoriteCountry(country: String) {
-        val favorites = favoriteCountries.toMutableList()
-        favorites.add(country)
-        favoriteCountries = favorites
+    fun isCountryOnFavorites(country: String) = favoriteLocations.contains(country)
+
+    /**
+     * Adds [location] to the list of favorite locations.
+     */
+    fun addFavoriteLocation(location: String) {
+        val favorites = favoriteLocations.toMutableList()
+        favorites.add(location)
+        favoriteLocations = favorites
         // stores favorites
-        storage.saveFavoriteCountries(favoriteCountries)
+        storage.saveFavoriteCountries(favoriteLocations)
+    }
+
+    /**
+     * Removes [location] (if exists) to the list of favorite locations.
+     */
+    fun removeFavoriteLocation(location: String) {
+        val favorites = favoriteLocations.toMutableList()
+        favorites.remove(location)
+        favoriteLocations = favorites
+        // stores favorites
+        storage.saveFavoriteCountries(favoriteLocations)
     }
 
     /**
@@ -75,9 +87,13 @@ class Model(context: Context, scope: CoroutineScope) {
     /**
      * Fetches COVID-19 stats for a specific country.
      */
-    fun loadCountryCovidStats(country: String) {
-        val statsResp = getCountryStats(country)
-        stats = country to statsResp
+    fun loadLocationCovidStats(location: String) {
+        if (location.lowercase() == "world") {
+            loadWorldCovidStats()
+        } else {
+            val statsResp = getCountryStats(location)
+            stats = location to statsResp
+        }
     }
 
     /**

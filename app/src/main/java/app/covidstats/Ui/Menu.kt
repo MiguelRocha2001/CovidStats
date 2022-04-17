@@ -21,6 +21,9 @@ fun Menu(model: Model, scope: CoroutineScope, navController: NavHostController, 
         onDismissRequest = {  },
         modifier = Modifier.fillMaxWidth()
     ) {
+        OptionView("Favorites") {
+            navController.navigate("favorites")
+        }
         OptionView("World Covid Stats") {
             scope.launch(Dispatchers.IO) { model.loadWorldCovidStats() }
             navController.navigate("stats")
