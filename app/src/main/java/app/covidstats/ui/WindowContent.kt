@@ -1,13 +1,11 @@
 package app.covidstats.ui
 
-import android.content.Context
 import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.covidstats.MainActivity
 import app.covidstats.model.Model
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -15,7 +13,7 @@ import kotlinx.coroutines.launch
 fun MainWindow(mainActivity: MainActivity) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
-    val model = remember { initModel(mainActivity, scope) }
+    val model = remember { Model(mainActivity, scope) }
 
     NavHost(
         navController = navController,
@@ -43,35 +41,33 @@ fun MainWindow(mainActivity: MainActivity) {
             navController.navigate("stats")
         }}
         composable("news") { CovidNews(model.news) }
+        composable("wait") { LoadingPage() }
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
         composable("continents") { Continents(model.continents) { continent ->
-            scope.launch(Dispatchers.IO) { model.loadAllCountries(continent) }
-            navController.navigate("continent_options/${continent}")
+            model.dumpCountries()
+            navController.navigate("continent_options/${continent}").also {
+                scope.launch(Dispatchers.IO) {
+                    model.loadContinentCountries(continent)
+                }
+            }
         }}
         composable("continent_options/{continent}") { backStackEntry ->
+            model.dumpStats()
             val continent = backStackEntry.arguments?.getString("continent")
+            navController.navigate("stats")
+            Thread.sleep(500)
             ContinentOptions(
                 continent,
-                model.countries?.second ?: emptyList(),
+                model.countries?.second,
                 onContinentClick = { continentOption ->
                     scope.launch(Dispatchers.IO) { model.loadContinentCovidStats(continentOption) }
-                    navController.navigate("stats")
                 },
                 onCountryClick = { country ->
                     scope.launch(Dispatchers.IO) {
                         model.loadLocationCovidStats(country)
                     }
-                    navController.navigate("stats")
                 }
             )
         }
     }
-}
-
-private fun initModel(context: Context, scope: CoroutineScope): Model {
-    val model = Model(context, scope)
-    scope.launch(Dispatchers.IO) {
-        model.loadAllContinents()
-    }
-    return model
 }

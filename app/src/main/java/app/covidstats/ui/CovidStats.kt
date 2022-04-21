@@ -43,22 +43,24 @@ val LIGHT_BLUE = Color(0,153, 153)
 fun CovidStats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
     if (model != null) {
         val covidStats = model.stats
-        covidStats?:return
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .padding(20.dp)
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth(),
-        ) {
-            // draws location that stats represents
-            Title(title = "${covidStats.first.capitalizeText()} Covid-19 Stats")
-            // depending on what type of data is to be displayed
-            model.stats?.second?.apply {
-                Data(data = this)
+        if (covidStats == null) LoadingPage()
+        else {
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth(),
+            ) {
+                // draws location that stats represents
+                Title(title = "${covidStats.first.capitalizeText()} Covid-19 Stats")
+                // depending on what type of data is to be displayed
+                model.stats?.second?.apply {
+                    Data(data = this)
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Favorite(model, onFavoriteAdd, onFavoriteRemove)
             }
-            Spacer(modifier = Modifier.height(15.dp))
-            Favorite(model, onFavoriteAdd, onFavoriteRemove)
         }
     }
 }

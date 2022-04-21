@@ -16,7 +16,7 @@ class Model(context: Context, scope: CoroutineScope) {
 
     var news by mutableStateOf<List<Item>?>(null)
     /** List of all continents */
-    var continents by mutableStateOf<List<String>?>(null)
+    val continents: List<String> = listOf("Africa", "Asia", "Europe", "North America", "Australia-Oceania", "South America")
 
     /** List of all countries for a given continent */
     var countries by mutableStateOf<Pair<String, List<String>>?>(null)
@@ -27,7 +27,7 @@ class Model(context: Context, scope: CoroutineScope) {
 
     init {
         storage.init()
-        favoriteLocations = storage.getFavoriteCountries() ?: emptyList()
+        favoriteLocations = storage.getFavoriteCountries()
     }
 
     fun isCountryOnFavorites(country: String) = favoriteLocations.contains(country)
@@ -58,7 +58,7 @@ class Model(context: Context, scope: CoroutineScope) {
      * Fetches worldwide COVID-19 stats.
      */
     fun loadWorldCovidStats() {
-        stats = "world" to getWorldStats()
+        stats = "World" to getWorldStats()
     }
 
     private fun saveLocationStat(locationStats: Pair<String, CovidStats>) {
@@ -68,15 +68,8 @@ class Model(context: Context, scope: CoroutineScope) {
     /**
      * Fetches worldwide COVID-19 stats.
      */
-    fun loadAllContinents() {
-        continents = fetchAllContinents()
-    }
-
-    /**
-     * Fetches worldwide COVID-19 stats.
-     */
-    fun loadAllCountries(continent: String) {
-        countries = Pair(continent, fetchAllCountries(continent))
+    fun loadContinentCountries(continent: String) {
+        countries = continent to fetchContinentCountries(continent)
     }
 
     /**
@@ -97,7 +90,7 @@ class Model(context: Context, scope: CoroutineScope) {
         }
         else {
             val statsResp =
-                if (location == "world") getWorldStats()
+                if (location == "World") getWorldStats()
                 else getCountryStats(location)
             val locStat = location to statsResp
             saveLocationStat(locStat)
@@ -112,8 +105,12 @@ class Model(context: Context, scope: CoroutineScope) {
         news = getCovidNews()
     }
 
-    fun dumpResults() {
+    fun dumpStats() {
         stats = null
+    }
+
+    fun dumpCountries() {
+        countries = null
     }
 }
 

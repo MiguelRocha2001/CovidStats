@@ -7,4 +7,5 @@ sealed class Screen(val route: String) {
     object DisplayContinentOptions: Screen(route = "continent_options")
     object News: Screen(route = "news")
     object Info: Screen(route = "info")
+    object Wait: Screen(route = "wait")
 }

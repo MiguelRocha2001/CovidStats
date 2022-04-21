@@ -28,12 +28,17 @@ class Storage(private val context: Context) {
     }
 
     /**
-     * Returns the favorite countries stored locally.
+     * Returns favorite countries stored locally.
      */
-    fun getFavoriteCountries(): List<String>? {
-        return if (favoritesFile.exists())
-            favoritesFile.readText().trim('[', ']').split(",")
-        else emptyList()
+    fun getFavoriteCountries(): List<String> {
+        return if (favoritesFile.exists()) {
+            val fileContent = favoritesFile.readText()
+            if (fileContent.isNotEmpty()) {
+                fileContent.trim('[', ']').split(",").map { it.trim() }
+            } else {
+                emptyList()
+            }
+        } else emptyList()
     }
 
     fun saveLocationStats(location: Pair<String, CovidStats>) {

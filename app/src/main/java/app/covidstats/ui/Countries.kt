@@ -14,14 +14,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ContinentOptions(continent: String?, countries: List<String>, onContinentClick: (String) -> Unit, onCountryClick: (String) -> Unit) {
+fun ContinentOptions(continent: String?, countries: List<String>?, onContinentClick: (String) -> Unit, onCountryClick: (String) -> Unit) {
     continent?.apply {
-        val continent = this
-        LazyColumn(Modifier.fillMaxWidth()) {
-            item { Option("All Continent") { onContinentClick(continent) } }
-            countries.forEach { country ->
-                item {
-                    Option(text = country.uppercase()) { onCountryClick(country) }
+        if (countries == null)
+            LoadingPage()
+        else {
+            val continent = this
+            LazyColumn(Modifier.fillMaxWidth()) {
+                item { Option("All Continent") { onContinentClick(continent) } }
+                countries.forEach { country ->
+                    item { Option(country) { onCountryClick(country) } }
                 }
             }
         }

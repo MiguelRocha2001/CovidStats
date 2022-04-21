@@ -26,25 +26,22 @@ fun Menu(model: Model, scope: CoroutineScope, navController: NavHostController, 
             navController.navigate("stats")
         }
         OptionView("Continent Covid Stats") {
-            scope.launch(Dispatchers.IO) {
-                model.loadAllContinents()
-            }
             navController.navigate("continents")
-            model.dumpResults()
+            model.dumpStats()
         }
         OptionView("Covid News") {
             scope.launch(Dispatchers.IO) {
                 model.loadCovidNews()
             }
             navController.navigate("news")
-            model.dumpResults()
+            model.dumpStats()
         }
         OptionView("More Info About Covid-19") {
             navController.navigate("more_info")
-            model.dumpResults()
+            model.dumpStats()
         }
         OptionView("Exit") {
-            model.dumpResults()
+            model.dumpStats()
             mainActivity.finish()
         }
     }
