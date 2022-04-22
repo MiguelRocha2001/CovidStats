@@ -45,25 +45,29 @@ fun MainWindow(mainActivity: MainActivity) {
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
         composable("continents") { Continents(model.continents) { continent ->
             model.dumpCountries()
-            navController.navigate("continent_options/${continent}").also {
-                scope.launch(Dispatchers.IO) {
-                    model.loadContinentCountries(continent)
-                }
+            navController.navigate("continent_options/${continent}")
+            scope.launch(Dispatchers.IO) {
+                Thread.sleep(200)
+                model.loadContinentCountries(continent)
             }
         }}
         composable("continent_options/{continent}") { backStackEntry ->
             model.dumpStats()
             val continent = backStackEntry.arguments?.getString("continent")
-            navController.navigate("stats")
-            Thread.sleep(500)
             ContinentOptions(
                 continent,
                 model.countries?.second,
                 onContinentClick = { continentOption ->
-                    scope.launch(Dispatchers.IO) { model.loadContinentCovidStats(continentOption) }
+                    navController.navigate("stats")
+                    scope.launch(Dispatchers.IO) {
+                        Thread.sleep(200)
+                        model.loadContinentCovidStats(continentOption)
+                    }
                 },
                 onCountryClick = { country ->
+                    navController.navigate("stats")
                     scope.launch(Dispatchers.IO) {
+                        Thread.sleep(200)
                         model.loadLocationCovidStats(country)
                     }
                 }

@@ -43,7 +43,8 @@ val LIGHT_BLUE = Color(0,153, 153)
 fun CovidStats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
     if (model != null) {
         val covidStats = model.stats
-        if (covidStats == null) LoadingPage()
+        if (covidStats == null)
+            LoadingPage()
         else {
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,

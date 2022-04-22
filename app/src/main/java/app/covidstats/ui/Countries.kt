@@ -19,6 +19,7 @@ fun ContinentOptions(continent: String?, countries: List<String>?, onContinentCl
         if (countries == null)
             LoadingPage()
         else {
+            // TODO -> not working
             val continent = this
             LazyColumn(Modifier.fillMaxWidth()) {
                 item { Option("All Continent") { onContinentClick(continent) } }
