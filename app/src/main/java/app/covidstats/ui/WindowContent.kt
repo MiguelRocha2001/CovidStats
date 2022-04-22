@@ -34,7 +34,7 @@ fun MainWindow(mainActivity: MainActivity) {
                 onFavoriteRemove = {model.removeFavoriteLocation(it) }
             )
         }
-        composable("favorites") { Favorites(model) { location ->
+        composable("favorites") { Favorites(model.favoriteLocations) { location ->
             scope.launch(Dispatchers.IO) {
                 model.loadLocationCovidStats(location)
             }

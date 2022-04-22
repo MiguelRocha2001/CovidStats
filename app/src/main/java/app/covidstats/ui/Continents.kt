@@ -19,9 +19,9 @@ fun Continents(continents: List<String>?, onClick: (String) -> Unit) {
     continents?.apply {
         val continents = this
         Column {
-            Title(title = "Choose One Continent", textAlign = TextAlign.Center)
+            Title(title = "Select A Continent", textAlign = TextAlign.Center)
             continents.forEachIndexed { i, continent ->
-                val color = if (i % 2 == 0) LIGHT_GREY else androidx.compose.ui.graphics.Color.Transparent
+                val color = if (i % 2 == 0) LIGHT_GREY else Color.Transparent
                 Continent(continent, onClick, color)
             }
         }
@@ -36,7 +36,7 @@ private fun Continent(continent: String, onClick: (String) -> Unit, backgroundCo
     ) {
         Button(
             elevation = null,
-            colors = ButtonDefaults.buttonColors(backgroundColor = androidx.compose.ui.graphics.Color.Transparent),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
             modifier = Modifier.fillMaxWidth(),
             onClick = { onClick(continent) }
         ) {
