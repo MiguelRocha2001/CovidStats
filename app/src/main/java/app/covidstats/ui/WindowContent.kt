@@ -54,7 +54,7 @@ fun MainWindow(mainActivity: MainActivity) {
         composable("continent_options/{continent}") { backStackEntry ->
             model.dumpStats()
             val continent = backStackEntry.arguments?.getString("continent")
-            ContinentOptions(
+            Countries(
                 continent,
                 model.countries?.second,
                 onContinentClick = { continentOption ->

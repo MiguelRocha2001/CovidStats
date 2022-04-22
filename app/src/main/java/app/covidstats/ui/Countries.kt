@@ -1,5 +1,6 @@
 package app.covidstats.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
@@ -14,17 +15,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ContinentOptions(continent: String?, countries: List<String>?, onContinentClick: (String) -> Unit, onCountryClick: (String) -> Unit) {
+fun Countries(continent: String?, countries: List<String>?, onContinentClick: (String) -> Unit, onCountryClick: (String) -> Unit) {
     continent?.apply {
         if (countries == null)
             LoadingPage()
         else {
-            // TODO -> not working
             val continent = this
-            LazyColumn(Modifier.fillMaxWidth()) {
-                item { Option("All Continent") { onContinentClick(continent) } }
-                countries.forEach { country ->
-                    item { Option(country) { onCountryClick(country) } }
+            Column() {
+                Title(title = "Select A Country", textAlign = TextAlign.Center)
+                LazyColumn(Modifier.fillMaxWidth()) {
+                    item { Option("All Continent", GREEN_WITH_TRANSPARENCY) { onContinentClick(continent) } }
+                    countries.forEachIndexed { index, country ->
+                        val backgroundColor =
+                            if (index % 2 == 0) BLUE_WITH_TRANSPARENCY else RED_WITH_TRANSPARENCY
+                        item { Option(country, backgroundColor) { onCountryClick(country) } }
+                    }
                 }
             }
         }
@@ -32,9 +37,10 @@ fun ContinentOptions(continent: String?, countries: List<String>?, onContinentCl
 }
 
 @Composable
-private fun Option(text: String, onClick: () -> Unit) {
+private fun Option(text: String, backgroundColor: Color = Color.White, onClick: () -> Unit) {
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+        elevation = null,
         onClick = onClick
     ) {
         Row(
@@ -43,9 +49,9 @@ private fun Option(text: String, onClick: () -> Unit) {
             modifier = Modifier
                 .height(60.dp)
                 .fillMaxWidth()
+                .background(color = backgroundColor)
         ) {
             Text(
-                //text = country.string.replaceFirstChar { it.uppercaseChar() },
                 text = text.uppercase(),
                 fontSize = 20.sp,
                 letterSpacing = 3.sp,

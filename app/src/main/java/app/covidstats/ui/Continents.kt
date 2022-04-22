@@ -13,16 +13,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val BLUE_WITH_TRANSPARENCY = Color(0, 141, 201, 190)
-private val RED_WITH_TRANSPARENCY = Color(216, 33, 56, 190)
-
 @Suppress("NAME_SHADOWING")
 @Composable
 fun Continents(continents: List<String>?, onClick: (String) -> Unit) {
     continents?.apply {
         val continents = this
         Column {
-            Title(title = "Select A Continent", textAlign = TextAlign.Center, fontColor = BLUE)
+            Title(title = "Select A Continent", textAlign = TextAlign.Center)
             continents.forEachIndexed { i, continent ->
                 val backgroundColor = if (i % 2 == 0) BLUE_WITH_TRANSPARENCY else RED_WITH_TRANSPARENCY
                 val fontColor = Color.White

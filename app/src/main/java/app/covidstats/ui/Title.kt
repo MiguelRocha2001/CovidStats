@@ -21,7 +21,7 @@ import app.covidstats.R
  * @param textAlign can be used to aline the title.
  */
 @Composable
-internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null, fontColor: Color = Color.Black) {
+internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null, fontColor: Color = BLUE) {
     Text(
         text = title,
         color = fontColor,

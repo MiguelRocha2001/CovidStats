@@ -4,6 +4,10 @@ import androidx.compose.ui.graphics.Color
 
 val BLUE = Color(0, 141, 201)
 val RED2 = Color(216, 33, 56)
+val GREEN2 = Color(0, 161, 115)
+val BLUE_WITH_TRANSPARENCY = Color(0, 141, 201, 190)
+val RED_WITH_TRANSPARENCY = Color(216, 33, 56, 190)
+val GREEN_WITH_TRANSPARENCY = Color(0, 161, 115, 190)
 
 val AMBAR_LIGHT = Color(225, 172, 27)
 val AMBAR_DARK = Color(160, 122, 19)
