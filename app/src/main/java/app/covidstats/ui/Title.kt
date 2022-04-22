@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -20,9 +21,10 @@ import app.covidstats.R
  * @param textAlign can be used to aline the title.
  */
 @Composable
-internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null) {
+internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null, fontColor: Color = Color.Black) {
     Text(
         text = title,
+        color = fontColor,
         fontSize = 35.sp,
         fontFamily = FontFamily(Font(R.font.my_type, weight = FontWeight.Normal)),
         fontWeight = FontWeight.Bold,

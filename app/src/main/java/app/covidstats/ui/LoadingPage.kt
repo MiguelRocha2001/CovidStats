@@ -16,6 +16,6 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun LoadingPage() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Title(title = "LOADING...", textAlign = TextAlign.Center)
+        Title(title = "LOADING...", textAlign = TextAlign.Center, fontColor = BLUE)
     }
 }
