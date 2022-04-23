@@ -87,10 +87,10 @@ class Model(context: Context, scope: CoroutineScope) {
         val stats = storage.getLocationStats(location)
         if (stats != null) {
             this.stats = stats
-        }
-        else {
+        } else {
             val statsResp =
                 if (location == "World") getWorldStats()
+                else if (continents.any { it == location }) getContinentStats(location)
                 else getCountryStats(location)
             val locStat = location to statsResp
             saveLocationStat(locStat)

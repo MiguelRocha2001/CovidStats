@@ -2,13 +2,15 @@ package app.covidstats.db
 
 import app.covidstats.model.data.covid_stats.*
 import app.covidstats.model.data.news.Item
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.http4k.client.ApacheClient
 import org.http4k.core.Method
 import org.http4k.core.Request
 
-private val json = Json { ignoreUnknownKeys = true }
+@OptIn(ExperimentalSerializationApi::class)
+private val json = Json { ignoreUnknownKeys = true; explicitNulls = false }
 
 val client = ApacheClient()
 
@@ -29,7 +31,6 @@ internal fun getWorldStats(): CovidStats {
 internal fun getContinentStats(continent: String): CovidStats {
     val request = Request(
         Method.GET,
-        // replace spaces with %20
         "https://disease.sh/v3/covid-19/continents/${continent.replace(" ", "%20")}?strict=true"
     )
     val response = client(request)
