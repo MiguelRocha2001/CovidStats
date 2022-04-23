@@ -22,18 +22,21 @@ fun Continents(continents: List<String>?, onClick: (String) -> Unit) {
             Title(title = "Select A Continent", textAlign = TextAlign.Center)
             continents.forEachIndexed { i, continent ->
                 val backgroundColor = if (i % 2 == 0) BLUE_WITH_TRANSPARENCY else RED_WITH_TRANSPARENCY
-                val fontColor = Color.White
-                Continent(continent, onClick, backgroundColor, fontColor)
+                Continent(continent, onClick, backgroundColor)
             }
         }
     }
 }
 
 @Composable
-private fun Continent(continent: String, onClick: (String) -> Unit, backgroundColor: Color, fontColor: Color = Color.Black) {
+private fun Continent(continent: String, onClick: (String) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
     Row (
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.height(100.dp).background(backgroundColor)
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .height(95.dp)
+            .fillMaxWidth()
+            .background(backgroundColor),
     ) {
         Button(
             elevation = null,

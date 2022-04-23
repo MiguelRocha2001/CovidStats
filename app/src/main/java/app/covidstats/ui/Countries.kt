@@ -14,22 +14,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Display a list of [locations] and after pressing one, calls [onLocationClick].
+ * @param additional is a list of additional locations to display.
+ */
 @Composable
-fun Countries(continent: String?, countries: List<String>?, onContinentClick: (String) -> Unit, onCountryClick: (String) -> Unit) {
-    continent?.apply {
-        if (countries == null)
-            LoadingPage()
-        else {
-            val continent = this
-            Column() {
-                Title(title = "Select A Country", textAlign = TextAlign.Center)
-                LazyColumn(Modifier.fillMaxWidth()) {
-                    item { Option("All Continent", GREEN_WITH_TRANSPARENCY) { onContinentClick(continent) } }
-                    countries.forEachIndexed { index, country ->
-                        val backgroundColor =
-                            if (index % 2 == 0) BLUE_WITH_TRANSPARENCY else RED_WITH_TRANSPARENCY
-                        item { Option(country, backgroundColor) { onCountryClick(country) } }
-                    }
+fun Locations(
+    title: String = "Select Location",
+    locations: List<String>?,
+    onLocationClick: (String) -> Unit,
+    vararg additional: Pair<String, (String) -> Unit>
+) {
+    if (locations == null)
+        LoadingPage()
+    else {
+        Column {
+            Title(title = title, textAlign = TextAlign.Center)
+            LazyColumn(
+                Modifier.fillMaxWidth()
+            ) {
+                additional.forEach {
+                    item { Location(it.first, DARK_BLUE_WITH_TRANSPARENCY2, it.second) }
+                }
+                locations.forEach{ country ->
+                    item { Location(country) { onLocationClick(country) } }
                 }
             }
         }
@@ -37,11 +45,12 @@ fun Countries(continent: String?, countries: List<String>?, onContinentClick: (S
 }
 
 @Composable
-private fun Option(text: String, backgroundColor: Color = Color.White, onClick: () -> Unit) {
+private fun Location(name: String, backgroundColor: Color = DARK_BLUE_WITH_TRANSPARENCY, onClick: (String) -> Unit) {
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+        modifier = Modifier.fillMaxWidth(),
         elevation = null,
-        onClick = onClick
+        onClick = { onClick(name) }
     ) {
         Row(
             verticalAlignment = CenterVertically,
@@ -52,7 +61,8 @@ private fun Option(text: String, backgroundColor: Color = Color.White, onClick: 
                 .background(color = backgroundColor)
         ) {
             Text(
-                text = text.uppercase(),
+                text = name.uppercase(),
+                color = Color.White,
                 fontSize = 20.sp,
                 letterSpacing = 3.sp,
                 textAlign = TextAlign.Center,
