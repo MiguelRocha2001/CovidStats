@@ -29,12 +29,12 @@ fun Locations(
         LoadingPage()
     else {
         Column {
-            Title(title = title, textAlign = TextAlign.Center)
+            Title(title = title, textAlign = TextAlign.Center, fontColor = DARK_BLUE)
             LazyColumn(
                 Modifier.fillMaxWidth()
             ) {
                 additional.forEach {
-                    item { Location(it.first, DARK_BLUE_WITH_TRANSPARENCY2, it.second) }
+                    item { Location(it.first, DARK_GREY_WITH_TRANSPARENCY2, it.second) }
                 }
                 locations.forEach{ country ->
                     item { Location(country) { onLocationClick(country) } }
@@ -45,7 +45,7 @@ fun Locations(
 }
 
 @Composable
-private fun Location(name: String, backgroundColor: Color = DARK_BLUE_WITH_TRANSPARENCY, onClick: (String) -> Unit) {
+private fun Location(name: String, backgroundColor: Color = DARK_GREY_WITH_TRANSPARENCY, onClick: (String) -> Unit) {
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
         modifier = Modifier.fillMaxWidth(),

@@ -34,7 +34,6 @@ internal fun getContinentStats(continent: String): CovidStats {
         "https://disease.sh/v3/covid-19/continents/${continent.replace(" ", "%20")}?strict=true"
     )
     val response = client(request)
-    // TODO -> error while decoding because some properties are missing
     return json.decodeFromString(response.bodyString())
 }
 
