@@ -27,6 +27,6 @@ internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: Text
         textAlign = textAlign,
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = (if (textAlign == null) 15.dp else 0.dp), top = 50.dp,  bottom = 50.dp),
+            .padding(top = 50.dp,  bottom = 50.dp),
     )
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,11 +32,10 @@ fun CovidStats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove:
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .padding(20.dp)
+                    .padding(horizontal = 30.dp)
                     .verticalScroll(rememberScrollState())
                     .fillMaxWidth(),
             ) {
-                // draws location that stats represents
                 Title(title = "${covidStats.first.capitalizeText()} Covid-19 Stats")
                 // depending on what type of data is to be displayed
                 model.stats?.second?.apply {
@@ -58,14 +58,23 @@ fun CovidStats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove:
 @Composable
 fun Favorite(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
     val location = model.stats?.first ?: return
-    if (model.isCountryOnFavorites(location)) {
-        Button(onClick = {onFavoriteRemove(location)}) {
-            Text(text = "Remove from Favorites")
+    val onClick = {
+        if (model.isCountryOnFavorites(location)) {
+            onFavoriteRemove(location)
+        } else {
+            onFavoriteAdd(location)
         }
-    } else {
-        Button(onClick = {onFavoriteAdd(location)}) {
-            Text(text = "Add to Favorites")
-        }
+    }
+    Button(
+        onClick = onClick,
+        elevation = null,
+        colors = ButtonDefaults.buttonColors(backgroundColor = BLUE),
+    ) {
+        Text(
+            text = if (model.isCountryOnFavorites(location)) "Remove from Favorites" else "Add to Favorites",
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+        )
     }
 }
 
@@ -73,7 +82,7 @@ fun Favorite(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (S
 private fun Data(data: CovidStats) {
     val (mainSats, otherStats) = separateStats(data)
     Column() {
-        Box(Modifier.padding(10.dp)) {
+        Box {
             Column() {
                 mainSats.forEach { (name, value) ->
                     StatLine(name, value)
@@ -81,7 +90,7 @@ private fun Data(data: CovidStats) {
                 }
             }
         }
-        Box(Modifier.padding(10.dp)) {
+        Box {
             Column() {
                 otherStats.forEach { (name, value) ->
                     StatLine(name, value)
@@ -96,7 +105,7 @@ private fun Data(data: CovidStats) {
  */
 @Composable
 fun StatLine(str: String, value: Any?) {
-    Row(Modifier.padding(start = 10.dp)) {
+    Row {
         val color =
             if (str == "cases" || str == "casesPerOneMillion") GREEN
             else if (str == "deaths" || str == "deathsPerOneMillion") RED
@@ -105,7 +114,7 @@ fun StatLine(str: String, value: Any?) {
             else if (str == "recovered" || str == "recoveredPerOneMillion") STRONG_BLUE
             else if (str == "population") LIGHT_BLUE
             else Color.Black
-        val font = FontFamily(Font(R.font.my_type, weight = FontWeight.Normal))
+        val font = FontFamily.Default
         val fontSize = 20.sp
         Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -113,7 +122,7 @@ fun StatLine(str: String, value: Any?) {
                 fontSize = fontSize,
                 color = color,
                 fontFamily = font,
-                style = TextStyle(textDecoration = TextDecoration.Underline)
+                //style = TextStyle(textDecoration = TextDecoration.Underline)
             )
             Text(
                 text = if (value != null) format(value) else "in fault",
