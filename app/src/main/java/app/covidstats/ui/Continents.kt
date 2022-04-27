@@ -12,11 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.covidstats.model.Model
 
 @Suppress("NAME_SHADOWING")
 @Composable
-fun Continents(continents: List<String>?, onClick: (String) -> Unit) {
-    continents?.apply {
+fun Continents(onClick: (String) -> Unit) {
+    Model.continents.apply {
         val continents = this
         Column {
             Title(title = "Select A Continent", textAlign = TextAlign.Center)

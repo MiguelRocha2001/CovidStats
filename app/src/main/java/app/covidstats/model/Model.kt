@@ -10,13 +10,16 @@ import app.covidstats.model.data.news.Item
 import kotlinx.coroutines.CoroutineScope
 
 class Model(context: Context, scope: CoroutineScope) {
+    companion object {
+        /** List of all continents */
+        val continents: List<String> = listOf("Africa", "Asia", "Europe", "North America", "Australia-Oceania", "South America")
+    }
+
     var stats by mutableStateOf<Pair<String, CovidStats>?>(null)
 
     private val storage: Storage = Storage(context)
 
     var news by mutableStateOf<List<Item>?>(null)
-    /** List of all continents */
-    val continents: List<String> = listOf("Africa", "Asia", "Europe", "North America", "Australia-Oceania", "South America")
 
     /** List of all countries for a given continent */
     var countries by mutableStateOf<Pair<String, List<String>>?>(null)

@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.covidstats.model.Model
 
 /**
  * Display a list of [locations] and after pressing one, calls [onLocationClick].
@@ -45,12 +46,12 @@ fun Locations(
 }
 
 @Composable
-private fun Location(name: String, backgroundColor: Color = DARK_GREY_WITH_TRANSPARENCY, onClick: (String) -> Unit) {
+private fun Location(locationName: String, backgroundColor: Color = DARK_GREY_WITH_TRANSPARENCY, onClick: (String) -> Unit) {
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
         modifier = Modifier.fillMaxWidth(),
         elevation = null,
-        onClick = { onClick(name) }
+        onClick = { onClick(locationName) }
     ) {
         Row(
             verticalAlignment = CenterVertically,
@@ -58,10 +59,10 @@ private fun Location(name: String, backgroundColor: Color = DARK_GREY_WITH_TRANS
             modifier = Modifier
                 .height(60.dp)
                 .fillMaxWidth()
-                .background(color = backgroundColor)
+                .background(color = if (Model.continents.any {it == locationName}) DARK_GREY_WITH_TRANSPARENCY2 else DARK_GREY_WITH_TRANSPARENCY)
         ) {
             Text(
-                text = name.uppercase(),
+                text = locationName.uppercase(),
                 color = Color.White,
                 fontSize = 20.sp,
                 letterSpacing = 3.sp,

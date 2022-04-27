@@ -43,7 +43,7 @@ fun MainWindow(mainActivity: MainActivity) {
         composable("news") { CovidNews(model.news) }
         composable("wait") { LoadingPage() }
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
-        composable("continents") { Continents(model.continents) { continent ->
+        composable("continents") { Continents() { continent ->
             model.dumpCountries()
             navController.navigate("continent_options/${continent}")
             scope.launch(Dispatchers.IO) {
