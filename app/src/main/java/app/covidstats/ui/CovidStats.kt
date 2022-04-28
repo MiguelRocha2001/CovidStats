@@ -3,9 +3,9 @@ package app.covidstats.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,17 +65,23 @@ fun Favorite(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (S
             onFavoriteAdd(location)
         }
     }
-    Button(
+    ExtendedFloatingActionButton(
+        icon = {
+            Icon(
+                Icons.Filled.Favorite,
+                contentDescription = "Favorite"
+            )
+        },
         onClick = onClick,
-        elevation = null,
-        colors = ButtonDefaults.buttonColors(backgroundColor = BLUE),
-    ) {
-        Text(
-            text = if (model.isCountryOnFavorites(location)) "Remove from Favorites" else "Add to Favorites",
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-        )
-    }
+        modifier = Modifier.padding(top = 15.dp),
+        text = {
+            Text(
+                text = if (model.isCountryOnFavorites(location)) "Remove from Favorites" else "Add to Favorites",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    )
 }
 
 @Composable

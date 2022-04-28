@@ -18,3 +18,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+// TODO -> format UI. See: https://developer.android.com/jetpack/compose/layouts/material
