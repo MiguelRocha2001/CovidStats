@@ -3,9 +3,9 @@ package app.covidstats.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -48,7 +48,7 @@ fun Locations(
 @Composable
 private fun Location(locationName: String, backgroundColor: Color = DARK_GREY_WITH_TRANSPARENCY, onClick: (String) -> Unit) {
     Button(
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         modifier = Modifier.fillMaxWidth(),
         elevation = null,
         onClick = { onClick(locationName) }
