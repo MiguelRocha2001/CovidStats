@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun Navigation(mainActivity: MainActivity) {
+fun WindowNavigation(mainActivity: MainActivity) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
     val model = remember { Model(mainActivity, scope) }

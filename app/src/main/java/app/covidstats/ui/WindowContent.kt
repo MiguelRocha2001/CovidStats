@@ -11,9 +11,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import app.covidstats.MainActivity
 import com.plcoding.material3app.ui.theme.Material3AppTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +36,7 @@ fun MainWindow(mainActivity: MainActivity) {
                         },
                         colors = TopAppBarDefaults.smallTopAppBarColors(),
                         navigationIcon = {
-                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                            IconButton(onClick = { toggleMenu(drawerState, scope) }) {
                                 Icon(
                                     imageVector = Icons.Default.Menu,
                                     contentDescription = null
@@ -56,15 +56,21 @@ fun MainWindow(mainActivity: MainActivity) {
                 }
             ) { values ->
                 Column(Modifier.padding(values)) {
-                    Nav(
+                    NavigationMenu(
                         scope,
                         drawerState,
-                        onOpenClick = { scope.launch { drawerState.open() } },
-                        onCloseClick = { scope.launch { drawerState.close() } }
-                    )
-                    // Navigation(mainActivity)
+                        { /* TODO */ }
+                    ) {
+                        // Navigation(mainActivity)
+                    }
                 }
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+private fun toggleMenu(drawerState: DrawerState, scope: CoroutineScope) {
+    if (drawerState.isClosed) scope.launch { drawerState.open() }
+    else scope.launch { drawerState.close() }
 }
