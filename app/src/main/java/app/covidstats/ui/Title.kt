@@ -10,13 +10,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.covidstats.ui.theme.Green20
+import app.covidstats.ui.theme.Green30
 
 /**
  * Draws a title with predefined attributes.
  * @param textAlign can be used to aline the title.
  */
 @Composable
-internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null, fontColor: Color = BLUE) {
+internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null, fontColor: Color = Green30) {
     Text(
         text = title,
         color = fontColor,
@@ -27,6 +29,6 @@ internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: Text
         textAlign = textAlign,
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 50.dp,  bottom = 50.dp),
+            .padding(top = 30.dp,  bottom = 30.dp),
     )
 }

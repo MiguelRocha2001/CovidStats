@@ -9,9 +9,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import app.covidstats.MainActivity
+import app.covidstats.model.Model
 import com.plcoding.material3app.ui.theme.Material3AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -21,6 +24,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainWindow(mainActivity: MainActivity) {
     val scope = rememberCoroutineScope()
+    val model = remember { Model(mainActivity, scope) }
+    val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     Material3AppTheme {
@@ -44,24 +49,18 @@ fun MainWindow(mainActivity: MainActivity) {
                             }
                         }
                     )
-                },
-                floatingActionButton = {
-                    FloatingActionButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
                 }
             ) { values ->
                 Column(Modifier.padding(values)) {
                     NavigationMenu(
                         scope,
                         drawerState,
-                        { /* TODO */ }
+                        onOptionClick = {
+                            scope.launch { drawerState.close() }
+                            executeOption(it, model, scope, navController, mainActivity)
+                        }
                     ) {
-                        // Navigation(mainActivity)
+                        windowNavigation(navController, mainActivity, scope, model)
                     }
                 }
             }

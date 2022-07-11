@@ -2,6 +2,7 @@
 
 package app.covidstats.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -11,14 +12,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+
+enum class Option {
+    HOME, FAVORITES, WORLD, CONTINENT, NEWS, INFO, EXIT
+}
 
 @Composable
 fun NavigationMenu(
     scope: CoroutineScope,
     drawerState: DrawerState,
-    onOptionClick: () -> Unit,
-    content: () -> Unit,
+    onOptionClick: (Option) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -37,10 +41,10 @@ fun NavigationMenu(
 }
 
 @Composable
-fun DrawerContent(onOptionClick: () -> Unit) {
+fun DrawerContent(onOptionClick: (Option) -> Unit) {
         var selectedItem by remember { mutableStateOf(0) }
-        val items = listOf("Home", "Search", "Favorites", "Settings")
-        val icons = listOf(Icons.Filled.Home, Icons.Filled.Search, Icons.Filled.Favorite, Icons.Filled.Settings)
+        val items = listOf("Home", "Favorites", "World", "Continent", "News", "Info", "Exit")
+        val icons = listOf(Icons.Filled.Home, Icons.Filled.Favorite, Icons.Filled.Lock, Icons.Filled.Lock, Icons.Filled.Lock, Icons.Filled.Lock, Icons.Filled.Lock)
         items.forEachIndexed { index, item ->
             NavigationDrawerItem(
                 label = { Text(text = item) },
@@ -52,7 +56,7 @@ fun DrawerContent(onOptionClick: () -> Unit) {
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                onClick = onOptionClick,
+                onClick = { onOptionClick(Option.valueOf(item.toUpperCase())) },
             )
         }
 }

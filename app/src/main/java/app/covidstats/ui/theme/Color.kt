@@ -1,4 +1,4 @@
-package com.plcoding.material3app.ui.theme
+package app.covidstats.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

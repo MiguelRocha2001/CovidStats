@@ -23,13 +23,4 @@ fun MainPage(model: Model, scope: CoroutineScope, navController: NavHostControll
     Box {
         //Menu(model, scope, navController, mainActivity)
     }
-        /*
-            Column {
-                Box {
-                    Menu(model, scope, navController, mainActivity)
-                }
-                // Spacer(modifier = Modifier.height(15.dp))
-                // Favorites(model, onFavoriteClick)
-            }
-             */
 }

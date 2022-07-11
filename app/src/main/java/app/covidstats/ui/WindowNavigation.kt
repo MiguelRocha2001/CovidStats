@@ -3,19 +3,23 @@ package app.covidstats.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.covidstats.MainActivity
 import app.covidstats.model.Model
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun WindowNavigation(mainActivity: MainActivity) {
-    val navController = rememberNavController()
-    val scope = rememberCoroutineScope()
-    val model = remember { Model(mainActivity, scope) }
+fun windowNavigation(
+    navController: NavHostController,
+    mainActivity: MainActivity,
+    scope: CoroutineScope,
+    model: Model
+) {
 
     NavHost(
         navController = navController,
