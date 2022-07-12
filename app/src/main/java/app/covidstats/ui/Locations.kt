@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -30,7 +31,7 @@ fun Locations(
         LoadingPage()
     else {
         Column {
-            Title(title = title, textAlign = TextAlign.Center, fontColor = DARK_BLUE)
+            Title(title = title, textAlign = TextAlign.Center)
             LazyColumn(
                 Modifier.fillMaxWidth()
             ) {
@@ -46,7 +47,7 @@ fun Locations(
 }
 
 @Composable
-private fun Location(locationName: String, backgroundColor: Color = DARK_GREY_WITH_TRANSPARENCY, onClick: (String) -> Unit) {
+private fun Location(locationName: String, backgroundColor: Color = MaterialTheme.colorScheme.background, onClick: (String) -> Unit) {
     Button(
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         modifier = Modifier.fillMaxWidth(),
@@ -59,11 +60,11 @@ private fun Location(locationName: String, backgroundColor: Color = DARK_GREY_WI
             modifier = Modifier
                 .height(60.dp)
                 .fillMaxWidth()
-                .background(color = if (Model.continents.any {it == locationName}) DARK_GREY_WITH_TRANSPARENCY2 else DARK_GREY_WITH_TRANSPARENCY)
+                .background(color = if (Model.continents.any {it == locationName}) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface)
         ) {
             Text(
                 text = locationName.uppercase(),
-                color = Color.White,
+                color = if (Model.continents.any {it == locationName}) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
                 fontSize = 20.sp,
                 letterSpacing = 3.sp,
                 textAlign = TextAlign.Center,

@@ -1,16 +1,16 @@
 package app.covidstats.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -87,10 +87,21 @@ fun Favorite(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (S
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Data(data: CovidStats) {
     val (mainSats, otherStats) = separateStats(data)
     Column() {
+        Card(
+            shape = MaterialTheme.shapes.medium,
+            elevation = CardDefaults.cardElevation(15.dp, 10.dp),
+        ) {
+            mainSats.forEach { (name, value) ->
+                StatLine(name, value)
+                Spacer(Modifier.height(15.dp))
+            }
+        }
+        /*
         Box {
             Column() {
                 mainSats.forEach { (name, value) ->
@@ -106,6 +117,8 @@ private fun Data(data: CovidStats) {
                 }
             }
         }
+
+         */
     }
 }
 
@@ -115,29 +128,23 @@ private fun Data(data: CovidStats) {
 @Composable
 fun StatLine(str: String, value: Any?) {
     Row {
-        val color =
-            if (str == "cases" || str == "casesPerOneMillion") GREEN
-            else if (str == "deaths" || str == "deathsPerOneMillion") RED
-            else if (str == "tests" || str == "testsPerOneMillion") ORANGE
-            else if (str == "active" || str == "activePerOneMillion") YELLOW
-            else if (str == "recovered" || str == "recoveredPerOneMillion") STRONG_BLUE
-            else if (str == "population") LIGHT_BLUE
-            else Color.Black
         val font = FontFamily.Default
         val fontSize = 20.sp
         Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = "${str.capitalizeText()} ",
                 fontSize = fontSize,
-                color = color,
+                color = MaterialTheme.colorScheme.secondary,
                 fontFamily = font,
+                style = MaterialTheme.typography.displayMedium,
                 //style = TextStyle(textDecoration = TextDecoration.Underline)
             )
             Text(
                 text = if (value != null) format(value) else "in fault",
                 fontSize = fontSize,
-                color = color,
-                fontFamily = font
+                color = MaterialTheme.colorScheme.secondary,
+                fontFamily = font,
+                style = MaterialTheme.typography.displayMedium,
             )
         }
     }

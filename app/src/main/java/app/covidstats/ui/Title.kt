@@ -2,6 +2,7 @@ package app.covidstats.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +19,7 @@ import app.covidstats.ui.theme.Green30
  * @param textAlign can be used to aline the title.
  */
 @Composable
-internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null, fontColor: Color = Green30) {
+internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null, fontColor: Color = MaterialTheme.colorScheme.primary) {
     Text(
         text = title,
         color = fontColor,

@@ -11,10 +11,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.model.Model
-import app.covidstats.ui.theme.Green30
-import app.covidstats.ui.theme.Green40
-import app.covidstats.ui.theme.Green80
-import app.covidstats.ui.theme.GreenGrey50
+import app.covidstats.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("NAME_SHADOWING")
@@ -25,16 +22,16 @@ fun Continents(onClick: (String) -> Unit) {
         Column {
             Title(title = "Select A Continent", textAlign = TextAlign.Center)
             continents.forEachIndexed { i, continent ->
-                val backgroundColor = if (i % 2 == 0) Green40 else Green80
-                Continent(continent, onClick, backgroundColor)
+                val color = MaterialTheme.colorScheme.secondary
+                Continent1(continent, onClick, Color.Transparent, color)
             }
         }
     }
 }
 
-/*
+
 @Composable
-private fun Continent(continent: String, onClick: (String) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
+private fun Continent1(continent: String, onClick: (String) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -58,16 +55,17 @@ private fun Continent(continent: String, onClick: (String) -> Unit, backgroundCo
         }
     }
 }
- */
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun Continent2(continent: String, onClick: (String) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
+    TextButton(onClick = { onClick(continent) }) {
+        Text(continent, fontSize = 25.sp)
+    }
+}
+
 @Composable
 private fun Continent(continent: String, onClick: (String) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
-    ListItem(
-        modifier = Modifier.clickable { onClick(continent) },
-        headlineText = {
-            Text(text = continent)
-        }
-    )
-    Divider()
+    TextButton(onClick = { onClick(continent) }) {
+        Text(continent, fontSize = 25.sp)
+    }
 }

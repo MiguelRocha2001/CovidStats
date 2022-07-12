@@ -23,7 +23,7 @@ fun windowNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.MainPage.route
+        startDestination = Screen.Continents.route
     ) {
         composable("main_page") {
             MainPage(
