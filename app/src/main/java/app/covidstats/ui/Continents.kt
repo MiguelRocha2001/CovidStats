@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.sp
 import app.covidstats.model.Model
 import app.covidstats.ui.theme.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Suppress("NAME_SHADOWING")
 @Composable
 fun Continents(onClick: (String) -> Unit) {

@@ -1,5 +1,6 @@
 package app.covidstats.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.ui.theme.Green20
@@ -23,6 +25,7 @@ internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: Text
     Text(
         text = title,
         color = fontColor,
+        lineHeight = 40.sp,
         fontSize = 40.sp,
         //fontFamily = FontFamily(Font(R.font.my_type, weight = FontWeight.Normal)),
         fontWeight = FontWeight.Bold,
@@ -30,6 +33,6 @@ internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: Text
         textAlign = textAlign,
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 30.dp,  bottom = 30.dp),
+            .padding(bottom = 30.dp),
     )
 }

@@ -27,9 +27,7 @@ fun Locations(
     onLocationClick: (String) -> Unit,
     vararg additional: Pair<String, (String) -> Unit>
 ) {
-    if (locations == null)
-        LoadingPage()
-    else {
+    if (locations != null) {
         Column {
             Title(title = title, textAlign = TextAlign.Center)
             LazyColumn(
@@ -38,7 +36,7 @@ fun Locations(
                 additional.forEach {
                     item { Location(it.first, DARK_GREY_WITH_TRANSPARENCY2, it.second) }
                 }
-                locations.forEach{ country ->
+                locations.forEach { country ->
                     item { Location(country) { onLocationClick(country) } }
                 }
             }

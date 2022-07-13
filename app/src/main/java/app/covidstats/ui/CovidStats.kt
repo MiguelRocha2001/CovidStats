@@ -1,25 +1,17 @@
 package app.covidstats.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.covidstats.R
 import app.covidstats.model.Model
 import app.covidstats.model.data.covid_stats.CovidStats
 import java.util.*
@@ -29,22 +21,20 @@ import kotlin.reflect.full.memberProperties
 fun CovidStats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
     if (model != null) {
         val covidStats = model.stats
-        if (covidStats == null)
-            LoadingPage()
-        else {
+        if (covidStats != null) {
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
-                    .verticalScroll(rememberScrollState())
                     .fillMaxWidth(),
             ) {
                 Title(title = "${covidStats.first.capitalizeText()} Covid-19 Stats")
+
                 // depending on what type of data is to be displayed
                 model.stats?.second?.apply {
                     Data(data = this)
                 }
-                Spacer(modifier = Modifier.height(15.dp))
+
                 Favorite(model, onFavoriteAdd, onFavoriteRemove)
             }
         }
@@ -69,6 +59,7 @@ fun Favorite(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (S
         }
     }
     ExtendedFloatingActionButton(
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
         icon = {
             Icon(
                 Icons.Filled.Favorite,
@@ -80,8 +71,8 @@ fun Favorite(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (S
         text = {
             Text(
                 text = if (model.isCountryOnFavorites(location)) "Remove from Favorites" else "Add to Favorites",
-                color = Color.White,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
     )
@@ -91,35 +82,42 @@ fun Favorite(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (S
 @Composable
 private fun Data(data: CovidStats) {
     val (mainSats, otherStats) = separateStats(data)
-    Column() {
-        Card(
-            shape = MaterialTheme.shapes.medium,
-            elevation = CardDefaults.cardElevation(15.dp, 10.dp),
-        ) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.85f),
+        shape = RoundedCornerShape(15.dp),
+        elevation = CardDefaults.cardElevation(5.dp)
+    ) {
+        LazyColumn(modifier = Modifier.padding(10.dp)) {
+            mainSats.forEach { (name, value) ->
+                item { StatLine(name, value) }
+                item { Spacer(Modifier.height(15.dp)) }
+            }
+            item { Divider(modifier = Modifier.padding(top = 5.dp, bottom = 15.dp)) }
+            otherStats.forEach { (name, value) ->
+                item { StatLine(name, value) }
+            }
+        }
+    }
+    /*
+    Box {
+        Column() {
             mainSats.forEach { (name, value) ->
                 StatLine(name, value)
                 Spacer(Modifier.height(15.dp))
             }
         }
-        /*
-        Box {
-            Column() {
-                mainSats.forEach { (name, value) ->
-                    StatLine(name, value)
-                    Spacer(Modifier.height(15.dp))
-                }
-            }
-        }
-        Box {
-            Column() {
-                otherStats.forEach { (name, value) ->
-                    StatLine(name, value)
-                }
-            }
-        }
-
-         */
     }
+    Box {
+        Column() {
+            otherStats.forEach { (name, value) ->
+                StatLine(name, value)
+            }
+        }
+    }
+
+     */
 }
 
 /**

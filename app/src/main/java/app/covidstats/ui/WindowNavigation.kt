@@ -20,10 +20,9 @@ fun windowNavigation(
     scope: CoroutineScope,
     model: Model
 ) {
-
     NavHost(
         navController = navController,
-        startDestination = Screen.Continents.route
+        startDestination = Screen.MainPage.route
     ) {
         composable("main_page") {
             MainPage(
