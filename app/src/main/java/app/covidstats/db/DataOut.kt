@@ -63,12 +63,13 @@ internal fun fetchAllContinents(): List<String> {
 /**
  * @return a List with all available continents to fetch stats or null if servers responds with error.
  */
-internal fun fetchContinentCountries(continent: String): List<String> {
+internal fun fetchContinentCountries(continent: app.covidstats.model.data.Continent): List<String> {
+    val continentStr = continent.name.toLowerCase()
     return try {
-        val continentRequest = Request(Method.GET, "https://disease.sh/v3/covid-19/continents/${continent.replace(" ", "%20")}?strict=true")
+        val continentRequest = Request(Method.GET, "https://disease.sh/v3/covid-19/continents/${continentStr.replace(" ", "%20")}?strict=true")
         val continentResponse = client(continentRequest)
-        val continent = json.decodeFromString<Continent>(continentResponse.bodyString())
-        continent.countries
+        val decodedContinent = json.decodeFromString<Continent>(continentResponse.bodyString())
+        decodedContinent.countries
     } catch (e: Exception) {
         println("Error while fetching countries for $continent")
         emptyList()

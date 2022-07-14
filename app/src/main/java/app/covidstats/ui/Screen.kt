@@ -3,6 +3,7 @@ package app.covidstats.ui
 sealed class Screen(val route: String) {
     object MainPage: Screen(route = "main_page")
     object ShowWorldCovidStats: Screen(route = "stats")
+    object Favorites: Screen(route = "favorites")
     object Continents: Screen(route = "continents")
     object DisplayContinentOptions: Screen(route = "continent_options")
     object News: Screen(route = "news")

@@ -4,9 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -35,20 +32,7 @@ fun MainWindow(mainActivity: MainActivity) {
         ) {
             Scaffold(
                 topBar = {
-                    SmallTopAppBar(
-                        title = {
-                            Text(text = "Covid Stats")
-                        },
-                        colors = TopAppBarDefaults.smallTopAppBarColors(),
-                        navigationIcon = {
-                            IconButton(onClick = { toggleMenu(drawerState, scope) }) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    )
+                    TopAppBar { toggleMenu(drawerState, scope) }
                 }
             ) { values ->
                 Column(Modifier.padding(values)) {

@@ -11,11 +11,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.model.Model
+import app.covidstats.model.data.Continent
 import app.covidstats.ui.theme.*
 
 @Suppress("NAME_SHADOWING")
 @Composable
-fun Continents(onClick: (String) -> Unit) {
+fun Continents(onClick: (Continent) -> Unit) {
     Model.continents.apply {
         val continents = this
         Column {
@@ -30,7 +31,7 @@ fun Continents(onClick: (String) -> Unit) {
 
 
 @Composable
-private fun Continent1(continent: String, onClick: (String) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
+private fun Continent1(continent: String, onClick: (Continent) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -43,7 +44,10 @@ private fun Continent1(continent: String, onClick: (String) -> Unit, backgroundC
             elevation = null,
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
             modifier = Modifier.fillMaxWidth(),
-            onClick = { onClick(continent) }
+            onClick = {
+                val continentAux = continent.toContinent() ?: throw IllegalArgumentException("Invalid continent")
+                onClick(continentAux)
+            }
         ) {
             Text(
                 text = continent,
@@ -53,6 +57,16 @@ private fun Continent1(continent: String, onClick: (String) -> Unit, backgroundC
             )
         }
     }
+}
+
+private fun String.toContinent(): Continent? = when (this) {
+    "Africa" -> Continent.AFRICA
+    "Asia" -> Continent.ASIA
+    "Europe" -> Continent.EUROPE
+    "North America" -> Continent.NORTH_AMERICA
+    // "Oceania" -> Continent.OCEANIA
+    "South America" -> Continent.SOUTH_AMERICA
+    else -> null
 }
 
 @Composable

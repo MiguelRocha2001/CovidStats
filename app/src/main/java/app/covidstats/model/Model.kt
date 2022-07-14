@@ -1,10 +1,12 @@
 package app.covidstats.model
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.covidstats.db.*
+import app.covidstats.model.data.Continent
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
 import kotlinx.coroutines.CoroutineScope
@@ -71,8 +73,19 @@ class Model(context: Context, scope: CoroutineScope) {
     /**
      * Fetches worldwide COVID-19 stats.
      */
-    fun loadContinentCountries(continent: String) {
-        countries = continent to fetchContinentCountries(continent)
+    fun loadContinentCountries(continent: Continent) {
+        val locations = storage.getContinentLocations(continent)?.also {
+            Log.i("Model", "Restoring locations, for $continent, from storage")
+        } ?: // if no locations are stored, fetch them
+        run {
+            Log.i("Model", "Fetching locations, for $continent, from API")
+            // if no locations are stored, fetch them
+            val locations1 = fetchContinentCountries(continent)
+            storage.saveContinentLocations(continent, locations1)
+            // if no locations are stored, fetch them
+            locations1
+        }
+        countries = continent.name.toLowerCase() to locations
     }
 
     /**

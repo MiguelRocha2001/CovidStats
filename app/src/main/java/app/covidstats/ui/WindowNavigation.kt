@@ -1,12 +1,9 @@
 package app.covidstats.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import app.covidstats.MainActivity
 import app.covidstats.model.Model
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +19,7 @@ fun windowNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.MainPage.route
+        startDestination = Screen.Continents.route
     ) {
         composable("main_page") {
             MainPage(
@@ -48,7 +45,7 @@ fun windowNavigation(
         composable("news") { CovidNews(model.news) }
         composable("wait") { LoadingPage() }
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
-        composable("continents") { Continents() { continent ->
+        composable("continents") { Continents { continent ->
             model.dumpCountries()
             navController.navigate("continent_options/${continent}")
             scope.launch(Dispatchers.IO) {

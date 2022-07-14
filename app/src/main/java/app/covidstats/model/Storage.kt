@@ -1,6 +1,7 @@
 package app.covidstats.model
 
 import android.content.Context
+import app.covidstats.model.data.Continent
 import app.covidstats.model.data.covid_stats.CovidStats
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -8,7 +9,6 @@ import java.io.File
 
 class Storage(private val context: Context) {
     private val favoritesFile = File(context.filesDir, "covid_stats_favorites.txt")
-    private val locationStatsFile = File.createTempFile("covid_stats_locations", "txt", context.cacheDir)
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -55,7 +55,21 @@ class Storage(private val context: Context) {
         if (!cacheFile.exists())
             return null
         val statStr = cacheFile.readText()
-        return json.decodeFromString(statStr)
+        return json.decodeFromString(statStr) ?: throw Exception("Couldn't decode from storage cache file")
     }
 
+    fun saveContinentLocations(continent: Continent, locations: List<String>) {
+        val filename = "locations_${continent.name.toLowerCase()}"
+        val continentLocationsFile = File.createTempFile(filename, "txt", context.cacheDir)
+        continentLocationsFile.writeText(locations.toString())
+    }
+
+    fun getContinentLocations(continent: Continent): List<String>? {
+        val cacheFile = File(context.cacheDir, "locations_${continent.name.toLowerCase()}")
+        if (!cacheFile.exists())
+            return null
+        val continentLocations = cacheFile.readText()
+        return json.decodeFromString<List<String>?>(continentLocations)?.toList()
+            ?: throw Exception("Couldn't decode from storage cache file")
+    }
 }
