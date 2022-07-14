@@ -17,9 +17,9 @@ class Model(context: Context, scope: CoroutineScope) {
         val continents: List<String> = listOf("Africa", "Asia", "Europe", "North America", "Australia-Oceania", "South America")
     }
 
-    var stats by mutableStateOf<Pair<String, CovidStats>?>(null)
-
     private val storage: Storage = Storage(context)
+
+    var stats by mutableStateOf<Pair<String, CovidStats>?>(null)
 
     var news by mutableStateOf<List<Item>?>(null)
 
@@ -66,12 +66,16 @@ class Model(context: Context, scope: CoroutineScope) {
         stats = "World" to getWorldStats()
     }
 
+    /**
+     * Stores given [locationStats] in cache.
+     */
     private fun saveLocationStat(locationStats: Pair<String, CovidStats>) {
         storage.saveLocationStats(locationStats)
     }
 
     /**
-     * Fetches worldwide COVID-19 stats.
+     * Sets global variable countries with the obtained list of countries, given a [continent].
+     * If the data is already in cache, obtains it from there. Otherwise, requests the API, and stores the data in cache to further use.
      */
     fun loadContinentCountries(continent: Continent) {
         val locations = storage.getContinentLocations(continent)?.also {
@@ -79,10 +83,9 @@ class Model(context: Context, scope: CoroutineScope) {
         } ?: // if no locations are stored, fetch them
         run {
             Log.i("Model", "Fetching locations, for $continent, from API")
-            // if no locations are stored, fetch them
             val locations1 = fetchContinentCountries(continent)
+            Log.i("Model", "Locations fetched successfully from API")
             storage.saveContinentLocations(continent, locations1)
-            // if no locations are stored, fetch them
             locations1
         }
         countries = continent.name.toLowerCase() to locations
@@ -97,7 +100,8 @@ class Model(context: Context, scope: CoroutineScope) {
     }
 
     /**
-     * Fetches COVID-19 stats for a specific country.
+     * Sets global variable stats with the obtained stats, given a [location].
+     * If the data is already in cache, obtains it from there. Otherwise, requests the API, and stores the data in cache to further use.
      */
     fun loadLocationCovidStats(location: String) {
         val stats = storage.getLocationStats(location)
@@ -115,16 +119,22 @@ class Model(context: Context, scope: CoroutineScope) {
     }
 
     /**
-     * Fetches COVID-19 stats for a specific country.
+     * Affetcts the global variable news with the obtained news.
      */
     fun loadCovidNews() {
         news = getCovidNews()
     }
 
+    /**
+     * Clears the global variable stats.
+     */
     fun dumpStats() {
         stats = null
     }
 
+    /**
+     * Clears the global variable countries.
+     */
     fun dumpCountries() {
         countries = null
     }

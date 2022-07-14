@@ -1,5 +1,6 @@
 package app.covidstats.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -46,6 +47,11 @@ fun windowNavigation(
         composable("wait") { LoadingPage() }
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
         composable("continents") { Continents { continent ->
+            Log.i("WindowNavigation", "Composing Continents view")
+            if (continent == null) { // TODO -> fix this
+                Log.i("WindowNavigation", "Selected continent is invalid.")
+                throw IllegalArgumentException()
+            }
             model.dumpCountries()
             navController.navigate("continent_options/${continent}")
             scope.launch(Dispatchers.IO) {

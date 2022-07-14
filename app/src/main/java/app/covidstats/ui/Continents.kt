@@ -21,9 +21,9 @@ fun Continents(onClick: (Continent) -> Unit) {
         val continents = this
         Column {
             Title(title = "Select A Continent", textAlign = TextAlign.Center)
-            continents.forEachIndexed { i, continent ->
+            continents.forEach { continent ->
                 val color = MaterialTheme.colorScheme.secondary
-                Continent1(continent, onClick, Color.Transparent, color)
+                Continent(continent, onClick, Color.Transparent, color)
             }
         }
     }
@@ -31,7 +31,7 @@ fun Continents(onClick: (Continent) -> Unit) {
 
 
 @Composable
-private fun Continent1(continent: String, onClick: (Continent) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
+private fun Continent(continent: String, onClick: (Continent) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -64,21 +64,7 @@ private fun String.toContinent(): Continent? = when (this) {
     "Asia" -> Continent.ASIA
     "Europe" -> Continent.EUROPE
     "North America" -> Continent.NORTH_AMERICA
-    // "Oceania" -> Continent.OCEANIA
+    "Australia-Oceania" -> Continent.AUSTRALIA_OCEANIA
     "South America" -> Continent.SOUTH_AMERICA
     else -> null
-}
-
-@Composable
-private fun Continent2(continent: String, onClick: (String) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
-    TextButton(onClick = { onClick(continent) }) {
-        Text(continent, fontSize = 25.sp)
-    }
-}
-
-@Composable
-private fun Continent(continent: String, onClick: (String) -> Unit, backgroundColor: Color, fontColor: Color = Color.White) {
-    TextButton(onClick = { onClick(continent) }) {
-        Text(continent, fontSize = 25.sp)
-    }
 }
