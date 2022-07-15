@@ -2,7 +2,7 @@ package app.covidstats.model
 
 import android.content.Context
 import android.util.Log
-import app.covidstats.model.data.Continent
+import app.covidstats.model.data.other.Continent
 import app.covidstats.model.data.covid_stats.CovidStats
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString

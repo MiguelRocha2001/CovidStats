@@ -6,15 +6,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.covidstats.db.*
-import app.covidstats.model.data.Continent
+import app.covidstats.model.data.other.Continent
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
+import app.covidstats.model.data.other.formattedName
+import app.covidstats.model.data.other.toContinent
 import kotlinx.coroutines.CoroutineScope
 
-class Model(context: Context, scope: CoroutineScope) {
+class Model(context: Context) {
     companion object {
         /** List of all continents */
-        val continents: List<String> = listOf("Africa", "Asia", "Europe", "North America", "Australia-Oceania", "South America")
+        val continents: List<String> = listOf("Africa", "Asia", "Europe", "North America", "Australia Oceania", "South America")
     }
 
     private val storage: Storage = Storage(context)
@@ -88,15 +90,15 @@ class Model(context: Context, scope: CoroutineScope) {
             storage.saveContinentLocations(continent, locations1)
             locations1
         }
-        countries = continent.name.toLowerCase() to locations
+        countries = continent.formattedName() to locations
     }
 
     /**
      * Fetches COVID-19 stats for a specific continent.
      */
-    fun loadContinentCovidStats(continent: String) {
+    fun loadContinentCovidStats(continent: Continent) {
         val statsResp = getContinentStats(continent)
-        stats = continent to statsResp
+        stats = continent.formattedName() to statsResp
     }
 
     /**
@@ -110,7 +112,10 @@ class Model(context: Context, scope: CoroutineScope) {
         } else {
             val statsResp =
                 if (location == "World") getWorldStats()
-                else if (continents.any { it == location }) getContinentStats(location)
+                else if (continents.any { it == location }) {
+                    val continent = location.toContinent() ?: throw IllegalStateException("Invalid continent name: $location")
+                    getContinentStats(continent)
+                }
                 else getCountryStats(location)
             val locStat = location to statsResp
             saveLocationStat(locStat)

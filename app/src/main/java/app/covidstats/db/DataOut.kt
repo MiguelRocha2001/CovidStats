@@ -1,7 +1,9 @@
 package app.covidstats.db
 
+import android.util.Log
 import app.covidstats.model.data.covid_stats.*
 import app.covidstats.model.data.news.Item
+import app.covidstats.model.data.other.replaceSeparatorAndToLowercase
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -28,10 +30,11 @@ internal fun getWorldStats(): CovidStats {
 /**
  * Fetches Covid-19 stats for [continent].
  */
-internal fun getContinentStats(continent: String): CovidStats {
+internal fun getContinentStats(continent: app.covidstats.model.data.other.Continent): CovidStats {
+    Log.i("DataOut", continent.toApiString())
     val request = Request(
         Method.GET,
-        "https://disease.sh/v3/covid-19/continents/${continent.replace(" ", "%20")}?strict=true"
+        "https://disease.sh/v3/covid-19/continents/${continent.toApiString()}?strict=true"
     )
     val response = client(request)
     return json.decodeFromString(response.bodyString())
@@ -63,10 +66,9 @@ internal fun fetchAllContinents(): List<String> {
 /**
  * @return a List with all available continents to fetch stats or null if servers responds with error.
  */
-internal fun fetchContinentCountries(continent: app.covidstats.model.data.Continent): List<String> {
-    val continentStr = continent.name.toLowerCase()
+internal fun fetchContinentCountries(continent: app.covidstats.model.data.other.Continent): List<String> {
     return try {
-        val continentRequest = Request(Method.GET, "https://disease.sh/v3/covid-19/continents/${continentStr.replace(" ", "%20")}?strict=true")
+        val continentRequest = Request(Method.GET, "https://disease.sh/v3/covid-19/continents/${continent.toApiString()}?strict=true")
         val continentResponse = client(continentRequest)
         val decodedContinent = json.decodeFromString<Continent>(continentResponse.bodyString())
         decodedContinent.countries
@@ -74,21 +76,6 @@ internal fun fetchContinentCountries(continent: app.covidstats.model.data.Contin
         println("Error while fetching countries for $continent")
         emptyList()
     }
-}
-
-/**
- * @return a List with all available [countries] to fetch stats.
- */
-internal fun fetchCountries(countries: List<String>): List<String> {
-    var countriesRequestStr = "https://disease.sh/v3/covid-19/countries/"
-    countries.forEachIndexed { index, country ->
-        countriesRequestStr += if (index == 0) country.replace(" ", "%20")
-        else "%2C%20${country.replace(" ", "%20")}"
-    }
-    //val countriesRequest = Request(Method.GET, "https://disease.sh/v3/covid-19/countries/Algeria%2C%20Angola%2C%20Benin%2C%20Botswana%2C%20Burkina%20Faso%2C%20Burundi%2C%20Cabo%20Verde")
-    val countriesRequest = Request(Method.GET, countriesRequestStr)
-    val countriesResponse = client(countriesRequest)
-    return json.decodeFromString<List<Country>>(countriesResponse.bodyString()).map { it.country }
 }
 
 /**
@@ -110,3 +97,11 @@ internal fun getCovidNews(): List<Item> {
      */
     return items
 }
+
+/**
+ * This function allows, given a Continent, to get the continent string that is used in the API.
+ * @return the continent string for the API
+ */
+fun app.covidstats.model.data.other.Continent.toApiString() =
+    if (this === app.covidstats.model.data.other.Continent.AUSTRALIA_OCEANIA) "Australia-Oceania"
+    else this.name.replaceSeparatorAndToLowercase().replace(" ", "%20")

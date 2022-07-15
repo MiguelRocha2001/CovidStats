@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.covidstats.MainActivity
 import app.covidstats.model.Model
+import app.covidstats.model.data.other.formattedName
+import app.covidstats.model.data.other.toContinent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,10 +50,6 @@ fun windowNavigation(
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
         composable("continents") { Continents { continent ->
             Log.i("WindowNavigation", "Composing Continents view")
-            if (continent == null) { // TODO -> fix this
-                Log.i("WindowNavigation", "Selected continent is invalid.")
-                throw IllegalArgumentException()
-            }
             model.dumpCountries()
             navController.navigate("continent_options/${continent}")
             scope.launch(Dispatchers.IO) {
@@ -61,7 +59,7 @@ fun windowNavigation(
         }}
         composable("continent_options/{continent}") { backStackEntry ->
             model.dumpStats()
-            val continent = backStackEntry.arguments?.getString("continent") ?: ""
+            val continent = backStackEntry.arguments?.getString("continent")?.formattedName() ?: ""
             Locations(
                 locations = model.countries?.second,
                 onLocationClick = { country ->
@@ -75,8 +73,8 @@ fun windowNavigation(
                         { continentOption ->
                             navController.navigate("stats")
                             scope.launch(Dispatchers.IO) {
-                                Thread.sleep(200)
-                                model.loadContinentCovidStats(continentOption)
+                                val continent = continentOption.toContinent() ?: throw IllegalStateException("Continent not found")
+                                model.loadContinentCovidStats(continent)
                             }
                         }
                 )

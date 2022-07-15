@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainWindow(mainActivity: MainActivity) {
     val scope = rememberCoroutineScope()
-    val model = remember { Model(mainActivity, scope) }
+    val model = remember { Model(mainActivity) }
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
