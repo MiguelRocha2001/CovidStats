@@ -8,13 +8,14 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.model.Model
 import app.covidstats.model.data.covid_stats.CovidStats
-import java.util.*
 import kotlin.reflect.full.memberProperties
 
 @Composable
@@ -100,24 +101,6 @@ private fun Data(data: CovidStats) {
             }
         }
     }
-    /*
-    Box {
-        Column() {
-            mainSats.forEach { (name, value) ->
-                StatLine(name, value)
-                Spacer(Modifier.height(15.dp))
-            }
-        }
-    }
-    Box {
-        Column() {
-            otherStats.forEach { (name, value) ->
-                StatLine(name, value)
-            }
-        }
-    }
-
-     */
 }
 
 /**
@@ -125,18 +108,19 @@ private fun Data(data: CovidStats) {
  */
 @Composable
 fun StatLine(str: String, value: Any?) {
-    Row {
+    Column(modifier = Modifier.fillMaxWidth()) {
         val font = FontFamily.Default
         val fontSize = 20.sp
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "${str.capitalizeText()} ",
-                fontSize = fontSize,
-                color = MaterialTheme.colorScheme.secondary,
-                fontFamily = font,
-                style = MaterialTheme.typography.displayMedium,
-                //style = TextStyle(textDecoration = TextDecoration.Underline)
-            )
+        Text(
+            text = str.capitalizeText(),
+            fontSize = fontSize,
+            color = MaterialTheme.colorScheme.secondary,
+            fontFamily = font,
+            style = TextStyle(textDecoration = TextDecoration.Underline)
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Row {
+            Spacer(modifier = Modifier.width(15.dp))
             Text(
                 text = if (value != null) format(value) else "in fault",
                 fontSize = fontSize,
@@ -146,15 +130,6 @@ fun StatLine(str: String, value: Any?) {
             )
         }
     }
-}
-
-private fun String.capitalizeText(): String {
-    val str = this
-    val wordsBeforeCapitalized = str.split(" ")
-    val wordsAfterCapitalized = wordsBeforeCapitalized.map { word -> word.replaceFirstChar {
-        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-    }}
-    return wordsAfterCapitalized.joinToString (separator = " ")
 }
 
 /**

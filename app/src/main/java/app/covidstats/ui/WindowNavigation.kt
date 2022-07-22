@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun windowNavigation(
     navController: NavHostController,
-    mainActivity: MainActivity,
     scope: CoroutineScope,
     model: Model
 ) {
@@ -24,18 +23,10 @@ fun windowNavigation(
         navController = navController,
         startDestination = Screen.Continents.route
     ) {
-        composable("main_page") {
-            MainPage(
-                model = model,
-                scope = scope,
-                navController = navController,
-                mainActivity
-            )
-        }
         composable("stats") {
             CovidStats(
                 model,
-                onFavoriteAdd = {model.addFavoriteLocation(it) },
+                onFavoriteAdd = { model.addFavoriteLocation(it) },
                 onFavoriteRemove = {model.removeFavoriteLocation(it) }
             )
         }
@@ -45,8 +36,6 @@ fun windowNavigation(
             }
             navController.navigate("stats")
         }}
-        composable("news") { CovidNews(model.news) }
-        composable("wait") { LoadingPage() }
         composable("more_info") { MoreCovidInformation(model.moreCovidInfo) }
         composable("continents") { Continents { continent ->
             Log.i("WindowNavigation", "Composing Continents view")

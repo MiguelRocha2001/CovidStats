@@ -1,25 +1,23 @@
 package app.covidstats.ui
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
-
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import app.covidstats.R
+import app.covidstats.model.Option
 
 @Composable
-fun OptionView(msg: String, onClick: () -> Unit) {
-    DropdownMenuItem(
-        onClick = onClick,
-        text = {
-            Text(
-                text = msg,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp,
-            )
-        }
-    )
+fun getIcon(option: Option): ImageVector {
+    return when (option) {
+        Option.CONTINENT -> ImageVector.vectorResource(id = R.drawable.ic_australia)
+        Option.WORLD -> ImageVector.vectorResource(id = R.drawable.ic_globe)
+        Option.FAVORITES -> Icons.Filled.Favorite
+        Option.INFO -> Icons.Filled.Info
+        Option.EXIT -> Icons.Filled.ExitToApp
+    }
+
 }

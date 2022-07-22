@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/becas/StudioProjects/CovidStats/app/src/main/res/drawable/ic_australian_continent_svgrepo_com.xml" value="0.237" />
+        <entry key="..\:/Users/becas/StudioProjects/CovidStats/app/src/main/res/drawable/ic_continents.xml" value="0.237" />
+        <entry key="..\:/Users/becas/StudioProjects/CovidStats/app/src/main/res/drawable/ic_globe_svgrepo_com.xml" value="0.237" />
         <entry key="..\:/Users/migas/AndroidStudioProjects/CovidStats/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2465" />
         <entry key="..\:/Users/migas/AndroidStudioProjects/CovidStats/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2465" />
         <entry key="..\:/Users/migas/AndroidStudioProjects/CovidStats/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.121" />

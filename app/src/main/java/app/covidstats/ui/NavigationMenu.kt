@@ -2,31 +2,30 @@
 
 package app.covidstats.ui
 
-import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CoroutineScope
-
-enum class Option {
-    HOME, FAVORITES, WORLD, CONTINENT, NEWS, INFO, EXIT
-}
+import app.covidstats.model.Option
 
 @Composable
 fun NavigationMenu(
-    scope: CoroutineScope,
+    selected: Option,
     drawerState: DrawerState,
     onOptionClick: (Option) -> Unit,
     content: @Composable () -> Unit,
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = { DrawerContent(onOptionClick) },
+        drawerContent = { DrawerContent(selected, onOptionClick) },
         content = {
             Column(
                 modifier = Modifier
@@ -41,22 +40,23 @@ fun NavigationMenu(
 }
 
 @Composable
-fun DrawerContent(onOptionClick: (Option) -> Unit) {
-        var selectedItem by remember { mutableStateOf(0) }
-        val items = listOf("Home", "Favorites", "World", "Continent", "News", "Info", "Exit")
-        val icons = listOf(Icons.Filled.Home, Icons.Filled.Favorite, Icons.Filled.Lock, Icons.Filled.Lock, Icons.Filled.Lock, Icons.Filled.Lock, Icons.Filled.Lock)
-        items.forEachIndexed { index, item ->
+fun DrawerContent(selected: Option, onOptionClick: (Option) -> Unit) {
+        var selectedItem by remember { mutableStateOf(selected.ordinal) }
+        Option.values().forEachIndexed { index, option ->
             NavigationDrawerItem(
-                label = { Text(text = item) },
+                label = { Text(text = option.name.capitalizeText()) },
                 selected = index == selectedItem,
                 icon = {
                     Icon(
-                        imageVector = icons[index],
+                        imageVector = getIcon(option),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                onClick = { onOptionClick(Option.valueOf(item.toUpperCase())) },
+                onClick = {
+                    onOptionClick(Option.valueOf(option.name.toUpperCase()))
+                    selectedItem = option.ordinal
+                          },
             )
         }
 }
