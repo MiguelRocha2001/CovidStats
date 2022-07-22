@@ -176,5 +176,20 @@ class Model(context: Context) {
     fun dumpCountries() {
         countries = null
     }
+
+    /**
+     * Filters current list of countries by the given [filter].
+     */
+    fun filterLocations(name: String) {
+        val observedCountries = countries ?: return
+        val continent = observedCountries.first.toContinent() ?: return
+        loadContinentCountries(continent)
+        if (name.length < 3) {
+            return
+        }
+        val observedCountriesAfterRefresh = countries ?: return
+        countries = observedCountriesAfterRefresh.first to
+                observedCountriesAfterRefresh.second.filter { it.contains(name, true) }
+    }
 }
 

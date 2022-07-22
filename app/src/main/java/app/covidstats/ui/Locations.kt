@@ -18,22 +18,24 @@ import app.covidstats.model.Model
 
 /**
  * Display a list of [locations] and after pressing one, calls [onLocationClick].
- * @param additional is a list of additional locations to display.
+ * @param additionalLocations is a list of additional locations to display.
  */
 @Composable
 fun Locations(
     title: String = "Select Location",
     locations: List<String>?,
     onLocationClick: (String) -> Unit,
-    vararg additional: Pair<String, (String) -> Unit>
+    additionalComposable: @Composable (() -> Unit)? = null,
+    vararg additionalLocations: Pair<String, (String) -> Unit>
 ) {
     if (locations != null) {
         Column {
-            Title(title = title, textAlign = TextAlign.Center)
+            // if additional composable is null, shows Title instead
+            additionalComposable?.invoke() ?: Title(title = title, textAlign = TextAlign.Center)
             LazyColumn(
                 Modifier.fillMaxWidth()
             ) {
-                additional.forEach {
+                additionalLocations.forEach {
                     item { Location(it.first, DARK_GREY_WITH_TRANSPARENCY2, it.second) }
                 }
                 locations.forEach { country ->

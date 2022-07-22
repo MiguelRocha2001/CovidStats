@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import app.covidstats.MainActivity
@@ -26,6 +24,8 @@ fun MainWindow(mainActivity: MainActivity) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
+    var searchHandler by remember { mutableStateOf<(() -> Unit)?>(null) }
+
     Material3AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -33,7 +33,10 @@ fun MainWindow(mainActivity: MainActivity) {
         ) {
             Scaffold(
                 topBar = {
-                    TopAppBar { toggleMenu(drawerState, scope) }
+                    TopAppBar(
+                        { toggleMenu(drawerState, scope) },
+                        searchAction = searchHandler
+                    )
                 }
             ) { values ->
                 Column(Modifier.padding(values)) {
@@ -45,7 +48,9 @@ fun MainWindow(mainActivity: MainActivity) {
                             executeOption(it, model, scope, navController, mainActivity)
                         }
                     ) {
-                        windowNavigation(navController, scope, model)
+                        windowNavigation(navController, scope, model) { handler ->
+                            searchHandler = handler
+                        }
                     }
                 }
             }
