@@ -1,7 +1,14 @@
 package app.covidstats.ui.views
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import app.covidstats.model.Model
@@ -53,10 +60,29 @@ fun CountriesView(
 
 private fun localSearchHandler(scope: CoroutineScope, model: Model): @Composable () -> Unit = {
     var text by remember { mutableStateOf("") }
-    TextField(value = text, onValueChange = ({ location ->
-        text = location
-        scope.launch(Dispatchers.IO) {
-            model.filterLocations(location)
-        }
-    }))
+    TextField(
+        value = text,
+        onValueChange = ({ location ->
+            text = location
+            scope.launch(Dispatchers.IO) {
+                model.filterLocations(location)
+            }
+        }),
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Filled.ArrowForward,
+                contentDescription = null
+            )
+        },
+        singleLine = true,
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = MaterialTheme.colorScheme.primary,
+            containerColor = Color.Transparent,
+            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            disabledTextColor = Color.Transparent
+        )
+    )
 }
