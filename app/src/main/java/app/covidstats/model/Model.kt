@@ -11,7 +11,7 @@ import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
 import app.covidstats.model.data.other.formattedName
 import app.covidstats.model.data.other.toContinent
-import kotlinx.coroutines.CoroutineScope
+import app.covidstats.model.data.time.TimeZone
 
 class Model(context: Context) {
     companion object {
@@ -72,7 +72,9 @@ class Model(context: Context) {
      * Stores given [locationStats] in cache.
      */
     private fun saveLocationStat(locationStats: Pair<String, CovidStats>) {
-        storage.saveLocationStats(locationStats)
+        Log.i("Model", "Saving stats for ${locationStats.first}")
+        storage.saveLocationStats(locationStats, TimeZone())
+        Log.i("Model", "Saved location stats for ${locationStats.first}")
     }
 
     /**
@@ -80,17 +82,29 @@ class Model(context: Context) {
      * If the data is already in cache, obtains it from there. Otherwise, requests the API, and stores the data in cache to further use.
      */
     fun loadContinentCountries(continent: Continent) {
-        val locations = storage.getContinentLocations(continent)?.also {
-            Log.i("Model", "Restoring locations, for $continent, from storage")
-        } ?: // if no locations are stored, fetch them
-        run {
-            Log.i("Model", "Fetching locations, for $continent, from API")
-            val locations1 = fetchContinentCountries(continent)
-            Log.i("Model", "Locations fetched successfully from API")
-            storage.saveContinentLocations(continent, locations1)
-            locations1
+        val locations = storage.getContinentLocations(continent)
+        if (locations != null) {
+            val expired = locations.first.timeExpired()
+            if (expired) {
+                Log.i("Model", "Continent ${continent.formattedName()} expired")
+            } else {
+                countries = continent.formattedName() to locations.second
+                Log.i("Model", "${continent.formattedName()} countries loaded from cache")
+                return
+            }
         }
+        fetchSaveAndSetCountries(continent)
+    }
+
+    private fun fetchSaveAndSetCountries(continent: Continent) {
+        Log.i("Model", "Fetching locations, for $continent, from API")
+        val locations = fetchContinentCountries(continent)
+        Log.i("Model", "Locations fetched successfully from API")
+        Log.i("Model", "Saving locations, for $continent, to storage")
+        storage.saveContinentLocations(continent, locations, TimeZone())
+        Log.i("Model", "Saved locations, for $continent, to storage")
         countries = continent.formattedName() to locations
+        Log.i("Model", "${continent.formattedName()} countries set")
     }
 
     /**
@@ -108,26 +122,34 @@ class Model(context: Context) {
     fun loadLocationCovidStats(location: String) {
         val stats = storage.getLocationStats(location)
         if (stats != null) {
-            this.stats = stats
-        } else {
-            val statsResp =
-                if (location == "World") getWorldStats()
-                else if (continents.any { it == location }) {
-                    val continent = location.toContinent() ?: throw IllegalStateException("Invalid continent name: $location")
-                    getContinentStats(continent)
-                }
-                else getCountryStats(location)
-            val locStat = location to statsResp
-            saveLocationStat(locStat)
-            this.stats = locStat
+            val timeExpired = stats.first.timeExpired()
+            if (!timeExpired) {
+                this.stats = location to stats.second
+                Log.i("Model", "Restoring stats, for $location, from storage")
+                return
+            } else {
+                Log.i("Model", "Stats for $location expired")
+            }
         }
+        fetchSaveAndSetLocationStats(location)
     }
 
-    /**
-     * Affetcts the global variable news with the obtained news.
-     */
-    fun loadCovidNews() {
-        news = getCovidNews()
+    private fun fetchSaveAndSetLocationStats(location: String) {
+        Log.i("Model", "Fetching stats, for $location, from API")
+        val statsResp =
+            if (location == "World") getWorldStats()
+            else if (continents.any { it == location }) {
+                val continent = location.toContinent()
+                    ?: throw IllegalStateException("Invalid continent name: $location")
+                getContinentStats(continent)
+            } else getCountryStats(location)
+        Log.i("Model", "Stats for $location fetched successfully from API")
+        val locStat = location to statsResp
+        Log.i("Model", "Saving stats, for $location, to storage")
+        saveLocationStat(locStat)
+        Log.i("Model", "Saved stats, for $location, to storage")
+        this.stats = locStat
+        Log.i("Model", "Stats for $location set")
     }
 
     /**
