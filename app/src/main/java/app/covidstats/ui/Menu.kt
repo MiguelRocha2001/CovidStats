@@ -17,7 +17,7 @@ fun executeOption(option: Option, model: Model, scope: CoroutineScope, navContro
         }
         Option.WORLD -> {
             Log.i("Navigation", "Navigating to World")
-            scope.launch(Dispatchers.IO) { model.loadWorldCovidStats() }
+            scope.launch(Dispatchers.IO) { model.loadLocationCovidStats("World") }
             navController.navigate("stats")
         }
         Option.CONTINENT -> {

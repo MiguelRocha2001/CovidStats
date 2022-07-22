@@ -97,7 +97,6 @@ class Storage(private val context: Context) {
      * @return the File, if found, or null, otherwise.
      */
     private fun getFile(prefix: String, suffix: String): File? {
-        val test = File(cacheDir).list()
         val filename = File(cacheDir).list()?.find {
             it.contains("${prefix}_$suffix")
         } ?: return null

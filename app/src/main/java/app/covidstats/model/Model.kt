@@ -62,13 +62,6 @@ class Model(context: Context) {
     }
 
     /**
-     * Fetches worldwide COVID-19 stats.
-     */
-    fun loadWorldCovidStats() {
-        stats = "World" to getWorldStats()
-    }
-
-    /**
      * Stores given [locationStats] in cache.
      */
     private fun saveLocationStat(locationStats: Pair<String, CovidStats>) {
@@ -120,29 +113,35 @@ class Model(context: Context) {
      * If the data is already in cache, obtains it from there. Otherwise, requests the API, and stores the data in cache to further use.
      */
     fun loadLocationCovidStats(location: String) {
+        val localStats = fetchLocationStatsFromStorage(location)
+        if (localStats != null) {
+            stats = location to localStats
+            Log.i("Model", "Restoring stats, for $location, from storage")
+        } else
+            fetchSaveAndSetLocationStats(location)
+    }
+
+    private fun fetchLocationStatsFromStorage(location: String): CovidStats? {
         val stats = storage.getLocationStats(location)
         if (stats != null) {
             val timeExpired = stats.first.timeExpired()
-            if (!timeExpired) {
-                this.stats = location to stats.second
-                Log.i("Model", "Restoring stats, for $location, from storage")
-                return
+            return if (!timeExpired) {
+                stats.second
             } else {
                 Log.i("Model", "Stats for $location expired")
+                null
             }
         }
-        fetchSaveAndSetLocationStats(location)
+        return null
     }
 
     private fun fetchSaveAndSetLocationStats(location: String) {
         Log.i("Model", "Fetching stats, for $location, from API")
-        val statsResp =
-            if (location == "World") getWorldStats()
-            else if (continents.any { it == location }) {
-                val continent = location.toContinent()
-                    ?: throw IllegalStateException("Invalid continent name: $location")
-                getContinentStats(continent)
-            } else getCountryStats(location)
+
+        val statsResp = if (location == "World") {
+            getWorldStats()
+        } else fetchContinentStats(location) ?: getCountryStats(location)
+
         Log.i("Model", "Stats for $location fetched successfully from API")
         val locStat = location to statsResp
         Log.i("Model", "Saving stats, for $location, to storage")
@@ -150,6 +149,18 @@ class Model(context: Context) {
         Log.i("Model", "Saved stats, for $location, to storage")
         this.stats = locStat
         Log.i("Model", "Stats for $location set")
+    }
+
+    /**
+     * Fetches COVID-19 stats for continent [name] or null if name is invalid.
+     * @param name continent name
+     */
+    private fun fetchContinentStats(name: String): CovidStats? {
+        return if (continents.any { it == name }) {
+            val continent = name.toContinent()
+                ?: throw IllegalStateException("Invalid continent name: $name")
+            getContinentStats(continent)
+        } else null
     }
 
     /**
