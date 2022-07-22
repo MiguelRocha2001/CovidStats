@@ -184,12 +184,20 @@ class Model(context: Context) {
         val observedCountries = countries ?: return
         val continent = observedCountries.first.toContinent() ?: return
         loadContinentCountries(continent)
-        if (name.length < 3) {
-            return
-        }
+        if (name.length < 3) return
         val observedCountriesAfterRefresh = countries ?: return
         countries = observedCountriesAfterRefresh.first to
                 observedCountriesAfterRefresh.second.filter { it.contains(name, true) }
+    }
+
+    /**
+     * Filters current list of countries by the given [filter].
+     */
+    fun filterFavorites(name: String) {
+        favoriteLocations = storage.getFavoriteCountries()
+        val observedFavorites = favoriteLocations
+        if (name.length < 3) return
+        favoriteLocations = observedFavorites.filter { it.contains(name, true) }
     }
 }
 

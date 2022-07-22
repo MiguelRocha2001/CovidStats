@@ -1,6 +1,6 @@
 package app.covidstats.ui.views
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import app.covidstats.model.Model
 import app.covidstats.ui.Favorites
@@ -15,8 +15,19 @@ fun FavoritesView(
     scope: CoroutineScope,
     navController: NavHostController
 ) {
-    searchHandler(null)
-    Favorites(model.favoriteLocations) { location ->
+    var localSearchHandler by remember { mutableStateOf<( @Composable () -> Unit)?>(null) }
+    searchHandler {
+        localSearchHandler = getSearchTextField { newLocation ->
+            scope.launch(Dispatchers.IO) {
+                model.filterFavorites(newLocation)
+            }
+        }
+    }
+
+    Favorites(
+        model.favoriteLocations,
+        localSearchHandler
+    ) { location ->
         scope.launch(Dispatchers.IO) {
             model.loadLocationCovidStats(location)
         }

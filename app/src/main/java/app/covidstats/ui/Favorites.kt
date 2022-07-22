@@ -8,10 +8,11 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Favorites(
     favoriteLocations: List<String>,
+    additionalComposable: @Composable (() -> Unit)? = null,
     onClick: (String) -> Unit
 ) {
     if (favoriteLocations.isEmpty())
         Text("No favorites yet", fontSize = 24.sp, textAlign = TextAlign.Center)
     else
-        Locations("Favorites", locations = favoriteLocations, onLocationClick = onClick)
+        Locations("Favorites", locations = favoriteLocations, onLocationClick = onClick, additionalComposable = additionalComposable)
 }

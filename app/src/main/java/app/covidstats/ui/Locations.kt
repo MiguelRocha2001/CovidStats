@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,14 +34,16 @@ fun Locations(
 ) {
     if (locations != null) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // if additional composable is null, shows Title instead
-            additionalComposable?.invoke() ?: Title(title = title, textAlign = TextAlign.Center)
-            Spacer(modifier = Modifier.height(16.dp))
+            Title(title = title, textAlign = TextAlign.Center)
+            if (additionalComposable != null) {
+                additionalComposable()
+                Spacer(modifier = Modifier.height(16.dp))
+            }
             LazyColumn(
                 Modifier.fillMaxWidth()
             ) {
                 additionalLocations.forEach {
-                    item { Location(it.first, DARK_GREY_WITH_TRANSPARENCY2, it.second) }
+                    item { Location(it.first, it.second) }
                 }
                 locations.forEach { country ->
                     item { Location(country) { onLocationClick(country) } }
@@ -51,7 +54,7 @@ fun Locations(
 }
 
 @Composable
-private fun Location(locationName: String, backgroundColor: Color = MaterialTheme.colorScheme.background, onClick: (String) -> Unit) {
+private fun Location(locationName: String, onClick: (String) -> Unit) {
     Button(
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         modifier = Modifier.fillMaxWidth(),
