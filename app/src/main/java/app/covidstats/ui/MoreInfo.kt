@@ -5,9 +5,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun MoreCovidInformation(externalLink: String) {
-    Column() {
+fun MoreCovidInformation(text: String, externalLink: String) {
+    Column {
         Title(title = "More Info")
-        Text(text = externalLink)
+        Text(text)
+        Text("MoreInfo: $externalLink")
     }
 }

@@ -10,5 +10,5 @@ fun MoreInfoView(
     model: Model
 ) {
     searchHandler(null)
-    MoreCovidInformation(model.moreCovidInfo)
+    MoreCovidInformation(model.appInfo, model.moreCovidInfo)
 }
