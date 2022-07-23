@@ -14,8 +14,6 @@ import org.http4k.core.Request
 @OptIn(ExperimentalSerializationApi::class)
 private val json = Json { ignoreUnknownKeys = true; explicitNulls = false }
 
-val client = ApacheClient()
-
 /**
  * Fetches Covid-19 stats worldwide.
  */
@@ -23,7 +21,7 @@ internal fun getWorldStats(): CovidStats {
     val request = Request(
         Method.GET,
         "https://disease.sh/v3/covid-19/all")
-    val response = client(request)
+    val response = requestApi(request)
     return json.decodeFromString(response.bodyString())
 }
 
@@ -36,7 +34,7 @@ internal fun getContinentStats(continent: app.covidstats.model.data.other.Contin
         Method.GET,
         "https://disease.sh/v3/covid-19/continents/${continent.toApiString()}?strict=true"
     )
-    val response = client(request)
+    val response = requestApi(request)
     return json.decodeFromString(response.bodyString())
 }
 
@@ -49,7 +47,7 @@ internal fun getCountryStats(country: String): CovidStats {
         // replace spaces with %20
         "https://disease.sh/v3/covid-19/countries/${country.replace(" ", "%20")}?strict=true"
     )
-    val response = client(request)
+    val response = requestApi(request)
     return json.decodeFromString(response.bodyString())
 }
 
@@ -58,7 +56,7 @@ internal fun getCountryStats(country: String): CovidStats {
  */
 internal fun fetchAllContinents(): List<String> {
     val request = Request(Method.GET, "https://disease.sh/v3/covid-19/continents")
-    val response = client(request)
+    val response = requestApi(request)
     val continents = json.decodeFromString<List<Continent>>(response.bodyString())
     return continents.map { it.continent }
 }
@@ -67,15 +65,13 @@ internal fun fetchAllContinents(): List<String> {
  * @return a List with all available continents to fetch stats or null if servers responds with error.
  */
 internal fun fetchContinentCountries(continent: app.covidstats.model.data.other.Continent): List<String> {
-    return try {
-        val continentRequest = Request(Method.GET, "https://disease.sh/v3/covid-19/continents/${continent.toApiString()}?strict=true")
-        val continentResponse = client(continentRequest)
-        val decodedContinent = json.decodeFromString<Continent>(continentResponse.bodyString())
-        decodedContinent.countries
-    } catch (e: Exception) {
-        println("Error while fetching countries for $continent")
-        emptyList()
-    }
+    val request = Request(
+        Method.GET,
+        "https://disease.sh/v3/covid-19/continents/${continent.toApiString()}?strict=true"
+    )
+    val response = requestApi(request)
+    val decodedContinent = json.decodeFromString<Continent>(response.bodyString())
+    return decodedContinent.countries
 }
 
 /**

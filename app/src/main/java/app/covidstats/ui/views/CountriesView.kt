@@ -1,16 +1,9 @@
 package app.covidstats.ui.views
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import app.covidstats.model.Model
+import app.covidstats.model.opers.Model
 import app.covidstats.model.data.other.formattedName
 import app.covidstats.model.data.other.toContinent
 import app.covidstats.ui.Locations

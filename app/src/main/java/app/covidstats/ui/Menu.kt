@@ -3,7 +3,7 @@ package app.covidstats.ui
 import android.util.Log
 import androidx.navigation.NavHostController
 import app.covidstats.MainActivity
-import app.covidstats.model.Model
+import app.covidstats.model.opers.Model
 import app.covidstats.model.Option
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

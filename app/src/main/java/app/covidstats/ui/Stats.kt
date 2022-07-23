@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.covidstats.model.Model
+import app.covidstats.model.opers.Model
 import app.covidstats.model.data.covid_stats.CovidStats
 import kotlin.reflect.full.memberProperties
 

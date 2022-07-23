@@ -2,7 +2,7 @@ package app.covidstats.ui.views
 
 import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
-import app.covidstats.model.Model
+import app.covidstats.model.opers.Model
 import app.covidstats.ui.Favorites
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package app.covidstats.model
+package app.covidstats.model.opers
 
 import android.content.Context
 import android.provider.ContactsContract.DisplayNameSources.EMAIL
@@ -7,6 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.covidstats.db.*
+import app.covidstats.error.AppError
+import app.covidstats.model.Storage
 import app.covidstats.model.data.other.Continent
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
@@ -33,11 +35,11 @@ class Model(context: Context) {
 
     val moreCovidInfo = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019"
 
-    var favoriteLocations by mutableStateOf<List<String>>(emptyList())
+    private val favoriteOpers = FavoriteOpers(storage)
+    val favoriteLocations = favoriteOpers.favoriteLocations
 
     init {
         storage.init()
-        favoriteLocations = storage.getFavoriteCountries()
     }
 
     fun isCountryOnFavorites(country: String) = favoriteLocations.contains(country)
@@ -46,23 +48,23 @@ class Model(context: Context) {
      * Adds [location] to the list of favorite locations.
      */
     fun addFavoriteLocation(location: String) {
-        val favorites = favoriteLocations.toMutableList()
-        favorites.add(location)
-        favoriteLocations = favorites
-        // stores favorites
-        storage.saveFavoriteCountries(favoriteLocations)
+        favoriteOpers.addFavoriteLocation(location)
     }
 
     /**
      * Removes [location] (if exists) to the list of favorite locations.
      */
     fun removeFavoriteLocation(location: String) {
-        val favorites = favoriteLocations.toMutableList()
-        favorites.remove(location)
-        favoriteLocations = favorites
-        // stores favorites
-        storage.saveFavoriteCountries(favoriteLocations)
+        favoriteOpers.removeFavoriteLocation(location)
     }
+
+    /**
+     * Filters current list of countries by the given [filter].
+     */
+    fun filterFavorites(name: String) {
+        favoriteOpers.filterFavorites(name)
+    }
+
 
     /**
      * Stores given [locationStats] in cache.
@@ -94,12 +96,16 @@ class Model(context: Context) {
 
     private fun fetchSaveAndSetCountries(continent: Continent) {
         Log.i("Model", "Fetching locations, for $continent, from API")
-        val locations = fetchContinentCountries(continent)
-        Log.i("Model", "Locations fetched successfully from API")
-        Log.i("Model", "Saving locations, for $continent, to storage")
-        storage.saveContinentLocations(continent, locations, TimeZone())
-        Log.i("Model", "Saved locations, for $continent, to storage")
-        countries = continent.formattedName() to locations
+        try {
+            val locations = fetchContinentCountries(continent)
+            Log.i("Model", "Locations fetched successfully from API")
+            Log.i("Model", "Saving locations, for $continent, to storage")
+            storage.saveContinentLocations(continent, locations, TimeZone())
+            Log.i("Model", "Saved locations, for $continent, to storage")
+            countries = continent.formattedName() to locations
+        } catch (e: AppError) {
+            Log.e("Model", "Error fetching locations from API", e)
+        }
         Log.i("Model", "${continent.formattedName()} countries set")
     }
 
@@ -191,16 +197,6 @@ class Model(context: Context) {
         val observedCountriesAfterRefresh = countries ?: return
         countries = observedCountriesAfterRefresh.first to
                 observedCountriesAfterRefresh.second.filter { it.contains(name, true) }
-    }
-
-    /**
-     * Filters current list of countries by the given [filter].
-     */
-    fun filterFavorites(name: String) {
-        favoriteLocations = storage.getFavoriteCountries()
-        val observedFavorites = favoriteLocations
-        if (name.length < 3) return
-        favoriteLocations = observedFavorites.filter { it.contains(name, true) }
     }
 
     private fun getAppTextInfo() =
