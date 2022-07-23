@@ -35,11 +35,11 @@ class Model(context: Context) {
 
     val moreCovidInfo = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019"
 
-    private val favoriteOpers = FavoriteOpers(storage)
-    val favoriteLocations = favoriteOpers.favoriteLocations
+    var favoriteLocations by mutableStateOf<List<String>>(emptyList())
 
     init {
         storage.init()
+        favoriteLocations = storage.getFavoriteCountries()
     }
 
     fun isCountryOnFavorites(country: String) = favoriteLocations.contains(country)
@@ -48,31 +48,27 @@ class Model(context: Context) {
      * Adds [location] to the list of favorite locations.
      */
     fun addFavoriteLocation(location: String) {
-        favoriteOpers.addFavoriteLocation(location)
+        addFavoriteLocation(location, favoriteLocations, storage) {
+            favoriteLocations = it
+        }
     }
 
     /**
      * Removes [location] (if exists) to the list of favorite locations.
      */
     fun removeFavoriteLocation(location: String) {
-        favoriteOpers.removeFavoriteLocation(location)
+        removeFavoriteLocation(location, favoriteLocations, storage) {
+            favoriteLocations = it
+        }
     }
 
     /**
      * Filters current list of countries by the given [filter].
      */
     fun filterFavorites(name: String) {
-        favoriteOpers.filterFavorites(name)
-    }
-
-
-    /**
-     * Stores given [locationStats] in cache.
-     */
-    private fun saveLocationStat(locationStats: Pair<String, CovidStats>) {
-        Log.i("Model", "Saving stats for ${locationStats.first}")
-        storage.saveLocationStats(locationStats, TimeZone())
-        Log.i("Model", "Saved location stats for ${locationStats.first}")
+        filterFavorites(name, storage) {
+            favoriteLocations = it
+        }
     }
 
     /**
@@ -80,41 +76,19 @@ class Model(context: Context) {
      * If the data is already in cache, obtains it from there. Otherwise, requests the API, and stores the data in cache to further use.
      */
     fun loadContinentCountries(continent: Continent) {
-        val locations = storage.getContinentLocations(continent)
-        if (locations != null) {
-            val expired = locations.first.timeExpired()
-            if (expired) {
-                Log.i("Model", "Continent ${continent.formattedName()} expired")
-            } else {
-                countries = continent.formattedName() to locations.second
-                Log.i("Model", "${continent.formattedName()} countries loaded from cache")
-                return
-            }
+        loadContinentCountries(continent, storage) {
+            countries = it
+            Log.i("Model", "${continent.formattedName()} countries set")
         }
-        fetchSaveAndSetCountries(continent)
-    }
-
-    private fun fetchSaveAndSetCountries(continent: Continent) {
-        Log.i("Model", "Fetching locations, for $continent, from API")
-        try {
-            val locations = fetchContinentCountries(continent)
-            Log.i("Model", "Locations fetched successfully from API")
-            Log.i("Model", "Saving locations, for $continent, to storage")
-            storage.saveContinentLocations(continent, locations, TimeZone())
-            Log.i("Model", "Saved locations, for $continent, to storage")
-            countries = continent.formattedName() to locations
-        } catch (e: AppError) {
-            Log.e("Model", "Error fetching locations from API", e)
-        }
-        Log.i("Model", "${continent.formattedName()} countries set")
     }
 
     /**
      * Fetches COVID-19 stats for a specific continent.
      */
     fun loadContinentCovidStats(continent: Continent) {
-        val statsResp = getContinentStats(continent)
-        stats = continent.formattedName() to statsResp
+        loadContinentCovidStats(continent) {
+            stats = it
+        }
     }
 
     /**
@@ -122,54 +96,10 @@ class Model(context: Context) {
      * If the data is already in cache, obtains it from there. Otherwise, requests the API, and stores the data in cache to further use.
      */
     fun loadLocationCovidStats(location: String) {
-        val localStats = fetchLocationStatsFromStorage(location)
-        if (localStats != null) {
-            stats = location to localStats
-            Log.i("Model", "Restoring stats, for $location, from storage")
-        } else
-            fetchSaveAndSetLocationStats(location)
-    }
-
-    private fun fetchLocationStatsFromStorage(location: String): CovidStats? {
-        val stats = storage.getLocationStats(location)
-        if (stats != null) {
-            val timeExpired = stats.first.timeExpired()
-            return if (!timeExpired) {
-                stats.second
-            } else {
-                Log.i("Model", "Stats for $location expired")
-                null
-            }
+        loadLocationCovidStats(location, storage) {
+            stats = it
+            Log.i("Model", "Stats for $location set")
         }
-        return null
-    }
-
-    private fun fetchSaveAndSetLocationStats(location: String) {
-        Log.i("Model", "Fetching stats, for $location, from API")
-
-        val statsResp = if (location == "World") {
-            getWorldStats()
-        } else fetchContinentStats(location) ?: getCountryStats(location)
-
-        Log.i("Model", "Stats for $location fetched successfully from API")
-        val locStat = location to statsResp
-        Log.i("Model", "Saving stats, for $location, to storage")
-        saveLocationStat(locStat)
-        Log.i("Model", "Saved stats, for $location, to storage")
-        this.stats = locStat
-        Log.i("Model", "Stats for $location set")
-    }
-
-    /**
-     * Fetches COVID-19 stats for continent [name] or null if name is invalid.
-     * @param name continent name
-     */
-    private fun fetchContinentStats(name: String): CovidStats? {
-        return if (continents.any { it == name }) {
-            val continent = name.toContinent()
-                ?: throw IllegalStateException("Invalid continent name: $name")
-            getContinentStats(continent)
-        } else null
     }
 
     /**
@@ -191,12 +121,9 @@ class Model(context: Context) {
      */
     fun filterLocations(name: String) {
         val observedCountries = countries ?: return
-        val continent = observedCountries.first.toContinent() ?: return
-        loadContinentCountries(continent)
-        if (name.length < 3) return
-        val observedCountriesAfterRefresh = countries ?: return
-        countries = observedCountriesAfterRefresh.first to
-                observedCountriesAfterRefresh.second.filter { it.contains(name, true) }
+        filterLocations(name, storage, observedCountries) {
+            favoriteLocations = it
+        }
     }
 
     private fun getAppTextInfo() =

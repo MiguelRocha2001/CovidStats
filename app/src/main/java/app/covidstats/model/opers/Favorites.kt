@@ -1,49 +1,37 @@
 package app.covidstats.model.opers
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import app.covidstats.model.Storage
 
-class FavoriteOpers(
-    private val storage: Storage
-) {
+/**
+ * Adds [location] to the list of favorite locations to be passed in callback function.
+ * This will also update the list of favorite locations in the [Storage] object.
+ */
+fun addFavoriteLocation(location: String, favoriteLocations: List<String>, storage: Storage, callback: (List<String>) -> Unit) {
+    val favorites = favoriteLocations.toMutableList()
+    favorites.add(location)
+    // stores favorites
+    storage.saveFavoriteCountries(favoriteLocations)
+    callback(favorites)
+}
 
-    internal var favoriteLocations by mutableStateOf<List<String>>(emptyList())
+/**
+ * Removes [location] (if exists) from the list of favorite locations and passed in callback function.
+ * This will also update the list of favorite locations in the [Storage] object.
+ */
+fun removeFavoriteLocation(location: String, favoriteLocations: List<String>, storage: Storage, callback: (List<String>) -> Unit) {
+    val favorites = favoriteLocations.toMutableList()
+    favorites.remove(location)
+    // stores favorites
+    storage.saveFavoriteCountries(favoriteLocations)
+    callback(favorites)
+}
 
-    init {
-        favoriteLocations = storage.getFavoriteCountries()
-    }
-
-    /**
-     * Adds [location] to the list of favorite locations.
-     */
-    fun addFavoriteLocation(location: String) {
-        val favorites = favoriteLocations.toMutableList()
-        favorites.add(location)
-        favoriteLocations = favorites
-        // stores favorites
-        storage.saveFavoriteCountries(favoriteLocations)
-    }
-
-    /**
-     * Removes [location] (if exists) to the list of favorite locations.
-     */
-    fun removeFavoriteLocation(location: String) {
-        val favorites = favoriteLocations.toMutableList()
-        favorites.remove(location)
-        favoriteLocations = favorites
-        // stores favorites
-        storage.saveFavoriteCountries(favoriteLocations)
-    }
-
-    /**
-     * Filters current list of countries by the given [filter].
-     */
-    fun filterFavorites(name: String) {
-        favoriteLocations = storage.getFavoriteCountries()
-        val observedFavorites = favoriteLocations
-        if (name.length < 3) return
-        favoriteLocations = observedFavorites.filter { it.contains(name, true) }
-    }
+/**
+ * Filters current list of countries by the given [filter].
+ */
+fun filterFavorites(name: String, storage: Storage, callback: (List<String>) -> Unit) {
+    val favLocationsFromStorage = storage.getFavoriteCountries()
+    if (name.length < 3) return
+    val filteredLocations = favLocationsFromStorage.filter { it.contains(name, true) }
+    callback(filteredLocations)
 }
