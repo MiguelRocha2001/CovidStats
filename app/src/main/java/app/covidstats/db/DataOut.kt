@@ -1,13 +1,12 @@
 package app.covidstats.db
 
 import android.util.Log
+import app.covidstats.model.data.app.replaceSeparatorAndToLowercase
 import app.covidstats.model.data.covid_stats.*
 import app.covidstats.model.data.news.Item
-import app.covidstats.model.data.other.replaceSeparatorAndToLowercase
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import org.http4k.client.ApacheClient
 import org.http4k.core.Method
 import org.http4k.core.Request
 
@@ -28,7 +27,7 @@ internal fun getWorldStats(): CovidStats {
 /**
  * Fetches Covid-19 stats for [continent].
  */
-internal fun getContinentStats(continent: app.covidstats.model.data.other.Continent): CovidStats {
+internal fun getContinentStats(continent: app.covidstats.model.data.app.Continent): CovidStats {
     Log.i("DataOut", continent.toApiString())
     val request = Request(
         Method.GET,
@@ -64,7 +63,7 @@ internal fun fetchAllContinents(): List<String> {
 /**
  * @return a List with all available continents to fetch stats or null if servers responds with error.
  */
-internal fun fetchContinentCountries(continent: app.covidstats.model.data.other.Continent): List<String> {
+internal fun fetchContinentCountries(continent: app.covidstats.model.data.app.Continent): List<String> {
     val request = Request(
         Method.GET,
         "https://disease.sh/v3/covid-19/continents/${continent.toApiString()}?strict=true"
@@ -98,6 +97,6 @@ internal fun getCovidNews(): List<Item> {
  * This function allows, given a Continent, to get the continent string that is used in the API.
  * @return the continent string for the API
  */
-fun app.covidstats.model.data.other.Continent.toApiString() =
-    if (this === app.covidstats.model.data.other.Continent.AUSTRALIA_OCEANIA) "Australia-Oceania"
+fun app.covidstats.model.data.app.Continent.toApiString() =
+    if (this === app.covidstats.model.data.app.Continent.AUSTRALIA_OCEANIA) "Australia-Oceania"
     else this.name.replaceSeparatorAndToLowercase().replace(" ", "%20")

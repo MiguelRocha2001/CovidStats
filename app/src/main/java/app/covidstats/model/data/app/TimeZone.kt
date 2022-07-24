@@ -1,4 +1,4 @@
-package app.covidstats.model.data.time
+package app.covidstats.model.data.app
 
 import kotlinx.serialization.Serializable
 import java.util.*

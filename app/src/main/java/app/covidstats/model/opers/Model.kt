@@ -6,22 +6,12 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import app.covidstats.db.*
-import app.covidstats.error.AppError
 import app.covidstats.model.Storage
-import app.covidstats.model.data.other.Continent
+import app.covidstats.model.data.app.*
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
-import app.covidstats.model.data.other.formattedName
-import app.covidstats.model.data.other.toContinent
-import app.covidstats.model.data.time.TimeZone
 
 class Model(context: Context) {
-    companion object {
-        /** List of all continents */
-        val continents: List<String> = listOf("Africa", "Asia", "Europe", "North America", "Australia Oceania", "South America")
-    }
-
     val appInfo: String = getAppTextInfo()
 
     private val storage: Storage = Storage(context)
@@ -31,25 +21,25 @@ class Model(context: Context) {
     var news by mutableStateOf<List<Item>?>(null)
 
     /** List of all countries for a given continent */
-    var countries by mutableStateOf<Pair<String, List<String>>?>(null)
+    var countries by mutableStateOf<Pair<Continent, Locations>?>(null)
 
     val moreCovidInfo = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019"
 
-    var favoriteLocations by mutableStateOf<List<String>>(emptyList())
+    var favoriteLocations by mutableStateOf(LocationsSuccess(emptyList()))
 
     init {
         storage.init()
-        favoriteLocations = storage.getFavoriteCountries()
+        favoriteLocations = LocationsSuccess(storage.getFavoriteCountries())
     }
 
-    fun isCountryOnFavorites(country: String) = favoriteLocations.contains(country)
+    fun isCountryOnFavorites(country: String) = favoriteLocations.locations.contains(country)
 
     /**
      * Adds [location] to the list of favorite locations.
      */
     fun addFavoriteLocation(location: String) {
-        addFavoriteLocation(location, favoriteLocations, storage) {
-            favoriteLocations = it
+        addFavoriteLocation(location, favoriteLocations.locations, storage) {
+            favoriteLocations = LocationsSuccess(it)
         }
     }
 
@@ -57,8 +47,8 @@ class Model(context: Context) {
      * Removes [location] (if exists) to the list of favorite locations.
      */
     fun removeFavoriteLocation(location: String) {
-        removeFavoriteLocation(location, favoriteLocations, storage) {
-            favoriteLocations = it
+        removeFavoriteLocation(location, favoriteLocations.locations, storage) {
+            favoriteLocations = LocationsSuccess(it)
         }
     }
 
@@ -67,7 +57,7 @@ class Model(context: Context) {
      */
     fun filterFavorites(name: String) {
         filterFavorites(name, storage) {
-            favoriteLocations = it
+            favoriteLocations = LocationsSuccess(it)
         }
     }
 
@@ -76,9 +66,11 @@ class Model(context: Context) {
      * If the data is already in cache, obtains it from there. Otherwise, requests the API, and stores the data in cache to further use.
      */
     fun loadContinentCountries(continent: Continent) {
+        countries = continent to LocationsLoading
         loadContinentCountries(continent, storage) {
-            countries = it
-            Log.i("Model", "${continent.formattedName()} countries set")
+            if (it is LocationsSuccess)
+                Log.i("Model", "${continent.formattedName()} countries set")
+            countries = continent to it
         }
     }
 
@@ -121,8 +113,10 @@ class Model(context: Context) {
      */
     fun filterLocations(name: String) {
         val observedCountries = countries ?: return
-        filterLocations(name, storage, observedCountries) {
-            favoriteLocations = it
+        if (observedCountries.second is LocationsSuccess) {
+            filterLocations(name, storage, observedCountries.first) {
+                countries = observedCountries.first to it
+            }
         }
     }
 

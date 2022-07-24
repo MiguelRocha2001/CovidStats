@@ -2,7 +2,7 @@ package app.covidstats.ui.views
 
 import androidx.compose.runtime.Composable
 import app.covidstats.model.opers.Model
-import app.covidstats.ui.CovidStats
+import app.covidstats.ui.Stats
 
 @Composable
 fun StatsView(
@@ -10,7 +10,7 @@ fun StatsView(
     model: Model
 ) {
     searchHandler(null)
-    CovidStats(
+    Stats(
         model,
         onFavoriteAdd = { model.addFavoriteLocation(it) },
         onFavoriteRemove = { model.removeFavoriteLocation(it) }

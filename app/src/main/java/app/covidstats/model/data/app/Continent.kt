@@ -1,4 +1,4 @@
-package app.covidstats.model.data.other
+package app.covidstats.model.data.app
 
 enum class Continent {
     EUROPE, AFRICA, NORTH_AMERICA, SOUTH_AMERICA, ASIA, AUSTRALIA_OCEANIA

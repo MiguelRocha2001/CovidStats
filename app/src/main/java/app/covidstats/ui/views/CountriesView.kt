@@ -3,9 +3,9 @@ package app.covidstats.ui.views
 import androidx.compose.runtime.*
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import app.covidstats.model.data.app.formattedName
+import app.covidstats.model.data.app.toContinent
 import app.covidstats.model.opers.Model
-import app.covidstats.model.data.other.formattedName
-import app.covidstats.model.data.other.toContinent
 import app.covidstats.ui.Locations
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

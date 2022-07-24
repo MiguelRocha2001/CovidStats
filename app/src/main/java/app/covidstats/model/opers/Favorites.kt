@@ -31,7 +31,7 @@ fun removeFavoriteLocation(location: String, favoriteLocations: List<String>, st
  */
 fun filterFavorites(name: String, storage: Storage, callback: (List<String>) -> Unit) {
     val favLocationsFromStorage = storage.getFavoriteCountries()
-    if (name.length < 3) return
+    if (name.length < 2) return
     val filteredLocations = favLocationsFromStorage.filter { it.contains(name, true) }
     callback(filteredLocations)
 }

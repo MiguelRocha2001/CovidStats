@@ -19,7 +19,7 @@ import app.covidstats.model.data.covid_stats.CovidStats
 import kotlin.reflect.full.memberProperties
 
 @Composable
-fun CovidStats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
+fun Stats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
     if (model != null) {
         val covidStats = model.stats
         if (covidStats != null) {

@@ -3,10 +3,7 @@ package app.covidstats.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -15,7 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.covidstats.model.opers.Model
+import app.covidstats.error.ServerError
+import app.covidstats.model.data.app.*
 
 /**
  * Display a list of [locations] and after pressing one, calls [onLocationClick].
@@ -24,7 +22,7 @@ import app.covidstats.model.opers.Model
 @Composable
 fun Locations(
     title: String = "Select Location",
-    locations: List<String>?,
+    locations: Locations?,
     onLocationClick: (String) -> Unit,
     additionalComposable: @Composable (() -> Unit)? = null,
     vararg additionalLocations: Pair<String, (String) -> Unit>
@@ -32,26 +30,61 @@ fun Locations(
     if (locations != null) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Title(title = title, textAlign = TextAlign.Center)
+            if (locations is LocationsSuccess) {
+                val locationsToDisplay = locations.locations
+                OnSuccess(locationsToDisplay, additionalLocations, onLocationClick)
+            } else if (locations is LocationsLoading) {
+                OnLoading()
+            } else if (locations is LocationsError) {
+                val error = locations.error
+                if (error is ServerError) {
+                    OnServerError()
+                }
+            }
             if (additionalComposable != null) {
                 additionalComposable()
                 Spacer(modifier = Modifier.height(16.dp))
-            }
-            LazyColumn(
-                Modifier.fillMaxWidth()
-            ) {
-                additionalLocations.forEach {
-                    item { Location(it.first, it.second) }
-                }
-                locations.forEach { country ->
-                    item { Location(country) { onLocationClick(country) } }
-                }
             }
         }
     }
 }
 
 @Composable
-private fun Location(locationName: String, onClick: (String) -> Unit) {
+fun OnServerError() {
+    Text(
+        text = "Server error",
+        modifier = Modifier.padding(16.dp)
+    )
+}
+
+@Composable
+fun OnLoading() {
+    CircularProgressIndicator(
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.size(50.dp)
+    )
+}
+
+@Composable
+private fun OnSuccess(
+    generalLocations: List<String>,
+    specialLocations: Array<out Pair<String, (String) -> Unit>>,
+    onLocationClick: (String) -> Unit
+) {
+    LazyColumn(
+        Modifier.fillMaxWidth()
+    ) {
+        specialLocations.forEach {
+            item { Location(it.first, MaterialTheme.colorScheme.secondaryContainer, it.second) }
+        }
+        generalLocations.forEach { country ->
+            item { Location(country, MaterialTheme.colorScheme.surface) { onLocationClick(country) } }
+        }
+    }
+}
+
+@Composable
+private fun Location(locationName: String, backgroundColor: Color, onClick: (String) -> Unit) {
     Button(
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         modifier = Modifier.fillMaxWidth(),
@@ -64,11 +97,13 @@ private fun Location(locationName: String, onClick: (String) -> Unit) {
             modifier = Modifier
                 .height(60.dp)
                 .fillMaxWidth()
-                .background(color = if (Model.continents.any { it == locationName }) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface)
+                .background(
+                    color = backgroundColor
+                )
         ) {
             Text(
                 text = locationName.uppercase(),
-                color = if (Model.continents.any {it == locationName}) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.secondary,
                 fontSize = 20.sp,
                 letterSpacing = 3.sp,
                 textAlign = TextAlign.Center,

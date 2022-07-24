@@ -2,14 +2,13 @@ package app.covidstats.model
 
 import android.content.Context
 import android.util.Log
-import app.covidstats.model.data.other.Continent
+import app.covidstats.model.data.app.Continent
 import app.covidstats.model.data.covid_stats.CovidStats
-import app.covidstats.model.data.time.TimeZone
+import app.covidstats.model.data.app.TimeZone
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.sql.Time
 
 class Storage(private val context: Context) {
     private val favoritesFile = File(context.filesDir, "covid_stats_favorites.txt")
