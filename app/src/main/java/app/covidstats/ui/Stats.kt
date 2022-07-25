@@ -14,8 +14,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.covidstats.model.data.app.StatsError
+import app.covidstats.model.data.app.StatsLoading
+import app.covidstats.model.data.app.StatsSuccess
 import app.covidstats.model.opers.Model
 import app.covidstats.model.data.covid_stats.CovidStats
+import app.covidstats.ui.commons.OnServerError
 import kotlin.reflect.full.memberProperties
 
 @Composable
@@ -29,14 +33,19 @@ fun Stats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (Str
                     .padding(horizontal = 30.dp)
                     .fillMaxWidth(),
             ) {
-                Title(title = "${covidStats.first.capitalizeText()} Covid-19 Stats")
-
-                // depending on what type of data is to be displayed
-                model.stats?.second?.apply {
-                    Data(data = this)
+                Title(title = "${covidStats.name.capitalizeText()} Covid-19 Stats")
+                when (covidStats) {
+                    is StatsSuccess -> {
+                        // depending on what type of data is to be displayed
+                        covidStats.data.apply {
+                            Data(data = this)
+                        }
+                        Favorite(model, onFavoriteAdd, onFavoriteRemove)
+                    }
+                    is StatsError -> {
+                        OnServerError()
+                    }
                 }
-
-                Favorite(model, onFavoriteAdd, onFavoriteRemove)
             }
         }
     }
@@ -51,7 +60,7 @@ fun Stats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (Str
  */
 @Composable
 fun Favorite(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
-    val location = model.stats?.first ?: return
+    val location = model.stats?.name ?: return
     val onClick = {
         if (model.isCountryOnFavorites(location)) {
             onFavoriteRemove(location)

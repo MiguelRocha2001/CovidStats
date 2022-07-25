@@ -3,6 +3,7 @@ package app.covidstats.model
 import android.content.Context
 import android.util.Log
 import app.covidstats.model.data.app.Continent
+import app.covidstats.model.data.app.StatsSuccess
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.app.TimeZone
 import kotlinx.serialization.decodeFromString
@@ -50,10 +51,10 @@ class Storage(private val context: Context) {
      * Saves location stats, in cache.
      * @param stats a pair, containing the name of the location and the acossiated stats.
      */
-    fun saveLocationStats(stats: Pair<String, CovidStats>, timeZone: TimeZone) {
-        val filename = "covid_stats_${stats.first.replace(" ", "_")}"
+    fun saveLocationStats(stats: StatsSuccess, timeZone: TimeZone) {
+        val filename = "covid_stats_${stats.location.replace(" ", "_")}"
         val locationStatsFile = File.createTempFile(filename, ".txt", context.cacheDir)
-        locationStatsFile.writeText(json.encodeToString(timeZone to stats.second))
+        locationStatsFile.writeText(json.encodeToString(timeZone to stats.data))
         Log.i("Storage", "Saved location stats to ${locationStatsFile.name}")
     }
 

@@ -16,7 +16,7 @@ class Model(context: Context) {
 
     private val storage: Storage = Storage(context)
 
-    var stats by mutableStateOf<Pair<String, CovidStats>?>(null)
+    var stats by mutableStateOf<Stats?>(null)
 
     var news by mutableStateOf<List<Item>?>(null)
 

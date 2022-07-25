@@ -4,31 +4,27 @@ import android.util.Log
 import app.covidstats.db.getContinentStats
 import app.covidstats.db.getCountryStats
 import app.covidstats.db.getWorldStats
+import app.covidstats.error.AppError
 import app.covidstats.model.Storage
-import app.covidstats.model.data.app.Continent
-import app.covidstats.model.data.app.TimeZone
-import app.covidstats.model.data.app.formattedName
-import app.covidstats.model.data.app.toContinent
+import app.covidstats.model.data.app.*
 import app.covidstats.model.data.covid_stats.CovidStats
 
 /**
  * Fetches COVID-19 stats for a specific continent.
  */
-fun loadContinentCovidStats(continent: Continent, callback: (Pair<String, CovidStats>) -> Unit) {
+fun loadContinentCovidStats(continent: Continent, callback: (Stats) -> Unit) {
     val statsResp = getContinentStats(continent)
-    val stats = continent.formattedName() to statsResp
-    callback(stats)
+    callback(StatsSuccess(continent.formattedName(), statsResp))
 }
 
 /**
  * Sets global variable stats with the obtained stats, given a [location].
  * If the data is already in cache, obtains it from there. Otherwise, requests the API, and stores the data in cache to further use.
  */
-fun loadLocationCovidStats(location: String, storage: Storage, callback: (Pair<String, CovidStats>) -> Unit) {
+fun loadLocationCovidStats(location: String, storage: Storage, callback: (Stats) -> Unit) {
     val localStats = fetchLocationStatsFromStorage(location, storage)
     if (localStats != null) {
-        val stats = location to localStats
-        callback(stats)
+        callback(localStats)
         Log.i("Model", "Restoring stats, for $location, from storage")
     } else {
         val stats = fetchSaveAndSetLocationStats(location, storage)
@@ -36,12 +32,13 @@ fun loadLocationCovidStats(location: String, storage: Storage, callback: (Pair<S
     }
 }
 
-private fun fetchLocationStatsFromStorage(location: String, storage: Storage): CovidStats? {
+private fun fetchLocationStatsFromStorage(location: String, storage: Storage): Stats? {
     val stats = storage.getLocationStats(location)
     if (stats != null) {
+        val statsSuccess = StatsSuccess(location, stats.second)
         val timeExpired = stats.first.timeExpired()
         return if (!timeExpired) {
-            stats.second
+            statsSuccess
         } else {
             Log.i("Model", "Stats for $location expired")
             null
@@ -50,40 +47,79 @@ private fun fetchLocationStatsFromStorage(location: String, storage: Storage): C
     return null
 }
 
-private fun fetchSaveAndSetLocationStats(location: String, storage: Storage): Pair<String, CovidStats> {
+private fun fetchSaveAndSetLocationStats(location: String, storage: Storage): Stats {
     Log.i("Model", "Fetching stats, for $location, from API")
 
     val statsResp = if (location == "World") {
-        getWorldStats()
+        fetchWorldStats()
     } else {
         val continent = location.toContinent()
         if (continent != null) {
             fetchContinentStats(continent)
         } else {
-            getCountryStats(location)
+            fetchCountryStats(location)
         }
     }
 
-    Log.i("Model", "Stats for $location fetched successfully from API")
-    val locStat = location to statsResp
-    Log.i("Model", "Saving stats, for $location, to storage")
-    saveLocationStat(locStat, storage)
-    Log.i("Model", "Saved stats, for $location, to storage")
-    return locStat
+    return if (statsResp is StatsSuccess) {
+        Log.i("Model", "Stats for $location fetched successfully from API")
+        Log.i("Model", "Saving stats, for $location, to storage")
+        saveLocationStat(statsResp, storage)
+        Log.i("Model", "Saved stats, for $location, to storage")
+        statsResp
+    } else {
+        Log.i("Model", "Stats for $location failed to fetch from API")
+        statsResp
+    }
 }
 
 /**
- * Fetches COVID-19 stats for continent [name] or null if name is invalid.
- * @param name continent name
+ * Fetches COVID-19 stats for continent [continent].
+ * @param continent Continent
+ * @return Stats object that could be either a [StatsSuccess] or a [StatsError]
  */
-private fun fetchContinentStats(name: Continent): CovidStats =
-    getContinentStats(name)
+private fun fetchContinentStats(continent: Continent): Stats {
+    return try {
+        val statsResp = getContinentStats(continent)
+        StatsSuccess(continent.formattedName(), statsResp)
+    } catch (e: AppError) {
+        StatsError(e, continent.name)
+    }
+}
+
+/**
+ * Fetches COVID-19 stats for country [name].
+ * @param name country name
+ * @return Stats object that could be either a [StatsSuccess] or a [StatsError]
+ */
+private fun fetchCountryStats(name: String): Stats {
+    return try {
+        val statsResp = getCountryStats(name)
+        StatsSuccess(name.formattedName(), statsResp)
+    } catch (e: AppError) {
+        StatsError(e, name)
+    }
+}
+
+/**
+ * Fetches COVID-19 stats for "World".
+ * @return Stats object that could be either a [StatsSuccess] or a [StatsError]
+ */
+private fun fetchWorldStats(): Stats {
+    val location = "World"
+    return try {
+        val statsResp = getWorldStats()
+        StatsSuccess(location, statsResp)
+    } catch (e: AppError) {
+        StatsError(e, location)
+    }
+}
 
 /**
  * Stores given [locationStats] in cache.
  */
-private fun saveLocationStat(locationStats: Pair<String, CovidStats>, storage: Storage) {
-    Log.i("Model", "Saving stats for ${locationStats.first}")
+private fun saveLocationStat(locationStats: StatsSuccess, storage: Storage) {
+    Log.i("Model", "Saving stats for ${locationStats.location}")
     storage.saveLocationStats(locationStats, TimeZone())
-    Log.i("Model", "Saved location stats for ${locationStats.first}")
+    Log.i("Model", "Saved location stats for ${locationStats.location}")
 }

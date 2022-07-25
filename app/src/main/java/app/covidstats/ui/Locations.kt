@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.error.ServerError
 import app.covidstats.model.data.app.*
+import app.covidstats.ui.commons.OnServerError
 
 /**
  * Display a list of [locations] and after pressing one, calls [onLocationClick].
@@ -52,14 +53,6 @@ fun Locations(
             }
         }
     }
-}
-
-@Composable
-fun OnServerError() {
-    Text(
-        text = "Server error",
-        modifier = Modifier.padding(16.dp)
-    )
 }
 
 @Composable
