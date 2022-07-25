@@ -1,5 +1,8 @@
 package app.covidstats.model.data.app
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class Continent {
     EUROPE, AFRICA, NORTH_AMERICA, SOUTH_AMERICA, ASIA, AUSTRALIA_OCEANIA
 }

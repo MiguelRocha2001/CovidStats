@@ -1,15 +1,19 @@
 package app.covidstats.model.opers
 
 import android.content.Context
+import android.os.Parcelable
 import android.provider.ContactsContract.DisplayNameSources.EMAIL
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.setValue
 import app.covidstats.model.Storage
 import app.covidstats.model.data.app.*
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 class Model(context: Context) {
     val appInfo: String = getAppTextInfo()

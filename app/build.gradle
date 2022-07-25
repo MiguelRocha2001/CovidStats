@@ -3,6 +3,8 @@ plugins {
     id 'kotlin-android'
 
     id 'org.jetbrains.kotlin.plugin.serialization'
+
+    id 'kotlin-parcelize'
 }
 
 android {

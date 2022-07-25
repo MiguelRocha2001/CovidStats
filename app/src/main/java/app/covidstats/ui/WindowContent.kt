@@ -18,9 +18,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainWindow(mainActivity: MainActivity) {
+fun MainWindow(mainActivity: MainActivity, model: Model) {
     val scope = rememberCoroutineScope()
-    val model = remember { Model(mainActivity) }
+    val model = remember { model }
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 

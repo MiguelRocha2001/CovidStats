@@ -2,6 +2,7 @@ package app.covidstats.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -19,13 +20,15 @@ import app.covidstats.model.data.app.formattedName
 @Suppress("NAME_SHADOWING")
 @Composable
 fun Continents(onClick: (Continent) -> Unit) {
-    Column {
-        Title(title = "Continents", textAlign = TextAlign.Center)
-        Continent.values().forEach { continent ->
-            val color = MaterialTheme.colorScheme.secondary
-            Continent(continent, onClick, Color.Transparent, color)
+    val fontColor = MaterialTheme.colorScheme.secondary
+    LazyColumn(
+        content =  {
+            item { Title(title = "Continents", textAlign = TextAlign.Center) }
+            Continent.values().forEach { continent ->
+                item { Continent(continent, onClick, Color.Transparent, fontColor) }
+            }
         }
-    }
+    )
 }
 
 @Composable
