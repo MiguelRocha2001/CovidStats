@@ -21,7 +21,7 @@ import app.covidstats.model.data.app.*
  */
 @Composable
 fun Locations(
-    title: String = "Select Location",
+    title: String? = null,
     locations: Locations?,
     onLocationClick: (String) -> Unit,
     additionalComposable: @Composable (() -> Unit)? = null,
@@ -29,21 +29,26 @@ fun Locations(
 ) {
     if (locations != null) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Title(title = title, textAlign = TextAlign.Center)
-            if (locations is LocationsSuccess) {
-                val locationsToDisplay = locations.locations
-                OnSuccess(locationsToDisplay, additionalLocations, onLocationClick)
-            } else if (locations is LocationsLoading) {
-                OnLoading()
-            } else if (locations is LocationsError) {
-                val error = locations.error
-                if (error is ServerError) {
-                    OnServerError()
+            if (title != null)
+                Title(title = title, textAlign = TextAlign.Center)
+            when (locations) {
+                is LocationsSuccess -> {
+                    if (additionalComposable != null) {
+                        additionalComposable()
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                    val locationsToDisplay = locations.locations
+                    OnSuccess(locationsToDisplay, additionalLocations, onLocationClick)
                 }
-            }
-            if (additionalComposable != null) {
-                additionalComposable()
-                Spacer(modifier = Modifier.height(16.dp))
+                is LocationsError -> {
+                    val error = locations.error
+                    if (error is ServerError) {
+                        OnServerError()
+                    }
+                }
+                is LocationsLoading -> {
+                    OnLoading()
+                }
             }
         }
     }

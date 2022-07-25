@@ -32,6 +32,7 @@ fun CountriesView(
 
     val continent = backStackEntry.arguments?.getString("continent")?.formattedName() ?: ""
     Locations(
+        title = "Countries in $continent",
         locations = model.countries?.second,
         onLocationClick = { country ->
             navController.navigate("stats")

@@ -1,8 +1,11 @@
 package app.covidstats.ui
 
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.model.data.app.Locations
 import app.covidstats.model.data.app.LocationsSuccess
@@ -14,18 +17,26 @@ fun Favorites(
     onClick: (String) -> Unit
 ) {
     if (favoriteLocations is LocationsSuccess) {
-        if (favoriteLocations.locations.isEmpty())
-            Text(
-                "No favorites yet",
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Title(
+                title = "Favorites",
+                textAlign = TextAlign.Center,
             )
-        else
-            Locations(
-                "Favorites",
-                locations = favoriteLocations,
-                onLocationClick = onClick,
-                additionalComposable = additionalComposable
-            )
+            if (favoriteLocations.locations.isEmpty()) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    "No favorites yet",
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            else
+                Locations(
+                    locations = favoriteLocations,
+                    onLocationClick = onClick,
+                    additionalComposable = additionalComposable
+                )
+        }
     }
 }
