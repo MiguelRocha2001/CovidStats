@@ -30,7 +30,8 @@ class Storage(private val context: Context) {
      * Stores [favoriteCountries] locally.
      */
     fun saveFavoriteCountries(favoriteCountries: List<String>) {
-        favoritesFile.writeText(favoriteCountries.toString().trim('[', ']'))
+        favoritesFile.writeText(json.encodeToString(favoriteCountries))
+        Log.i("Storage", "Favorites updated: ${favoriteCountries.size} elements")
     }
 
     /**
@@ -40,11 +41,16 @@ class Storage(private val context: Context) {
         return if (favoritesFile.exists()) {
             val fileContent = favoritesFile.readText()
             if (fileContent.isNotEmpty()) {
-                fileContent.trim('[', ']').split(",").map { it.trim() }
+                json.decodeFromString<List<String>>(fileContent)
+                    .also { Log.i("Storage", "Favorites loaded: ${it.size} elements") }
             } else {
+                Log.i("Storage", "Favorites were empty")
                 emptyList()
             }
-        } else emptyList()
+        } else {
+            Log.i("Storage", "Favorites not found. Creating new favorites file")
+            emptyList()
+        }
     }
 
     /**

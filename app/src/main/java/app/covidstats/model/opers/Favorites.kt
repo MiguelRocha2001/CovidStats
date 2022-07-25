@@ -9,8 +9,7 @@ import app.covidstats.model.Storage
 fun addFavoriteLocation(location: String, favoriteLocations: List<String>, storage: Storage, callback: (List<String>) -> Unit) {
     val favorites = favoriteLocations.toMutableList()
     favorites.add(location)
-    // stores favorites
-    storage.saveFavoriteCountries(favoriteLocations)
+    storage.saveFavoriteCountries(favorites)
     callback(favorites)
 }
 
@@ -21,8 +20,7 @@ fun addFavoriteLocation(location: String, favoriteLocations: List<String>, stora
 fun removeFavoriteLocation(location: String, favoriteLocations: List<String>, storage: Storage, callback: (List<String>) -> Unit) {
     val favorites = favoriteLocations.toMutableList()
     favorites.remove(location)
-    // stores favorites
-    storage.saveFavoriteCountries(favoriteLocations)
+    storage.saveFavoriteCountries(favorites)
     callback(favorites)
 }
 
