@@ -37,8 +37,15 @@ fun Continents(onClick: (Continent) -> Unit) {
 private fun ContinentsLandscape(configuration: Configuration, fontColor: Color, onClick: (Continent) -> Unit) {
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Row {
-            ContinentTitle(configuration)
-            ContinentsListing(configuration, fontColor, onClick)
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.weight(1f).fillMaxHeight()
+            ) {
+                Title("Continents")
+            }
+            Box(modifier = Modifier.weight(2f)) {
+                ContinentsListing(configuration, fontColor, onClick)
+            }
         }
     }
 }
@@ -47,7 +54,7 @@ private fun ContinentsLandscape(configuration: Configuration, fontColor: Color, 
 private fun ContinentsPortrait(configuration: Configuration, fontColor: Color, onClick: (Continent) -> Unit) {
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         Column {
-            ContinentTitle(configuration)
+            Title("Continents")
             ContinentsListing(configuration, fontColor, onClick)
         }
     }
@@ -68,39 +75,6 @@ private fun ContinentsListing(configuration: Configuration, fontColor: Color, on
             }
         }
     )
-}
-
-@Composable
-private fun ContinentTitle(configuration: Configuration) {
-    when (configuration.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
-            ContinentTitleLandscape()
-        }
-        else -> {
-            ContinentTitlePortrait()
-        }
-    }
-
-}
-
-@Composable
-fun ContinentTitlePortrait() {
-    Title(title = "Continents")
-}
-
-@Composable
-private fun ContinentTitleLandscape(){
-    Box (
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.33f)
-    ) {
-        Title(
-            title = "Continents",
-            textAlign = TextAlign.Center
-        )
-    }
 }
 
 private fun LazyListScope.continentsLandscape(continents: Array<Continent>, fontColor: Color, onClick: (Continent) -> Unit) {

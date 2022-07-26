@@ -56,7 +56,7 @@ private fun StatsPortrait(
             modifier = Modifier
                 .padding(horizontal = 30.dp)
         ) {
-            StatsTitlePortrait(configuration, stats.name.formattedName())
+            Title(title = "${stats.name.formattedName()} Covid-19 Stats")
             ListStats(configuration, model, onFavoriteAdd, onFavoriteRemove)
         }
     } else {
@@ -78,7 +78,12 @@ private fun StatsLandscape(
                 .fillMaxHeight()
                 .weight(1f)
         ) {
-            StatsTitleLandscape(configuration, stats.name.formattedName())
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxHeight(0.66f).padding(end = 10.dp)
+            ) {
+                Title("${stats.name.formattedName()} Covid-19 Stats")
+            }
             Favorite(model, onFavoriteAdd, onFavoriteRemove)
         }
         Box(
@@ -87,26 +92,6 @@ private fun StatsLandscape(
         ) {
             ListStats(configuration, model, onFavoriteAdd, onFavoriteRemove)
         }
-    }
-}
-
-@Composable
-private fun StatsTitlePortrait(configuration: Configuration, locationName: String) {
-    if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        Title(title = "$locationName Covid-19 Stats")
-    }
-}
-
-@Composable
-private fun StatsTitleLandscape(configuration: Configuration, locationName: String) {
-    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        Box(
-            contentAlignment = Alignment.Center,
-        ) {
-            Title(title = "$locationName Covid-19 Stats")
-        }
-    } else {
-        throw IllegalStateException("Orientation is not landscape")
     }
 }
 
