@@ -29,16 +29,13 @@ internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: Text
     val fontSize =
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 8.em
         else 10.em
-    val lineHeight =
-        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 8.em
-        else 10.em
     val buttonPadding =
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 30.dp
         else 20.dp
     Text(
         text = title,
         color = fontColor,
-        lineHeight = lineHeight,
+        lineHeight = 1.em,
         fontSize = fontSize,
         //fontFamily = FontFamily(Font(R.font.my_type, weight = FontWeight.Normal)),
         fontWeight = FontWeight.Bold,
