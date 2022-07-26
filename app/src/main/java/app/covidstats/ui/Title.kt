@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import app.covidstats.ui.theme.Green20
 import app.covidstats.ui.theme.Green30
@@ -26,11 +27,11 @@ import app.covidstats.ui.theme.Green30
 internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: TextAlign? = null, fontColor: Color = MaterialTheme.colorScheme.primary) {
     val configuration = LocalConfiguration.current
     val fontSize =
-        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 30.sp
-        else 40.sp
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 8.em
+        else 10.em
     val lineHeight =
-        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 30.sp
-        else 40.sp
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 8.em
+        else 10.em
     val buttonPadding =
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 30.dp
         else 20.dp
@@ -45,6 +46,6 @@ internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: Text
         textAlign = textAlign,
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = buttonPadding),
+            .padding(start = 10.dp, bottom = buttonPadding),
     )
 }

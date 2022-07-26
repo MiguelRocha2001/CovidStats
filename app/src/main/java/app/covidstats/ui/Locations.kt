@@ -155,9 +155,7 @@ private fun LocationButton(locationName: String, onClick: (String) -> Unit, cont
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         elevation = null,
         onClick = { onClick(locationName) }
-    ) {
-        content()
-    }
+    ) { content() }
 }
 
 @Composable
