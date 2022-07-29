@@ -112,37 +112,6 @@ private fun ListStats(configuration: Configuration, model: Model, onFavoriteAdd:
     }
 }
 
-/*
-@Composable
-fun Stats(model: Model?, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
-    if (model != null) {
-        val covidStats = model.stats
-        if (covidStats != null) {
-            Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .padding(horizontal = 30.dp)
-                    .fillMaxWidth(),
-            ) {
-                Title(title = "${covidStats.name.capitalizeText()} Covid-19 Stats")
-                when (covidStats) {
-                    is StatsSuccess -> {
-                        // depending on what type of data is to be displayed
-                        covidStats.data.apply {
-                            Data(data = this)
-                        }
-                        Favorite(model, onFavoriteAdd, onFavoriteRemove)
-                    }
-                    is StatsError -> {
-                        OnServerError()
-                    }
-                }
-            }
-        }
-    }
-}
- */
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Data(configuration: Configuration, data: CovidStats) {

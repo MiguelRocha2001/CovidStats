@@ -1,7 +1,6 @@
 package app.covidstats
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,7 +9,6 @@ import app.covidstats.model.data.app.Locations
 import app.covidstats.model.data.app.Stats
 import app.covidstats.model.opers.Model
 import app.covidstats.ui.MainWindow
-import java.io.Serializable
 
 class MainActivity : ComponentActivity() {
     private lateinit var model: Model

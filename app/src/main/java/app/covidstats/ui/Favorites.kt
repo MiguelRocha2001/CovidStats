@@ -33,6 +33,7 @@ fun Favorites(
             }
             else
                 Locations(
+                    title = "Favorites",
                     locations = favoriteLocations,
                     onLocationClick = onClick,
                     additionalComposable = additionalComposable
