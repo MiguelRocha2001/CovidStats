@@ -3,6 +3,7 @@ package app.covidstats.ui.views
 import androidx.compose.runtime.*
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import app.covidstats.model.data.app.LocationsSuccess
 import app.covidstats.model.data.app.formattedName
 import app.covidstats.model.data.app.toContinent
 import app.covidstats.model.opers.Model
@@ -33,24 +34,22 @@ fun CountriesView(
     val continent = backStackEntry.arguments?.getString("continent")?.formattedName() ?: ""
     Locations(
         title = "Countries in $continent",
-        locations = model.countries?.second,
-        onLocationClick = { country ->
-            navController.navigate("stats")
-            scope.launch(Dispatchers.IO) {
-                Thread.sleep(200)
-                model.loadLocationCovidStats(country)
+        standardLocations = model.countries?.second?.let {
+            it to { country ->
+                navController.navigate("stats")
+                scope.launch(Dispatchers.IO) {
+                    model.loadLocationCovidStats(country)
+                }
             }
         },
-        additionalLocations = arrayOf(continent to
-                { continentOption ->
-                    navController.navigate("stats")
-                    scope.launch(Dispatchers.IO) {
-                        val continent = continentOption.toContinent()
-                            ?: throw IllegalStateException("Continent not found")
-                        model.loadContinentCovidStats(continent)
-                    }
-                }
-        ),
+        specialLocations = LocationsSuccess(listOf(continent)) to { continentOption ->
+            navController.navigate("stats")
+            scope.launch(Dispatchers.IO) {
+                val continent = continentOption.toContinent()
+                    ?: throw IllegalStateException("Continent not found")
+                model.loadContinentCovidStats(continent)
+            }
+        },
         additionalComposable = localSearchHandler
     )
 }

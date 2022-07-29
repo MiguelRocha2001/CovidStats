@@ -17,27 +17,21 @@ fun Favorites(
     onClick: (String) -> Unit
 ) {
     if (favoriteLocations is LocationsSuccess) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Title(
-                title = "Favorites",
+        if (favoriteLocations.locations.isEmpty()) {
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                "No favorites yet",
+                fontSize = 24.sp,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
-            if (favoriteLocations.locations.isEmpty()) {
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    "No favorites yet",
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            else
-                Locations(
-                    title = "Favorites",
-                    locations = favoriteLocations,
-                    onLocationClick = onClick,
-                    additionalComposable = additionalComposable
-                )
         }
+        else
+            Locations(
+                title = "Favorites",
+                standardLocations = favoriteLocations to onClick,
+                specialLocations = null,
+                additionalComposable
+            )
     }
 }

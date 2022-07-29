@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.sp
 import app.covidstats.ui.theme.Green20
 import app.covidstats.ui.theme.Green30
 
+val PADDING_START = 10.dp
+
 /**
  * Draws a title with predefined attributes.
  * @param textAlign can be used to aline the title.
@@ -37,12 +39,10 @@ internal fun Title(title: String, modifier: Modifier = Modifier, textAlign: Text
         color = fontColor,
         lineHeight = 1.em,
         fontSize = fontSize,
-        //fontFamily = FontFamily(Font(R.font.my_type, weight = FontWeight.Normal)),
         fontWeight = FontWeight.Bold,
-        //style = TextStyle(textDecoration = TextDecoration.Underline),
         textAlign = textAlign,
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, bottom = buttonPadding),
+            .padding(start = PADDING_START, bottom = buttonPadding),
     )
 }

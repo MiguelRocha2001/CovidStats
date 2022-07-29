@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,20 +24,22 @@ import app.covidstats.ui.commons.OnServerError
 @Composable
 fun Locations(
     title: String,
-    locations: Locations?,
-    onLocationClick: (String) -> Unit,
+    standardLocations: Pair<Locations, (String) -> Unit>?,
+    specialLocations: Pair<Locations, (String) -> Unit>?,
     additionalComposable: @Composable (() -> Unit)? = null,
-    vararg additionalLocations: Pair<String, (String) -> Unit>
 ) {
-    if (locations != null) {
-        when (locations) {
+    if (standardLocations != null) {
+        when (val locations = standardLocations.first) {
             is LocationsSuccess -> {
                 if (additionalComposable != null) {
                     additionalComposable()
                     Spacer(modifier = Modifier.height(16.dp))
                 }
-                val locationsToDisplay = locations.locations
-                OnSuccess(title, locationsToDisplay, additionalLocations, onLocationClick)
+                OnSuccess(
+                    title,
+                    locations to standardLocations.second,
+                    specialLocations as Pair<LocationsSuccess, (String) -> Unit>?, // TODO: remove this cast
+                )
             }
             is LocationsError -> {
                 val error = locations.error
@@ -68,17 +69,16 @@ fun OnLoading() {
 @Composable
 private fun OnSuccess(
     title: String,
-    generalLocations: List<String>,
-    specialLocations: Array<out Pair<String, (String) -> Unit>>,
-    onLocationClick: (String) -> Unit
+    standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
 ) {
     val configuration = LocalConfiguration.current
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
-            LocationsLandscape(configuration, title, generalLocations, specialLocations, onLocationClick)
+            LocationsLandscape(configuration, title, standardLocations, specialLocations)
         }
         else -> {
-            LocationsPortrait(configuration, title, generalLocations, specialLocations, onLocationClick)
+            LocationsPortrait(configuration, title, standardLocations, specialLocations)
         }
     }
 }
@@ -87,9 +87,8 @@ private fun OnSuccess(
 private fun LocationsLandscape(
     configuration: Configuration,
     title: String,
-    locations: List<String>,
-    specialLocations: Array<out Pair<String, (String) -> Unit>>,
-    onClick: (String) -> Unit
+    standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
 ) {
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Row {
@@ -102,7 +101,7 @@ private fun LocationsLandscape(
                 Title(title)
             }
             Box(modifier = Modifier.weight(2f)) {
-                LocationsListing(configuration, locations, specialLocations, onClick)
+                LocationsListing(configuration, standardLocations, specialLocations)
             }
         }
     }
@@ -112,14 +111,15 @@ private fun LocationsLandscape(
 private fun LocationsPortrait(
     configuration: Configuration,
     title: String,
-    generalLocations: List<String>,
-    specialLocations: Array<out Pair<String, (String) -> Unit>>,
-    onClick: (String) -> Unit
+    standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
 ) {
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        Column {
+        Column(
+            modifier = Modifier.padding(start = PADDING_START)
+        ) {
             Title(title)
-            LocationsListing(configuration, generalLocations, specialLocations, onClick)
+            LocationsListing(configuration, standardLocations, specialLocations)
         }
     }
 }
@@ -127,18 +127,29 @@ private fun LocationsPortrait(
 @Composable
 private fun LocationsListing(
     configuration: Configuration,
-    locations: List<String>,
-    specialLocations: Array<out Pair<String, (String) -> Unit>>,
-    onClick: (String) -> Unit
+    standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
 ) {
+    val locationBackgroundColor = Color.Transparent
+    val specialLocationBackgroundColor = MaterialTheme.colorScheme.inversePrimary
     LazyColumn(
         content = {
             when (configuration.orientation) {
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    locationsListingLandscape(locations, specialLocations, onClick)
+                    locationsListingLandscape(
+                        Triple(standardLocations.first, locationBackgroundColor, standardLocations.second),
+                        specialLocations?.let {
+                            Triple(it.first, specialLocationBackgroundColor, it.second)
+                        }
+                    )
                 }
                 else -> {
-                    locationsListingPortrait(locations, specialLocations, onClick)
+                    locationsListingPortrait(
+                        Triple(standardLocations.first, locationBackgroundColor, standardLocations.second),
+                        specialLocations?.let {
+                            Triple(it.first, specialLocationBackgroundColor, it.second)
+                        }
+                    )
                 }
             }
         }
@@ -146,15 +157,13 @@ private fun LocationsListing(
 }
 
 private fun LazyListScope.locationsListingLandscape(
-    locations: List<String>,
-    specialLocations: Array<out Pair<String, (String) -> Unit>>,
-    onClick: (String) -> Unit
+    standardLocations: Triple<LocationsSuccess, Color, (String) -> Unit>,
+    specialLocations: Triple<LocationsSuccess, Color, (String) -> Unit>?,
 ) {
-
     @Composable
     fun RowScope.MyBox(content: @Composable () -> Unit) {
         val modifier = Modifier.weight(1f)
-        val boxContentAlignment = Alignment.Center
+        val boxContentAlignment = Alignment.CenterStart
         return Box(
             modifier = modifier,
             contentAlignment = boxContentAlignment
@@ -163,13 +172,31 @@ private fun LazyListScope.locationsListingLandscape(
         }
     }
 
-    locations.forEachIndexed { index, location ->
-        if (index % 2 == 0) {
+    val standardLocationsSize = standardLocations.first.locations.size
+    val specialLocationsSize = specialLocations?.first?.locations?.size ?: 0
+    val locationsSize = standardLocationsSize + specialLocationsSize
+    repeat(locationsSize) {
+        if (it % 2 == 0) {
+            val firstLocation = if (specialLocations != null && it < specialLocations.first.locations.size) {
+                Triple(specialLocations.first.locations[it], specialLocations.second, specialLocations.third)
+            } else {
+                Triple(standardLocations.first.locations[it - specialLocationsSize], standardLocations.second, standardLocations.third)
+            }
+            val secondLocation =
+                if(it + 1 < locationsSize) {
+                    if (specialLocations != null && it + 1 < specialLocations.first.locations.size) {
+                        Triple(specialLocations.first.locations[it + 1], specialLocations.second, specialLocations.third)
+                    } else {
+                        Triple(standardLocations.first.locations[it - specialLocationsSize + 1], standardLocations.second, standardLocations.third)
+                    }
+                } else null
+
             item {
                 Row {
-                    MyBox { Location(location, Color.Transparent, onClick) }
-                    if (index + 1 < locations.size)
-                        MyBox { Location(locations[index + 1], Color.Transparent, onClick) }
+                    MyBox { Location(firstLocation.first, firstLocation.second, firstLocation.third) }
+                    if (secondLocation != null) {
+                        MyBox { Location(secondLocation.first, secondLocation.second, firstLocation.third) }
+                    }
                 }
             }
         }
@@ -177,12 +204,14 @@ private fun LazyListScope.locationsListingLandscape(
 }
 
 private fun LazyListScope.locationsListingPortrait(
-    locations: List<String>,
-    specialLocations: Array<out Pair<String, (String) -> Unit>>,
-    onClick: (String) -> Unit
+    standardLocations: Triple<LocationsSuccess, Color, (String) -> Unit>,
+    specialLocations: Triple<LocationsSuccess, Color, (String) -> Unit>?,
 ) {
-    locations.forEach { location ->
-        item { Location(location, Color.Transparent, onClick) }
+    specialLocations?.first?.locations?.forEach { location ->
+        item { Location(location, specialLocations.second, specialLocations.third) }
+    }
+    standardLocations.first.locations.forEach { location ->
+        item { Location(location, standardLocations.second, standardLocations.third) }
     }
 }
 
@@ -199,6 +228,7 @@ private fun LocationButton(locationName: String, backgroundColor: Color, onClick
         modifier = Modifier.size(Dp.Unspecified),
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
         elevation = null,
+        shape = Shapes.Full,
         onClick = { onClick(locationName) }
     ) { content() }
 }
@@ -210,7 +240,7 @@ private fun LocationText(locationName: String) {
         color = MaterialTheme.colorScheme.secondary,
         fontSize = 20.sp,
         letterSpacing = 3.sp,
-        textAlign = TextAlign.Center,
+        lineHeight = 28.sp,
         modifier = Modifier
     )
 }
