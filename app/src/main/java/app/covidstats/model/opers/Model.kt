@@ -108,6 +108,7 @@ class Model(private val context: Context, private val activity: Activity) {
         showInterstitial()
         loadLocationCovidStats(location, storage) {
             stats = it
+            Log.i("Model", stats.toString())
             Log.i("Model", "Stats for $location set")
         }
     }
@@ -116,7 +117,7 @@ class Model(private val context: Context, private val activity: Activity) {
      * It will display an ad if it is time to do so (60s).
      */
     private fun showInterstitial() {
-        activity.runOnUiThread() {
+        activity.runOnUiThread {
             if (elapsedTime()) {
                 loadAd(
                     context,
@@ -142,7 +143,7 @@ class Model(private val context: Context, private val activity: Activity) {
      */
     private fun elapsedTime(): Boolean {
         val currentInstant = Instant.now()
-        if (!currentInstant.isBefore(instant.plusSeconds(5))) {
+        if (!currentInstant.isBefore(instant.plusSeconds(2))) {
             instant = currentInstant
             return true
         }
@@ -153,6 +154,7 @@ class Model(private val context: Context, private val activity: Activity) {
      * Clears the global variable stats.
      */
     fun dumpStats() {
+        Log.i("Model", "Stats cleared")
         stats = null
     }
 

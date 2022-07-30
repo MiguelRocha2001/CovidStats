@@ -1,5 +1,6 @@
 package app.covidstats.ui.navigation
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -20,8 +21,6 @@ fun CountriesView(
     navController: NavHostController,
     scope: CoroutineScope
 ) {
-    model.dumpStats()
-
     var localSearchHandler by remember { mutableStateOf<( @Composable () -> Unit)?>(null) }
     searchHandler {
         localSearchHandler = getSearchTextField { location ->
@@ -36,19 +35,19 @@ fun CountriesView(
         title = "Countries in $continent",
         standardLocations = model.countries?.second?.let {
             it to { country ->
-                navController.navigate("stats")
                 scope.launch(Dispatchers.IO) {
                     model.loadLocationCovidStats(country)
                 }
+                navController.navigate("stats")
             }
         },
         specialLocations = LocationsSuccess(listOf(continent)) to { continentOption ->
-            navController.navigate("stats")
             scope.launch(Dispatchers.IO) {
                 val continent = continentOption.toContinent()
                     ?: throw IllegalStateException("Continent not found")
                 model.loadContinentCovidStats(continent)
             }
+            navController.navigate("stats")
         },
         additionalComposable = localSearchHandler
     )

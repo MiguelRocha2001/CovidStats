@@ -23,7 +23,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // MobileAds.initialize(this) {}
-        Log.i("MainActivity", Thread.currentThread().name)
         model = Model(this, this)
         setContent {
             MainWindow(this, model)

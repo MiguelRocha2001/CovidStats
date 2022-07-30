@@ -1,6 +1,7 @@
 package app.covidstats.ui
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -34,10 +35,10 @@ fun Stats(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (Stri
     if (stats != null) {
         when (configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
-                StatsLandscape(configuration, model, onFavoriteAdd, onFavoriteRemove)
+                StatsLandscape(configuration, stats, model, onFavoriteAdd, onFavoriteRemove)
             }
             else -> {
-                StatsPortrait(configuration, model, onFavoriteAdd, onFavoriteRemove)
+                StatsPortrait(configuration, stats, model, onFavoriteAdd, onFavoriteRemove)
             }
         }
     }
@@ -46,18 +47,18 @@ fun Stats(model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (Stri
 @Composable
 private fun StatsPortrait(
     configuration: Configuration,
+    stats: Stats,
     model: Model,
     onFavoriteAdd: (String) -> Unit,
     onFavoriteRemove: (String) -> Unit
 ) {
-    val stats = model.stats ?: throw IllegalStateException("Stats is null")
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 30.dp)
         ) {
             Title(title = "${stats.name.formattedName()} Covid-19 Stats")
-            ListStats(configuration, model, onFavoriteAdd, onFavoriteRemove)
+            ListStats(configuration, stats, model, onFavoriteAdd, onFavoriteRemove)
         }
     } else {
         throw IllegalStateException("Orientation is not portrait")
@@ -67,11 +68,11 @@ private fun StatsPortrait(
 @Composable
 private fun StatsLandscape(
     configuration: Configuration,
+    stats: Stats,
     model: Model,
     onFavoriteAdd: (String) -> Unit,
     onFavoriteRemove: (String) -> Unit
 ) {
-    val stats = model.stats ?: throw IllegalStateException("Stats is null")
     Row {
         Column(
             modifier = Modifier
@@ -90,16 +91,16 @@ private fun StatsLandscape(
             modifier = Modifier
                 .weight(2f)
         ) {
-            ListStats(configuration, model, onFavoriteAdd, onFavoriteRemove)
+            ListStats(configuration, stats, model, onFavoriteAdd, onFavoriteRemove)
         }
     }
 }
 
 @Composable
-private fun ListStats(configuration: Configuration, model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
-    when (val covidStats = model.stats) {
+private fun ListStats(configuration: Configuration, stats: Stats, model: Model, onFavoriteAdd: (String) -> Unit, onFavoriteRemove: (String) -> Unit) {
+    when (stats) {
         is StatsSuccess -> {
-            covidStats.data.apply {
+            stats.data.apply {
                 Data(configuration, data = this)
             }
             if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
