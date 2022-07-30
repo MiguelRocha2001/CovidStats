@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.covidstats.model.opers.Model
-import app.covidstats.ui.views.*
+import app.covidstats.ui.navigation.*
 import kotlinx.coroutines.CoroutineScope
 
 @Composable

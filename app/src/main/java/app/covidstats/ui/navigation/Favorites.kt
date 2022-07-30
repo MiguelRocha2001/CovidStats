@@ -1,4 +1,4 @@
-package app.covidstats.ui.views
+package app.covidstats.ui.navigation
 
 import androidx.compose.runtime.*
 import androidx.navigation.NavHostController

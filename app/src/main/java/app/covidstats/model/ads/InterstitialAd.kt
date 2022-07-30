@@ -1,4 +1,4 @@
-package app.covidstats
+package app.covidstats.model.ads
 
 import android.app.Activity
 import android.content.Context

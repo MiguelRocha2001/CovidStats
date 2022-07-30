@@ -1,4 +1,4 @@
-package app.covidstats.ui.views
+package app.covidstats.ui.navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -21,7 +21,6 @@ fun ContinentsView(
         Log.i("WindowNavigation", "Composing Continents view")
         model.dumpCountries()
         scope.launch(Dispatchers.IO) {
-            Thread.sleep(200)
             model.loadContinentCountries(continent)
         }
         navController.navigate("continent_options/${continent}")

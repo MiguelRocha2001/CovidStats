@@ -1,21 +1,34 @@
 package app.covidstats.model.opers
 
+import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.os.Parcelable
 import android.provider.ContactsContract.DisplayNameSources.EMAIL
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.setValue
 import app.covidstats.model.Storage
+import app.covidstats.model.ads.loadAd
+import app.covidstats.model.ads.loadCallbacks
+import app.covidstats.model.ads.showAd
 import app.covidstats.model.data.app.*
 import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
+import com.google.android.gms.ads.interstitial.InterstitialAd
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
+import java.time.Instant
 
-class Model(context: Context) {
+@RequiresApi(Build.VERSION_CODES.O)
+class Model(private val context: Context, private val activity: Activity) {
+    private var mInterstitialAd: InterstitialAd? = null
+
+    private var instant = Instant.now()
+
     val appInfo: String = getAppTextInfo()
 
     private val storage: Storage = Storage(context)
@@ -92,10 +105,48 @@ class Model(context: Context) {
      * If the data is already in cache, obtains it from there. Otherwise, requests the API, and stores the data in cache to further use.
      */
     fun loadLocationCovidStats(location: String) {
+        showInterstitial()
         loadLocationCovidStats(location, storage) {
             stats = it
             Log.i("Model", "Stats for $location set")
         }
+    }
+
+    /**
+     * It will display an ad if it is time to do so (60s).
+     */
+    private fun showInterstitial() {
+        activity.runOnUiThread() {
+            if (elapsedTime()) {
+                loadAd(
+                    context,
+                    onLoad = {
+                        mInterstitialAd = it
+                        loadCallbacks(
+                            mInterstitialAd,
+                            onDismissed = { mInterstitialAd = null },
+                            onFailed = { mInterstitialAd = null }
+                        )
+                        showAd(activity, mInterstitialAd)
+                    },
+                    onFailed = { mInterstitialAd = null }
+                )
+            }
+        }
+    }
+
+    /**
+     * Checks if passed at least 60 seconds since last time this function was called.
+     * If so, resets the timer and returns true.
+     * If not, returns false.
+     */
+    private fun elapsedTime(): Boolean {
+        val currentInstant = Instant.now()
+        if (!currentInstant.isBefore(instant.plusSeconds(5))) {
+            instant = currentInstant
+            return true
+        }
+        return false
     }
 
     /**

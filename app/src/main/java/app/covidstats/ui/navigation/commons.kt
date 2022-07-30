@@ -1,4 +1,4 @@
-package app.covidstats.ui.views
+package app.covidstats.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
