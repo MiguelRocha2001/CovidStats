@@ -128,6 +128,6 @@ class Model(context: Context) {
         "This app was designed so the user can consult the current covid 19 situation, around the globe.\n" +
                 "It is a work in progress, and is not meant to be used as a replacement for the official website.\n" +
                 "The programmer (me) is still in college, and doesn't have much experience in Android. So, if" +
-                " you find any bugs, please report them to me at <a href=\"mailto: ${EMAIL}\">${EMAIL}</a>\n"
+                " you find any bugs, please report them to me at miguelasrocha1work@gmail.com\n"
 }
 
