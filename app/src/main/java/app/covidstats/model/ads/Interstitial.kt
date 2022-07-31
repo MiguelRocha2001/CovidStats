@@ -12,10 +12,13 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 private const val TAG = "Ads_Handler"
 
+private const val TEST_ADD_ID = "ca-app-pub-3940256099942544/1033173712"
+private const val PRODUCTION_ADD_ID = "ca-app-pub-9782463980121956/7649483941"
+
 fun loadAd(context: Context, onLoad: (InterstitialAd) -> Unit, onFailed: (LoadAdError) -> Unit) {
     InterstitialAd.load(
-        context
-        ,"ca-app-pub-3940256099942544/1033173712",
+        context,
+        PRODUCTION_ADD_ID,
         AdRequest.Builder().build(),
         object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
