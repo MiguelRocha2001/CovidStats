@@ -3,29 +3,26 @@ package app.covidstats.model.opers
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.os.Parcelable
-import android.provider.ContactsContract.DisplayNameSources.EMAIL
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.setValue
 import app.covidstats.model.Storage
 import app.covidstats.model.ads.loadAd
 import app.covidstats.model.ads.loadCallbacks
 import app.covidstats.model.ads.showAd
 import app.covidstats.model.data.app.*
-import app.covidstats.model.data.covid_stats.CovidStats
 import app.covidstats.model.data.news.Item
 import com.google.android.gms.ads.interstitial.InterstitialAd
-import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
+import com.google.android.gms.ads.nativead.NativeAd
 import java.time.Instant
 
 @RequiresApi(Build.VERSION_CODES.O)
 class Model(private val context: Context, private val activity: Activity) {
     private var mInterstitialAd: InterstitialAd? = null
+    var nativeAd by mutableStateOf<NativeAd?>(null)
+        private set
 
     private var instant = Instant.now()
 
@@ -143,7 +140,7 @@ class Model(private val context: Context, private val activity: Activity) {
      */
     private fun elapsedTime(): Boolean {
         val currentInstant = Instant.now()
-        if (!currentInstant.isBefore(instant.plusSeconds(2))) {
+        if (!currentInstant.isBefore(instant.plusSeconds(60))) {
             instant = currentInstant
             return true
         }

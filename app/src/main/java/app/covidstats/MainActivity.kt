@@ -2,27 +2,37 @@ package app.covidstats
 
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import app.covidstats.model.ads.loadAd
-import app.covidstats.model.ads.loadCallbacks
-import app.covidstats.model.ads.showAd
 import app.covidstats.model.data.app.Continent
 import app.covidstats.model.data.app.Locations
 import app.covidstats.model.data.app.Stats
 import app.covidstats.model.opers.Model
 import app.covidstats.ui.MainWindow
-import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
+import java.security.AccessController.getContext
 
 @RequiresApi(Build.VERSION_CODES.O)
 class MainActivity : ComponentActivity() {
+    lateinit var mAdView : AdView
+
     private lateinit var model: Model
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // MobileAds.initialize(this) {}
+        setContentView(R.layout.main_activity)
+
+        MobileAds.initialize(this) {}
+
+        mAdView = findViewById(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
+
         model = Model(this, this)
         setContent {
             MainWindow(this, model)

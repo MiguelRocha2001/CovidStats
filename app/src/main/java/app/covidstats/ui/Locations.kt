@@ -1,21 +1,27 @@
 package app.covidstats.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.error.ServerError
 import app.covidstats.model.data.app.*
 import app.covidstats.ui.commons.OnServerError
+import com.google.android.gms.ads.nativead.NativeAd
 
 /**
  * Display a list of [locations] and after pressing one, calls [onLocationClick].
@@ -70,7 +76,7 @@ fun OnLoading() {
 private fun OnSuccess(
     title: String,
     standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
-    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?
 ) {
     val configuration = LocalConfiguration.current
     when (configuration.orientation) {
@@ -88,7 +94,7 @@ private fun LocationsLandscape(
     configuration: Configuration,
     title: String,
     standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
-    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?
 ) {
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Row {
@@ -112,7 +118,7 @@ private fun LocationsPortrait(
     configuration: Configuration,
     title: String,
     standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
-    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?
 ) {
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         Column(
@@ -128,7 +134,7 @@ private fun LocationsPortrait(
 private fun LocationsListing(
     configuration: Configuration,
     standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
-    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?
 ) {
     val locationBackgroundColor = Color.Transparent
     val specialLocationBackgroundColor = MaterialTheme.colorScheme.inversePrimary
