@@ -1,27 +1,21 @@
 package app.covidstats.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.covidstats.error.ServerError
 import app.covidstats.model.data.app.*
 import app.covidstats.ui.commons.OnServerError
-import com.google.android.gms.ads.nativead.NativeAd
 
 /**
  * Display a list of [locations] and after pressing one, calls [onLocationClick].
@@ -37,14 +31,11 @@ fun Locations(
     if (standardLocations != null) {
         when (val locations = standardLocations.first) {
             is LocationsSuccess -> {
-                if (additionalComposable != null) {
-                    additionalComposable()
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
                 OnSuccess(
                     title,
                     locations to standardLocations.second,
                     specialLocations as Pair<LocationsSuccess, (String) -> Unit>?, // TODO: remove this cast
+                    additionalComposable
                 )
             }
             is LocationsError -> {
@@ -76,15 +67,16 @@ fun OnLoading() {
 private fun OnSuccess(
     title: String,
     standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
-    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
+    additionalComposable: @Composable() (() -> Unit)?
 ) {
     val configuration = LocalConfiguration.current
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
-            LocationsLandscape(configuration, title, standardLocations, specialLocations)
+            LocationsLandscape(configuration, title, standardLocations, specialLocations, additionalComposable)
         }
         else -> {
-            LocationsPortrait(configuration, title, standardLocations, specialLocations)
+            LocationsPortrait(configuration, title, standardLocations, specialLocations, additionalComposable)
         }
     }
 }
@@ -94,7 +86,8 @@ private fun LocationsLandscape(
     configuration: Configuration,
     title: String,
     standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
-    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
+    additionalComposable: @Composable() (() -> Unit)?
 ) {
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Row {
@@ -104,7 +97,11 @@ private fun LocationsLandscape(
                     .weight(1f)
                     .fillMaxHeight()
             ) {
-                Title(title)
+                Column {
+                    Title(title)
+                    if (additionalComposable != null)
+                        additionalComposable()
+                }
             }
             Box(modifier = Modifier.weight(2f)) {
                 LocationsListing(configuration, standardLocations, specialLocations)
@@ -118,13 +115,18 @@ private fun LocationsPortrait(
     configuration: Configuration,
     title: String,
     standardLocations: Pair<LocationsSuccess, (String) -> Unit>,
-    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?
+    specialLocations: Pair<LocationsSuccess, (String) -> Unit>?,
+    additionalComposable: @Composable() (() -> Unit)?
 ) {
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         Column(
             modifier = Modifier.padding(start = PADDING_START)
         ) {
             Title(title)
+            if (additionalComposable != null) {
+                additionalComposable()
+                Spacer(modifier = Modifier.height(16.dp))
+            }
             LocationsListing(configuration, standardLocations, specialLocations)
         }
     }
