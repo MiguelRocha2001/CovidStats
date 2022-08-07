@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import app.covidstats.MainActivity
 import app.covidstats.model.opers.Model
-import app.covidstats.model.Option
+import app.covidstats.model.data.app.Option
 import com.plcoding.material3app.ui.theme.Material3AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

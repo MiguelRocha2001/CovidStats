@@ -1,4 +1,4 @@
-package app.covidstats.model.opers
+package app.covidstats.model.opers.countries
 
 import android.util.Log
 import app.covidstats.db.fetchContinentCountries

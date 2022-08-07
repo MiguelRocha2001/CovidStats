@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.navigation.NavHostController
 import app.covidstats.MainActivity
 import app.covidstats.model.opers.Model
-import app.covidstats.model.Option
+import app.covidstats.model.data.app.Option
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

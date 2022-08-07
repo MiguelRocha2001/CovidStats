@@ -7,7 +7,6 @@ import app.covidstats.db.getWorldStats
 import app.covidstats.error.AppError
 import app.covidstats.model.Storage
 import app.covidstats.model.data.app.*
-import app.covidstats.model.data.covid_stats.CovidStats
 
 /**
  * Fetches COVID-19 stats for a specific continent.

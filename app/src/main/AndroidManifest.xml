@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
+        <!-- ID_TEST: ca-app-pub-3940256099942544~3347511713 -->
+        <!-- ID_REAL: ca-app-pub-9782463980121956~4539556137 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-9782463980121956~4539556137"/>

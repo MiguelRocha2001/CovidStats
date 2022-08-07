@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
             outState.putSerializable("countries", countries)
         if (stats != null)
             outState.putSerializable("stats", stats)
+        Log.i("MainActivityLogger", "onSaveInstanceState() finished")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {

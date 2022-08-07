@@ -26,8 +26,6 @@ class Model(private val context: Context, private val activity: Activity) {
 
     private var instant = Instant.now()
 
-    val appInfo: String = getAppTextInfo()
-
     private val storage: Storage = Storage(context)
 
     var stats by mutableStateOf<Stats?>(null)
@@ -81,7 +79,7 @@ class Model(private val context: Context, private val activity: Activity) {
      */
     fun loadContinentCountries(continent: Continent) {
         countries = continent to LocationsLoading
-        loadContinentCountries(continent, storage) {
+        app.covidstats.model.opers.countries.loadContinentCountries(continent, storage) {
             if (it is LocationsSuccess)
                 Log.i("Model", "${continent.formattedName()} countries set")
             countries = continent to it
@@ -168,16 +166,14 @@ class Model(private val context: Context, private val activity: Activity) {
     fun filterLocations(name: String) {
         val observedCountries = countries ?: return
         if (observedCountries.second is LocationsSuccess) {
-            filterLocations(name, storage, observedCountries.first) {
+            app.covidstats.model.opers.countries.filterLocations(
+                name,
+                storage,
+                observedCountries.first
+            ) {
                 countries = observedCountries.first to it
             }
         }
     }
-
-    private fun getAppTextInfo() =
-        "This app was designed so the user can consult the current covid 19 situation, around the globe.\n" +
-                "It is a work in progress, and is not meant to be used as a replacement for the official website.\n" +
-                "The programmer (me) is still in college, and doesn't have much experience in Android. So, if" +
-                " you find any bugs, please report them to me at miguelasrocha1work@gmail.com\n"
 }
 

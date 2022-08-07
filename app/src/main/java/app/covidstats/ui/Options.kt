@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import app.covidstats.R
-import app.covidstats.model.Option
+import app.covidstats.model.data.app.Option
 
 @Composable
 fun getIcon(option: Option): ImageVector {
